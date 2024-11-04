@@ -1,14 +1,28 @@
 version: '3.7'
 services:
-  db:
-    image: postgres:11.1
-    user: root
+  hrdata:
+    image: management-app
+    container_name: management
+    ports:
+      - 8080:8080
+      - 9669:9669
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=postgres
+      - ENVIRONMENT=prod
+    networks:
+      - managementnetwork
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
     restart: always
-    ports: 
-      - 5432:5432
+    ports:
+      - 80:80  # Needed for the ACME HTTP-01 challenge.
+      - 443:443
     volumes:
-        - ./postgresql:/var/lib/postgresql/data
+      - ./caddy-config:/etc/caddy/
+      - ../../caddy-data:/data
+    networks:
+      - managementnetwork
+
+networks:
+  managementnetwork:
