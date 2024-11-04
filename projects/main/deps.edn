@@ -19,7 +19,8 @@
 		;; Bricks
 		poly/html {:local/root "../../components/html"}
 		poly/web {:local/root "../../components/web"}
-        poly/user {:local/root "../../components/user"}
+        #_poly/user #_{:local/root "../../components/user"}
+        poly/excel {:local/root "../../components/excel"}
 		poly/server {:local/root "../../bases/server"}}
  :aliases {:test {:extra-paths ["test"]
 	 :extra-deps {}}}}
