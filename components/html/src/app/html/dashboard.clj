@@ -1,5 +1,4 @@
-(ns app.html.dashboard
-  (:require [app.html.invoice-data :refer [html]]))
+(ns app.html.dashboard)
 
 (defn content [{:keys [email created-at]}]
   [:div
@@ -239,5 +238,4 @@
       "Dashboard"]]]
    [:main
     [:div
-     {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
-     (html)]]])
+     {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}]]])
