@@ -1,9 +1,12 @@
 (ns app.html.core
 	(:require [hiccup2.core :as h]
             [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.ring-middlewares :as ring-mw]
             [ring.util.response :as response]
             [app.html.index :as index]
-            [app.html.dashboard :as dashboard]))
+            [app.html.dashboard :as dashboard]
+            [app.html.upload-details :as upload-details]
+            [app.excel.interface :as excel]))
 
 ;; Prepare the hicup to return it as html
 (defn template [html-body]
@@ -37,8 +40,26 @@
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)}))))
 
+(def upload-details-handler
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response (respond upload-details/page)))})
+
+(def post-upload-details-handler
+  {:name ::post
+   :enter (fn [context]
+            (let [multipart-data (:multipart-params (-> context :request))
+                  file (get multipart-data "file")
+                  file-input-stream (:tempfile file)]
+              (assoc context :response (respond-with-params upload-details/show-details (excel/process-details file-input-stream)))))})
+
 (def routes
-  #{["/" :get index-page-handler :route-name ::index-page]
+  #{["/"
+     :get [(body-params/body-params) upload-details-handler]
+     :route-name ::upload-details]
+    ["/upload-details"
+     :post [(ring-mw/multipart-params) post-upload-details-handler]
+     :route-name ::post-upload-details]
     ["/dashboard"
      :get [(body-params/body-params) dashboard-handler]
      :route-name ::dashboard]})
