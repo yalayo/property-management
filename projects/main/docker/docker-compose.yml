@@ -1,7 +1,7 @@
 version: '3.7'
 services:
-  hrdata:
-    image: management-app
+  management:
+    image: property-management-app
     container_name: management
     ports:
       - 8080:8080
