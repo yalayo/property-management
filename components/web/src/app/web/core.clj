@@ -14,6 +14,7 @@
        ::http/routes (route/expand-routes (into #{} (html/get-routes) #_(concat (get-routes) (html/get-routes))))
        ::http/resource-path "/public"
        ::http/type :immutant
+       ::http/host "0.0.0.0"
        ::http/port 8080}
       (http/default-interceptors)
       (update ::http/interceptors concat [#_session-interceptor])
