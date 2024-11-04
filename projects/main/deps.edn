@@ -23,4 +23,6 @@
         poly/excel {:local/root "../../components/excel"}
 		poly/server {:local/root "../../bases/server"}}
  :aliases {:test {:extra-paths ["test"]
-	 :extra-deps {}}}}
+                  :extra-deps {}}
+           :jib {:deps {io.github.atomisthq/jibbit {:git/url "https://github.com/yalayo/jibbit.git"
+                                                    :sha "6f55e679dc30de53ed89c7c89ddad0863e7e0600"}}}}}
