@@ -1,0 +1,3 @@
+inmo.busqandote.com {
+        reverse_proxy management:8080
+}
