@@ -1,0 +1,46 @@
+{:aliases {:dev {:extra-paths ["development/src"
+                               "bases/server/src"
+                               "bases/server/resources"
+                               "components/html/src"
+                               "components/web/src"
+                               "components/web/resources"
+                               "components/user/src"]
+                 :extra-deps {io.pedestal/pedestal.service {:mvn/version "0.5.9"}
+                              io.pedestal/pedestal.route {:mvn/version "0.5.9"}
+                              io.pedestal/pedestal.immutant {:mvn/version "0.5.9"}
+                              jdbc-ring-session/jdbc-ring-session {:mvn/version "1.5.4"}
+                              hiccup/hiccup {:mvn/version "2.0.0-RC3"}
+                              org.clojure/data.xml {:mvn/version "0.0.8"}
+                              pdfboxing/pdfboxing {:mvn/version "0.1.14"}
+                              clj-pdf/clj-pdf {:mvn/version "2.6.8"}
+                              net.sekao/odoyle-rules {:mvn/version "1.1.0"}
+                              io.replikativ/datahike {:mvn/version "0.6.1571"}
+                              io.replikativ/datahike-jdbc {:mvn/version "0.3.48"}
+                              org.postgresql/postgresql {:mvn/version "42.6.0"}
+                              buddy/buddy-hashers {:mvn/version "2.0.167"}
+                              com.github.seancorfield/next.jdbc {:mvn/version "1.3.883"}
+                              com.zaxxer/HikariCP {:mvn/version "5.0.1"}
+                              com.github.seancorfield/honeysql {:mvn/version "2.4.1066"}
+                              org.flywaydb/flyway-core {:mvn/version "9.21.2"}}}
+           :test {:extra-paths ["bases/server/test"
+                                "components/html/test"
+                                "components/web/test"
+                                "components/user/test"]
+                  :extra-deps {polylith-kaocha/kaocha-wrapper
+                               {:git/url "https://github.com/imrekoszo/polylith-kaocha"
+                                :git/tag "v0.8.2"
+                                :git/sha "d1fcd40"
+                                :deps/root "projects/kaocha-wrapper"}
+                               org.clojure/test.check {:mvn/version "1.1.1"}}}
+           
+           :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
+                  :extra-deps {polylith/clj-poly
+                               {:git/url "https://github.com/polyfy/polylith"
+                                :git/sha "ccc261e60f6a875ff30858bf84cf67be105eac6f"
+                                :deps/root "projects/poly"}
+           
+                               polylith-kaocha/test-runner
+                               {:git/url "https://github.com/imrekoszo/polylith-kaocha"
+                                :git/tag "v0.8.2"
+                                :git/sha "d1fcd40"
+                                :deps/root "projects/test-runner"}}}}}

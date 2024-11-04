@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- Console appender to output logs to the console -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Root logger to control the overall logging level -->
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+  <!-- Pedestal logging configuration -->
+  <logger name="io.pedestal" level="DEBUG"/>
+  
+  <!-- Immutant and Undertow specific logging -->
+  <logger name="org.projectodd.wunderboss" level="INFO"/>
+  <logger name="org.xnio" level="INFO"/>
+  <logger name="io.undertow" level="INFO"/>
+  <logger name="org.jboss" level="WARN"/>
+  <logger name="org.wildfly" level="WARN"/>
+
+</configuration>

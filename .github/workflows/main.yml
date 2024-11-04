@@ -1,0 +1,65 @@
+name: CICD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy to OCI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          # List all files containing dependencies:
+          key: cljdeps-${{ hashFiles('deps.edn') }}
+          restore-keys: cljdeps-
+      - name: Create docker image with jib
+        run: |
+          cd ./projects/main/
+          clojure -T:jib jibbit.core/build
+      - name: install ssh keys
+        # check this thread to understand why its needed:
+        # <https://stackoverflow.com/a/70447517>
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Copy image and run it on the VM
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} " \
+          if [ -d ~/${{ secrets.WORK_DIR }}/docker ]; then 
+            cd ~/${{ secrets.WORK_DIR }}/docker
+            docker-compose down
+            docker rmi ${{ secrets.APP_NAME }}-app:latest
+            cd ~/${{ secrets.WORK_DIR }} 
+            rm -rf ~/${{ secrets.WORK_DIR }}/
+            mkdir ~/${{ secrets.WORK_DIR }}
+          else
+            mkdir ~/${{ secrets.WORK_DIR }}
+          fi 
+          exit"
+          scp -o StrictHostKeyChecking=no ./projects/main/app.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+      - name: Load Docker image on VM
+        run: |
+          scp -r ./projects/main/docker ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            docker load -i ~/${{ secrets.WORK_DIR }}/app.tar
+            docker tag app.tar:latest ${{ secrets.APP_NAME }}-app:latest
+            docker rmi app.tar:latest
+            cd ~/${{ secrets.WORK_DIR }}/docker
+            docker compose up -d
+            exit
+          EOF
+      - name: Cleanup
+        run: rm -rf ~/.ssh
