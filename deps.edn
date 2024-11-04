@@ -4,7 +4,7 @@
                                "components/html/src"
                                "components/web/src"
                                "components/web/resources"
-                               "components/user/src"]
+                               #_"components/user/src"]
                  :extra-deps {io.pedestal/pedestal.service {:mvn/version "0.5.9"}
                               io.pedestal/pedestal.route {:mvn/version "0.5.9"}
                               io.pedestal/pedestal.immutant {:mvn/version "0.5.9"}
