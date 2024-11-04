@@ -4,7 +4,8 @@
                                "components/html/src"
                                "components/web/src"
                                "components/web/resources"
-                               #_"components/user/src"]
+                               #_"components/user/src"
+                               "components/excel/src"]
                  :extra-deps {io.pedestal/pedestal.service {:mvn/version "0.5.9"}
                               io.pedestal/pedestal.route {:mvn/version "0.5.9"}
                               io.pedestal/pedestal.immutant {:mvn/version "0.5.9"}
@@ -25,7 +26,8 @@
            :test {:extra-paths ["bases/server/test"
                                 "components/html/test"
                                 "components/web/test"
-                                "components/user/test"]
+                                "components/user/test"
+                                "components/excel/test"]
                   :extra-deps {polylith-kaocha/kaocha-wrapper
                                {:git/url "https://github.com/imrekoszo/polylith-kaocha"
                                 :git/tag "v0.8.2"
