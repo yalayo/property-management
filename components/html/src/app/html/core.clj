@@ -6,7 +6,8 @@
             [app.html.index :as index]
             [app.html.dashboard :as dashboard]
             [app.html.upload-details :as upload-details]
-            [app.excel.interface :as excel]))
+            [app.excel.interface :as excel]
+            [app.letter.interface :as letter]))
 
 ;; Prepare the hicup to return it as html
 (defn template [html-body]
@@ -53,6 +54,13 @@
                   file-input-stream (:tempfile file)]
               (assoc context :response (respond-with-params upload-details/show-details (excel/process-details file-input-stream)))))})
 
+(def letter-handler
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response {:status 200
+                                      :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
+                                      :body (java.io.ByteArrayInputStream. (letter/create))}))})
+
 (def routes
   #{["/"
      :get [(body-params/body-params) upload-details-handler]
@@ -62,4 +70,7 @@
      :route-name ::post-upload-details]
     ["/dashboard"
      :get [(body-params/body-params) dashboard-handler]
-     :route-name ::dashboard]})
+     :route-name ::dashboard]
+    ["/letter"
+     :get [letter-handler]
+     :route-name ::generate-invoice]})
