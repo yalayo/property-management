@@ -73,4 +73,4 @@
      :route-name ::dashboard]
     ["/letter"
      :get [letter-handler]
-     :route-name ::generate-invoice]})
+     :route-name ::letter]})
