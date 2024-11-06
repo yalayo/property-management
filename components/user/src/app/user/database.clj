@@ -8,7 +8,11 @@
            (org.flywaydb.core Flyway)))
 
 (def ds (connection/->pool com.zaxxer.hikari.HikariDataSource
-                           {:dbtype "postgres" :dbname "e-rechnung" :username "user" :password "invoice@2024"
+                           {:dbtype "postgres"
+                            :host "development-db"
+                            :dbname "property-management"
+                            :username "user"
+                            :password "volley@2024"
                             :dataSourceProperties {:socketTimeout 30}}))
 
 (defn create-account [email password]
