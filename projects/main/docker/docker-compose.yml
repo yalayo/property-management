@@ -11,6 +11,22 @@ services:
     networks:
       - managementnetwork
 
+  db:
+    image: postgres:11.1
+    container_name: development-db
+    user: root
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=hrdata@2024
+      - POSTGRES_DB=postgres
+    restart: always
+    ports: 
+      - 5432:5432
+    volumes:
+        - ../../postgres-data:/var/lib/postgresql/data
+    networks:
+      - managementnetwork
+
   caddy:
     image: caddy:2
     container_name: caddy
