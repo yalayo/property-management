@@ -22,6 +22,7 @@
 		poly/web {:local/root "../../components/web"}
         #_poly/user #_{:local/root "../../components/user"}
         poly/excel {:local/root "../../components/excel"}
+        poly/letter {:local/root "../../components/letter"}
 		poly/server {:local/root "../../bases/server"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}
