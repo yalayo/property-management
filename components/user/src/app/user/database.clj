@@ -9,7 +9,7 @@
 
 (def ds (connection/->pool com.zaxxer.hikari.HikariDataSource
                            {:dbtype "postgres"
-                            :host "development-db"
+                            :host (if (= (System/getenv "ENVIRONMENT") "prod") "development-db" "localhost")
                             :dbname "property-management"
                             :username "user"
                             :password "volley@2024"
