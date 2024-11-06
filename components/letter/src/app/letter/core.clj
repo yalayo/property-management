@@ -12,28 +12,19 @@
     
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
-    
-      ;; Tenant info
-      [:table {:widths [100] :border false}
-       ["Herrn"]
-       ["Mustermann"]
-       ["Bredowstr 2"]
-       ["45131 Essen"]]
       
-      [:table {:widths [100 100] :border false}
+      [:table {:widths [100] :border false}
        [[:cell
-         [:heading {:style {:size 15}} "Seller"]
-         [:paragraph "CCS GmbH"]
-         [:paragraph "Oberer Markt 9, DE 92507 Nabburg"]
-         [:paragraph "Tax Number: -"]
-         [:paragraph "VAT ID: DE111122223"]]
-        [:cell
-         [:heading {:style {:size 15}} "Buyer"]
-         [:paragraph "Beispielmieter GmbH"]
-         [:paragraph "Verwaltung Straße 40, DE 12345 Musterstadt"]]]]
+         [:paragraph "Herrn Mustermann"]
+         [:paragraph "Bredowstr 2"]
+         [:paragraph "45131 Essen"]]]]
+      
+      [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
     
+      #_[:pagebreak]
       ;; Details
-      [:heading {:style {:size 15}} "Invoice Items"]
-      [:table {:widths [30 70 180 60 60] :spacing 5}
-       ["Stk" "Art. Nummer" "Beschreibung" [:cell {:align :center} "Stückpreis"] [:cell {:align :center} "Betrag"]]]] output)
+      [:heading {:style {:size 14}} "Details"]
+      [:table {:spacing 5}
+       ["Abrechnungsposten" "Gesamtkosten" "Vert.Kst." "Schlüssel" "Anteilig" "365 Tagen" "152 Tagen"]
+       ["Allgemeinstrom" "425,8" "100" "Whfl." "3,42" "14,56 €" "6,06 €"]]] output)
     (.toByteArray output)))
