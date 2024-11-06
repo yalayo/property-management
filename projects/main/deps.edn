@@ -20,7 +20,7 @@
 		;; Bricks
 		poly/html {:local/root "../../components/html"}
 		poly/web {:local/root "../../components/web"}
-        #_poly/user #_{:local/root "../../components/user"}
+        poly/user {:local/root "../../components/user"}
         poly/excel {:local/root "../../components/excel"}
         poly/letter {:local/root "../../components/letter"}
 		poly/server {:local/root "../../bases/server"}}

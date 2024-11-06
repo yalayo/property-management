@@ -4,7 +4,7 @@
                                "components/html/src"
                                "components/web/src"
                                "components/web/resources"
-                               #_"components/user/src"
+                               "components/user/src"
                                "components/excel/src"
                                "components/excel/resources"
                                "components/letter/src"]

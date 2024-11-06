@@ -4,9 +4,9 @@
             [io.pedestal.http.ring-middlewares :as middlewares]
             [jdbc-ring-session.core :as jdbc-ring-session]
             [app.html.interface :as html]
-            #_[app.user.interface :refer [get-routes get-datasource]]))
+            [app.user.interface :refer [get-routes get-datasource]]))
 
-#_(def session-interceptor
+(def session-interceptor
   (middlewares/session {:store (jdbc-ring-session/jdbc-store (get-datasource) {:table :session_store})}))
 
 (def service
@@ -17,7 +17,7 @@
        ::http/host "0.0.0.0"
        ::http/port 8080}
       (http/default-interceptors)
-      (update ::http/interceptors concat [#_session-interceptor])
+      (update ::http/interceptors concat [session-interceptor])
       http/create-server))
 
 (defn start []
