@@ -5,19 +5,23 @@
 (defn create-row [data]
   (into [] (map (fn [item]
                   (if (= item :1)
-                    (item data)
-                    (into [] [:cell {:align :center} (item data)]))) (keys data))))
+                    (into [] [:cell {:border false} (item data)])
+                    (let [element (item data)]
+                      (if (float? element)
+                        (into [] [:cell {:align :center :border false} (str (format "%.2f" element) " €")])
+                        (into [] [:cell {:align :center :border false} (item data)]))))) (keys data))))
 
 (defn create [headers content]
+  (println "Content: " content)
   (let [output (ByteArrayOutputStream.)
         scaffold [:table {:spacing 5 :font-size 8}]
         with-headers (into scaffold [(into [] headers)])
-        table (into with-headers (map create-row (:content content)))]
+        table (into with-headers (map create-row content))]
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
-       :font {:family "Helvetica" :size 12}}
+       :font {:family "Helvetica" :size 6}}
     
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
