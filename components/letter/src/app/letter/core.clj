@@ -25,16 +25,28 @@
     
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
+
+      [:paragraph {:size 10 :align :right :spacing-after 10} "Essen, den 26.11.2024"]
       
-      [:table {:widths [100] :border false :font-size 6}
-       [[:cell
-         [:paragraph "Herrn Mustermann"]
-         [:paragraph "Bredowstr 2"]
-         [:paragraph "45131 Essen"]]]]
+      [:paragraph {:size 10} "Herrn Mustermann"]
+      [:paragraph {:size 10} "Bredowstr 2"]
+      [:paragraph {:spacing-after 80} "45131 Essen"]
       
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
+
+      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} "Sehr geehrter Herr Muster,"]
+
+      [:paragraph {:size 10 :align :left :spacing-after 5} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2022. 
+Sie schließt mit einer Gutschrift für den 2022 i. H. von € 227,85.
+"]
+
+      [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
+
+      [:paragraph {:size 10 :align :left} "Mit freundlichen Grüßen"]
+
+      [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]
     
-      #_[:pagebreak]
+      [:pagebreak]
       ;; Details
       [:heading {:style {:size 14}} "Details"]
       table] output)
