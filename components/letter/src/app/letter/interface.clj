@@ -1,5 +1,5 @@
 (ns app.letter.interface
   (:require [app.letter.core :as core]))
 
-(defn create []
-  (core/create))
+(defn create [headers content]
+  (core/create headers content))
