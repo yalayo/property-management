@@ -52,14 +52,19 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
-              (assoc context :response (respond-with-params upload-details/show-details (excel/process-details file-input-stream)))))})
+              (assoc context :response {:status 200
+                                        :headers {"HX-Redirect" "/letter"}
+                                        :session (excel/process-details file-input-stream)})))})
 
 (def letter-handler
   {:name ::get
    :enter (fn [context]
-            (assoc context :response {:status 200
-                                      :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
-                                      :body (java.io.ByteArrayInputStream. (letter/create))}))})
+            (let [session (-> context :request :session)
+                  headers (:headers session)
+                  content (:content  session)]
+              (assoc context :response {:status 200
+                                        :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
+                                        :body (java.io.ByteArrayInputStream. (letter/create headers content))})))})
 
 (def routes
   #{["/"
