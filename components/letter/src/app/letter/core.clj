@@ -14,7 +14,7 @@
 (defn create [headers content]
   (let [output (ByteArrayOutputStream.)
         scaffold [:table {:spacing 0 :padding 2 :font-size 8}]
-        with-headers (conj scaffold (into [] (map #(into [:cell {:align :center} %]) headers)))
+        with-headers (conj scaffold (into [] (map #(into [:cell {:align :center :border false :background-color [189 215 238]} %]) headers)))
         table (into with-headers (map create-row content))]
     (println with-headers)
     (pdf/pdf
