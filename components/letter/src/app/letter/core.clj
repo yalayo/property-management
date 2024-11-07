@@ -12,11 +12,11 @@
                         (into [] [:cell {:align :center :border false} (item data)]))))) (keys data))))
 
 (defn create [headers content]
-  (println "Content: " content)
   (let [output (ByteArrayOutputStream.)
-        scaffold [:table {:spacing 5 :font-size 8}]
-        with-headers (into scaffold [(into [] headers)])
+        scaffold [:table {:spacing 0 :padding 2 :font-size 8}]
+        with-headers (conj scaffold (into [] (map #(into [:cell {:align :center} %]) headers)))
         table (into with-headers (map create-row content))]
+    (println with-headers)
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
@@ -63,8 +63,6 @@
 
   ;; recreate the table
 (let [table [:table {:spacing 5}]
-      with-headers (into table [(into [] (:headers data))])
+      with-headers (conj table (into [] (map #(into [:cell {:align :center} %]) (:headers data)))) 
       result (into with-headers (map create-row (:content data)))]
-  result)
-  
-  )
+  result))
