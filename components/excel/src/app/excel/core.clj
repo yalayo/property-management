@@ -14,14 +14,21 @@
              "BLANK" nil
              (throw (IllegalArgumentException. (str "No matching clause: " cell-type)))))) cells))
 
+
+
+(defn format-content [data size]
+  (let [items (into [] (map #(keyword (str (inc %))) (range size)))
+        content (partition size data)]
+    (mapv #(zipmap items %) content)))
+
 (defn process-details [input-stream]
   (let [workbook (docj/load-workbook input-stream)
         headers (get-content (-> workbook 
                                  (docj/select-name "headers")))
-        content (get-content (-> workbook
+        data (get-content (-> workbook
                     (docj/select-name "table1")))]
     {:headers headers
-     :content (partition (count headers) content)}))
+     :content (format-content data (count headers))}))
 
 (comment
   (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
