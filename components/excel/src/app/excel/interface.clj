@@ -3,3 +3,6 @@
 
 (defn process-details [data]
   (core/process-details data))
+
+(defn process [input-stream]
+  (core/process input-stream))
