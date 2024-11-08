@@ -6,6 +6,7 @@
             [app.html.index :as index]
             [app.html.dashboard :as dashboard]
             [app.html.upload-details :as upload-details]
+            [app.html.tenants-list :as tenants]
             [app.excel.interface :as excel]
             [app.letter.interface :as letter]))
 
@@ -53,8 +54,8 @@
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (assoc context :response {:status 200
-                                        :headers {"HX-Redirect" "/letter"}
-                                        :session (excel/process-details file-input-stream)})))})
+                                        :headers {"HX-Redirect" "/tenants"}
+                                        :session {:tenants (excel/process file-input-stream)}})))})
 
 (def letter-handler
   {:name ::get
@@ -65,6 +66,12 @@
               (assoc context :response {:status 200
                                         :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
                                         :body (java.io.ByteArrayInputStream. (letter/create headers content))})))})
+
+(def tenants-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [session (-> context :request :session)]
+              (assoc context :response (respond-with-params tenants/content (:tenants session)))))})
 
 (def routes
   #{["/"
@@ -78,4 +85,7 @@
      :route-name ::dashboard]
     ["/letter"
      :get [letter-handler]
-     :route-name ::letter]})
+     :route-name ::letter]
+    ["/tenants"
+     :get [tenants-handler]
+     :route-name ::tenants]})
