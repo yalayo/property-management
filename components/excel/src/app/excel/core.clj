@@ -1,6 +1,7 @@
 (ns app.excel.core
   (:require [dk.ative.docjure.spreadsheet :as docj]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.string :as str])
   (:import [org.apache.poi.ss.usermodel CellType]))
 
 (defn get-content [cells]
@@ -32,4 +33,13 @@
 
 (comment
   (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
+
+  (let [input-stream (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/NK_ 2023_kuni.xlsx")
+        workbook (docj/load-workbook input-stream)
+        sheets (docj/sheet-seq workbook)
+        sheet-names (map #(.getSheetName %) sheets)
+        filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
+    (get-content (map #(docj/select-cell "A2" %) filtered))
   )
+
+)
