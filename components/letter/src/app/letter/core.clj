@@ -11,11 +11,15 @@
                         (into [] [:cell {:align :center :border false} (str (format "%.2f" element) " €")])
                         (into [] [:cell {:align :center :border false} (item data)]))))) (keys data))))
 
-(defn create [headers content]
+(defn create [tenant]
   (let [output (ByteArrayOutputStream.)
         scaffold [:table {:spacing 0 :padding 2 :font-size 8}]
+        headers (:headers tenant)
+        content (:content tenant)
         with-headers (conj scaffold (into [] (map #(into [:cell {:align :center :border false :background-color [189 215 238]} %]) headers)))
         table (into with-headers (map create-row content))]
+    (println headers)
+    (println content)
     (println with-headers)
     (pdf/pdf
      [{:title "Brief"
