@@ -50,7 +50,8 @@
                           street (get-cell-value (docj/select-cell "A2" sheet))
                           headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                           content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
-                      {:last-name last-name
+                      {:tenant-id (str (java.util.UUID/randomUUID))
+                       :last-name last-name
                        :street street
                        :headers headers
                        :content (format-content content (count headers))})) filtered))))
@@ -67,7 +68,8 @@
                  street (get-cell-value (docj/select-cell "A2" sheet))
                  headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                  content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
-             {:last-name last-name 
+             {:tenant-id (str (java.util.UUID/randomUUID))
+              :last-name last-name 
               :street street
               :headers headers 
               :content (format-content content (count headers))})) filtered)))
