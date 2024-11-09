@@ -1,6 +1,8 @@
 (ns app.letter.core
   (:require [clj-pdf.core :as pdf])
-  (:import [java.io ByteArrayOutputStream]))
+  (:import [java.io ByteArrayOutputStream]
+           [java.time LocalDate]
+           [java.time.format DateTimeFormatter]))
 
 (defn create-row [data]
   (into [] (map (fn [item]
@@ -13,6 +15,7 @@
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
+        today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
         scaffold [:table {:spacing 0 :padding 2 :font-size 8}]
         headers (:headers tenant)
         content (:content tenant)
@@ -27,18 +30,18 @@
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
 
-      [:paragraph {:size 10 :align :right :spacing-after 10} "Essen, den 26.11.2024"]
+      [:paragraph {:size 10 :align :right :spacing-after 10} (str "Essen, " today)]
       
-      [:paragraph {:size 10} (str "Herrn/Frau" (:last-name tenant))]
+      [:paragraph {:size 10} (str "Frau/Herrn " (:last-name tenant))]
       [:paragraph {:size 10} (:street tenant)]
       [:paragraph {:spacing-after 80} (:location tenant)]
       
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
 
-      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} "Sehr geehrter Herr Muster,"]
+      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte(r) Herrn/Frau " (:last-name tenant) ",")]
 
-      [:paragraph {:size 10 :align :left :spacing-after 5} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2022. 
-                                                            Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
+      [:paragraph {:size 10 :align :left} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2022."]
+      [:paragraph {:size 10 :align :left :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
 
