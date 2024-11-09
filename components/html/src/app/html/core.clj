@@ -1,5 +1,6 @@
 (ns app.html.core
 	(:require [hiccup2.core :as h]
+            [io.pedestal.http.params :as params]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as ring-mw]
             [ring.util.response :as response]
@@ -73,6 +74,18 @@
             (let [session (-> context :request :session)]
               (assoc context :response (respond-with-params tenants/content (:tenants session)))))})
 
+(def create-letter-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [tenants (-> context :request :session :tenants)
+                  tenant-id (-> context :request :path-params :tenant-id)
+                  tenant (some #(when (= (:tenant-id %) tenant-id) %) tenants)]
+              (println "ID: " context)
+              (println "Tenant: " tenant)
+              (assoc context :response {:status 200
+                                        :headers {"Content-Type" "application/pdf" "Content-Disposition" "inline; filename=letter.pdf"}
+                                        :body (java.io.ByteArrayInputStream. (letter/create tenant))})))})
+
 (def routes
   #{["/"
      :get [(body-params/body-params) upload-details-handler]
@@ -88,4 +101,7 @@
      :route-name ::letter]
     ["/tenants"
      :get [tenants-handler]
-     :route-name ::tenants]})
+     :route-name ::tenants]
+    ["/tenants/:tenant-id"
+     :get [params/keyword-params create-letter-handler]
+     :route-name ::create-letter]})
