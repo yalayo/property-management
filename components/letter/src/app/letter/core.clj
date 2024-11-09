@@ -31,7 +31,7 @@
       
       [:paragraph {:size 10} (str "Herrn/Frau" (:last-name tenant))]
       [:paragraph {:size 10} (:street tenant)]
-      [:paragraph {:spacing-after 80} "45131 Essen"]
+      [:paragraph {:spacing-after 80} (:location tenant)]
       
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
 

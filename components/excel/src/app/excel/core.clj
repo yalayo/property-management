@@ -48,11 +48,13 @@
     (into [] (map (fn [sheet]
                     (let [last-name (subs (.getSheetName sheet) 3)
                           street (get-cell-value (docj/select-cell "A2" sheet))
+                          location (get-cell-value (docj/select-cell "B2" sheet))
                           headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                           content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
                       {:tenant-id (str (java.util.UUID/randomUUID))
                        :last-name last-name
                        :street street
+                       :location location
                        :headers headers
                        :content (format-content content (count headers))})) filtered))))
 
@@ -66,11 +68,13 @@
     (into [] (map (fn [sheet]
            (let [last-name (subs (.getSheetName sheet) 3)
                  street (get-cell-value (docj/select-cell "A2" sheet))
+                 location (get-cell-value (docj/select-cell "B2" sheet))
                  headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                  content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
              {:tenant-id (str (java.util.UUID/randomUUID))
               :last-name last-name 
               :street street
+              :location location
               :headers headers 
               :content (format-content content (count headers))})) filtered)))
 
