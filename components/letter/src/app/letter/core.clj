@@ -18,9 +18,6 @@
         content (:content tenant)
         with-headers (conj scaffold (into [] (map #(into [:cell {:align :center :border false :background-color [189 215 238]} %]) headers)))
         table (into with-headers (map create-row content))]
-    (println headers)
-    (println content)
-    (println with-headers)
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
@@ -32,8 +29,8 @@
 
       [:paragraph {:size 10 :align :right :spacing-after 10} "Essen, den 26.11.2024"]
       
-      [:paragraph {:size 10} "Herrn Mustermann"]
-      [:paragraph {:size 10} "Bredowstr 2"]
+      [:paragraph {:size 10} (str "Herrn/Frau" (:last-name tenant))]
+      [:paragraph {:size 10} (:street tenant)]
       [:paragraph {:spacing-after 80} "45131 Essen"]
       
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
@@ -41,8 +38,7 @@
       [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} "Sehr geehrter Herr Muster,"]
 
       [:paragraph {:size 10 :align :left :spacing-after 5} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2022. 
-Sie schließt mit einer Gutschrift für den 2022 i. H. von € 227,85.
-"]
+                                                            Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
 
