@@ -46,15 +46,25 @@
         sheets (docj/sheet-seq workbook)
         filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
     (into [] (map (fn [sheet]
-                    (let [last-name (subs (.getSheetName sheet) 3)
+                    (let [last-name (get-cell-value (docj/select-cell "B3" sheet))
                           street (get-cell-value (docj/select-cell "A2" sheet))
                           location (get-cell-value (docj/select-cell "B2" sheet))
+                          total-costs (get-cell-value (docj/select-cell "I2" sheet))
+                          prepayment (get-cell-value (docj/select-cell "I3" sheet))
+                          heating-costs (get-cell-value (docj/select-cell "I4" sheet))
+                          total (get-cell-value (docj/select-cell "I5" sheet))
+                          refund? (get-cell-value (docj/select-cell "I6" sheet))
                           headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                           content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
                       {:tenant-id (str (java.util.UUID/randomUUID))
                        :last-name last-name
                        :street street
                        :location location
+                       :total-costs total-costs
+                       :prepayment prepayment
+                       :heating-costs heating-costs
+                       :total total
+                       :refund refund?
                        :headers headers
                        :content (format-content content (count headers))})) filtered))))
 
