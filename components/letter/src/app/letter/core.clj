@@ -49,7 +49,9 @@
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Vorauszahlung Warm und Kalt"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (str (format "%.2f" (:prepayment tenant)) " €")]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Heißkosten"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (str (format "%.2f" (:heating-costs tenant)) " €")]]]]
 
-      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} (str "Sie schließt mit einer Gutschrift für den 2023 i. H. von " (format "%.2f" (:total tenant)) " €")]
+      (if (:refund tenant)
+        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} (str "Sie schließt mit einer Gutschrift für den 2023 i. H. von " (format "%.2f" (:total tenant)) " €")]
+        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} (str "Sie schließt mit einer Belastung für den 2023 i. H. von " (format "%.2f" (:total tenant)) " €")])
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
 
