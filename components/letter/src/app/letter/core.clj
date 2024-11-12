@@ -34,7 +34,7 @@
 
       [:paragraph {:size 10} (:last-name tenant)]
       [:paragraph {:size 10} (:street tenant)]
-      [:paragraph {:spacing-after 80} (:location tenant)]
+      [:paragraph {:size 10 :spacing-after 80} (:location tenant)]
 
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
 
@@ -45,11 +45,11 @@
       [:pdf-table
        {:width-percent 50 :cell-border false}
        [70 30]
-       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Kostenabrechnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$20.00"]]]
-       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Vorauszahlung Warm und Kalt"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$20.00"]]]
-       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Heißkosten"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$10.00"]]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Kostenabrechnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (str (format "%.2f" (:total-costs tenant)) " €")]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Vorauszahlung Warm und Kalt"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (str (format "%.2f" (:prepayment tenant)) " €")]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Heißkosten"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (str (format "%.2f" (:heating-costs tenant)) " €")]]]]
 
-      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
+      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} (str "Sie schließt mit einer Gutschrift für den 2023 i. H. von " (format "%.2f" (:total tenant)) " €")]
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
 
@@ -71,6 +71,11 @@
              :last-name "Brusberg",
              :street "Kunigundastr.20",
              :location "45131 Essen",
+             :total-costs 123.4
+             :prepayment 100.35
+             :heating-costs 13.0
+             :total 10.4
+             :refund false
              :headers '("Abrechnungsposten" "Gesamtkosten" "Vert.Kst" "Schlüssel" "Anteilig" "Ihr Anteil"),
              :content
              [{:1 "Allgemeinstrom ", :2 286.73, :3 100.0, :4 "Whfl.", :5 4.1, :6 11.75593}
