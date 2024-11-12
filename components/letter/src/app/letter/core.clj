@@ -7,19 +7,19 @@
 (defn create-row [data]
   (into [] (map (fn [item]
                   (if (= item :1)
-                    (into [] [:cell {:border false} (item data)])
+                    (into [] [:pdf-cell {:valign :middle :border true} (item data)])
                     (let [element (item data)]
                       (if (float? element)
-                        (into [] [:cell {:align :center :border false} (str (format "%.2f" element) " €")])
-                        (into [] [:cell {:align :center :border false} (item data)]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true} (str (format "%.2f" element) " €")])
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true} (item data)]))))) (keys data))))
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
         today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
-        scaffold [:table {:spacing 0 :padding 2 :font-size 8}]
         headers (:headers tenant)
         content (:content tenant)
-        with-headers (conj scaffold (into [] (map #(into [:cell {:align :center :border false :background-color [189 215 238]} %]) headers)))
+        scaffold [:pdf-table {:width-percent 100 :cell-border true} nil]
+        with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} %]) headers)))
         table (into with-headers (map create-row content))]
     (pdf/pdf
      [{:title "Brief"
@@ -61,7 +61,7 @@
 
       [:pagebreak]
       ;; Details
-      [:heading {:style {:size 14}} "Details"]
+      [:heading {:style {:size 14} :spacing-after 10} "Details"]
       table] output)
     (.toByteArray output)))
 
@@ -96,8 +96,8 @@
               {:1 "Telefonkosten", :2 228.92, :3 100.0, :4 "Whfl.", :5 4.1, :6 9.385719999999997}]})
 
   ;; recreate the table
-  (let [table [:table {:spacing 5}]
-        with-headers (conj table (into [] (map #(into [:cell {:align :center} %]) (:headers data))))
+  (let [table [:pdf-table {:cell-border true} nil]
+        with-headers (conj table (into [] (map #(into [:pdf-cell {:align :center} %]) (:headers data))))
         result (into with-headers (map create-row (:content data)))]
     result)
 
