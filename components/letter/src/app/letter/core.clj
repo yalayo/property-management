@@ -26,29 +26,37 @@
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
        :font {:family "Helvetica" :size 6}}
-    
+
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
 
       [:paragraph {:size 10 :align :right :spacing-after 10} (str "Essen, " today)]
-      
-      [:paragraph {:size 10} (str "Frau/Herrn " (:last-name tenant))]
+
+      [:paragraph {:size 10} (:last-name tenant)]
       [:paragraph {:size 10} (:street tenant)]
       [:paragraph {:spacing-after 80} (:location tenant)]
-      
+
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
 
       [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte(r) Herrn/Frau " (:last-name tenant) ",")]
 
-      [:paragraph {:size 10 :align :left} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2022."]
-      [:paragraph {:size 10 :align :left :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
+      [:paragraph {:size 10 :align :left :spacing-after 20} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2023."]
+
+      [:pdf-table
+       {:width-percent 50 :cell-border false}
+       [70 30]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Kostenabrechnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$20.00"]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Vorauszahlung Warm und Kalt"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$20.00"]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Heißkosten"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "$10.00"]]]]
+
+      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2022 i. H. von € (total hier)."]
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "Bei Rückfragen sind wir gerne behilflich."]
 
       [:paragraph {:size 10 :align :left} "Mit freundlichen Grüßen"]
 
       [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]
-    
+
       [:pagebreak]
       ;; Details
       [:heading {:style {:size 14}} "Details"]
@@ -59,25 +67,37 @@
 
 
 (comment
-  (def data {:headers '("Abrechnungsposten" "Gesamtkosten" "Vert.Kst." "Schlüssel" "Anteilig" "365 Tagen" "152 Tagen"),
+  (def data {:tenant-id "302d3365-e7fe-4875-b1f0-8b4ba52d6281",
+             :last-name "Brusberg",
+             :street "Kunigundastr.20",
+             :location "45131 Essen",
+             :headers '("Abrechnungsposten" "Gesamtkosten" "Vert.Kst" "Schlüssel" "Anteilig" "Ihr Anteil"),
              :content
-             [{:1 "Allgemeinstrom", :2 425.8, :3 100.0, :4 "Whfl.", :5 3.42, :6 14.56, :7 6.06}
-              {:1 "Versicherung", :2 4125.35, :3 100.0, :4 "Whfl.", :5 3.42, :6 141.09, :7 58.75}
-              {:1 "Grundsteuer", :2 4244.38, :3 100.0, :4 "Whfl.", :5 3.42, :6 145.16, :7 60.45}
-              {:1 "Müllabfuhr", :2 2918.4, :3 100.0, :4 "Whfl.", :5 3.42, :6 99.81, :7 41.56}
-              {:1 "Niederschlagwasser", :2 553.52, :3 100.0, :4 "Whfl.", :5 3.42, :6 18.93, :7 7.88}
-              {:1 "Schmutzwasser", :2 3251.01, :3 100.0, :4 "Whfl.", :5 3.42, :6 111.18, :7 46.3}
-              {:1 "Straßenreinigung", :2 241.86, :3 100.0, :4 "Whfl.", :5 3.42, :6 8.27, :7 3.44}
-              {:1 "Trinkwasser", :2 1878.11, :3 100.0, :4 "Whfl.", :5 3.42, :6 64.23, :7 26.75}
-              {:1 "Sondernutzungsgebühren", :2 33.6, :3 100.0, :4 "Whfl.", :5 3.42, :6 1.15, :7 0.48}
-              {:1 "Rauchwarnmelder", :2 704.79, :3 100.0, :4 "Whfl.", :5 3.42, :6 24.1, :7 10.04}
-              {:1 "Aufzugswartung", :2 4165.0, :3 100.0, :4 "Whfl.", :5 3.42, :6 142.44, :7 59.32}
-              {:1 "Gebäudereinigung", :2 3960.0, :3 100.0, :4 "Whfl.", :5 3.42, :6 135.43, :7 56.4}
-              {:1 "Aufzug Stromkosten", :2 621.53, :3 100.0, :4 "Whfl.", :5 3.42, :6 21.26, :7 8.85}
-              {:1 "Telefonkosten", :2 312.49, :3 100.0, :4 "Whfl.", :5 3.42, :6 10.69, :7 4.45}]})
+             [{:1 "Allgemeinstrom ", :2 286.73, :3 100.0, :4 "Whfl.", :5 4.1, :6 11.75593}
+              {:1 "Versicherung", :2 4125.35, :3 100.0, :4 "Whfl.", :5 4.1, :6 169.13935}
+              {:1 "Grundsteuer", :2 4244.38, :3 100.0, :4 "Whfl.", :5 4.1, :6 174.01958}
+              {:1 "Müllabfuhr", :2 2899.2, :3 100.0, :4 "Whfl.", :5 4.1, :6 118.86719999999998}
+              {:1 "Niederschlagwasser", :2 544.64, :3 100.0, :4 "Whfl.", :5 4.1, :6 22.330239999999996}
+              {:1 "Schmutzwasser", :2 3667.98, :3 100.0, :4 "Whfl.", :5 4.1, :6 150.38718}
+              {:1 "Straßenreinigung", :2 250.27, :3 100.0, :4 "Whfl.", :5 4.1, :6 10.261069999999998}
+              {:1 "Trinkwasser", :2 1950.0, :3 100.0, :4 "Whfl.", :5 4.1, :6 79.94999999999999}
+              {:1 "Sondernutzungsebühren", :2 33.6, :3 100.0, :4 "Whfl.", :5 4.1, :6 1.3776}
+              {:1 "Rauchwarnmelder", :2 328.54, :3 100.0, :4 "Whfl.", :5 4.1, :6 13.470139999999999}
+              {:1 "Aufzugswartung", :2 4165.0, :3 100.0, :4 "Whfl.", :5 4.1, :6 170.765}
+              {:1 "Gebäudereinigung", :2 3960.0, :3 100.0, :4 "Whfl.", :5 4.1, :6 162.35999999999999}
+              {:1 "Aufzug Stromkosten ", :2 0.0, :3 100.0, :4 "Whfl.", :5 4.1, :6 0.0}
+              {:1 "Telefonkosten", :2 228.92, :3 100.0, :4 "Whfl.", :5 4.1, :6 9.385719999999997}]})
 
   ;; recreate the table
-(let [table [:table {:spacing 5}]
-      with-headers (conj table (into [] (map #(into [:cell {:align :center} %]) (:headers data)))) 
-      result (into with-headers (map create-row (:content data)))]
-  result))
+  (let [table [:table {:spacing 5}]
+        with-headers (conj table (into [] (map #(into [:cell {:align :center} %]) (:headers data))))
+        result (into with-headers (map create-row (:content data)))]
+    result)
+
+  (defn byte-array-to-file
+    [byte-array file-path]
+    (with-open [out (java.io.FileOutputStream. file-path)]
+      (.write out byte-array)))
+
+  (byte-array-to-file (create data) "components/excel/resources/letter.pdf")
+  )
