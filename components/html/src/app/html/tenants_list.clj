@@ -31,34 +31,7 @@
          :d
          "M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z",
          :clip-rule "evenodd"}]]
-      "Brief"]]
-    [:div
-     {:class "relative ml-3 sm:hidden"}
-     [:button
-      {:type "button",
-       :class
-       "inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400",
-       :id "mobile-menu-button",
-       :aria-expanded "false",
-       :aria-haspopup "true"}
-      "More"
-      [:svg
-       {:class "-mr-1 ml-1.5 h-5 w-5 text-gray-400",
-        :viewBox "0 0 20 20",
-        :fill "currentColor",
-        :aria-hidden "true"}
-       [:path
-        {:fill-rule "evenodd",
-         :d
-         "M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z",
-         :clip-rule "evenodd"}]]]
-     [:div
-      {:class
-       "absolute right-0 z-10 -mr-1 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
-       :role "menu",
-       :aria-orientation "vertical",
-       :aria-labelledby "mobile-menu-button",
-       :tabindex "-1"}]]]])
+      "Brief"]]]])
 
 (defn content [tenants]
   [:div
