@@ -4,23 +4,43 @@
            [java.time LocalDate]
            [java.time.format DateTimeFormatter]))
 
+(defn get-rows-but-last-three [rows]
+  (let [n (count rows)
+        split-point (max 0 (- n 3))]
+    (into [](take split-point rows))))
+
+(defn get-rows-last-three [rows]
+  (into [] (take-last 3 rows)))
+
 (defn create-row [data]
   (into [] (map (fn [item]
                   (if (= item :1)
-                    (into [] [:pdf-cell {:valign :middle :border true} (item data)])
+                    (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} (item data)]])
                     (let [element (item data)]
                       (if (float? element)
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} (str (format "%.2f" element) " €")])
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} (item data)]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (item data)]]))))) (keys data))))
+
+(defn create-last-three-rows [data]
+  (into [] (map (fn [item]
+                  (if (= item :1)
+                    (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])
+                    (let [element (item data)]
+                      (if (float? element)
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]]))))) (keys data))))
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
         today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
         headers (:headers tenant)
         content (:content tenant)
+        first-rows (get-rows-but-last-three content)
+        last-rows (get-rows-last-three content)
         scaffold [:pdf-table {:width-percent 100 :cell-border true} nil]
         with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} %]) headers)))
-        table (into with-headers (map create-row content))]
+        first-part (into with-headers (map create-row first-rows))
+        table (into first-part (map create-last-three-rows last-rows))]
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
@@ -107,4 +127,7 @@
       (.write out byte-array)))
 
   (byte-array-to-file (create data) "components/excel/resources/letter.pdf")
+   
+  (get-rows-but-last-three (:content data))
+  (get-rows-last-three (:content data))
   )
