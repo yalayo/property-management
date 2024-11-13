@@ -15,14 +15,15 @@
       "BLANK" nil)))
 
 (defn get-cell-value [cell]
-  (let [cell-type (str (.getCellType cell))]  ; Convert cell type to a string for matching
-    (case cell-type
-      "NUMERIC" (.getNumericCellValue cell)
-      "STRING" (.getStringCellValue cell)
-      "BOOLEAN" (.getBooleanCellValue cell)
-      "FORMULA" (get-formula-value cell)
-      "BLANK" nil
-      (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))))
+  (when (some? cell)
+      (let [cell-type (str (.getCellType cell))]  ; Convert cell type to a string for matching
+        (case cell-type
+          "NUMERIC" (.getNumericCellValue cell)
+          "STRING" (.getStringCellValue cell)
+          "BOOLEAN" (.getBooleanCellValue cell)
+          "FORMULA" (get-formula-value cell)
+          "BLANK" nil
+          (throw (IllegalArgumentException. (str "No matching clause: " cell-type)))))))
 
 (defn get-content [cells]
   (map get-cell-value cells))
