@@ -54,9 +54,11 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
-              (assoc context :response {:status 200
-                                        :headers {"HX-Redirect" "/tenants"}
-                                        :session {:tenants (excel/process file-input-stream)}})))})
+              (if (some? file-input-stream) 
+                (assoc context :response {:status 200
+                                          :headers {"HX-Redirect" "/tenants"}
+                                          :session {:tenants (excel/process file-input-stream)}})
+                (assoc context :response (respond upload-details/no-file-selected)))))})
 
 (def letter-handler
   {:name ::get
