@@ -17,8 +17,8 @@
                   (let [element (item data)]
                     (case item
                       :1 (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} element]])
-                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
                         (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} element]]))))) (keys data))))
@@ -28,8 +28,8 @@
                   (let [element (item data)]
                     (case item
                       :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]])
-                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
