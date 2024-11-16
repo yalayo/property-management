@@ -14,21 +14,23 @@
 
 (defn create-row [data]
   (into [] (map (fn [item]
-                  (if (= item :1)
-                    (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} (item data)]])
-                    (let [element (item data)]
-                      (if (float? element)
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (item data)]]))))) (keys data))))
+                  (case item
+                    :1 (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} (item data)]])
+                    :3 (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (item data)]])
+                    :5 (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (item data)]])
+                    (if (float? (item data))
+                      (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" (item data)) " €")]])
+                      (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (item data)]])))) (keys data))))
 
 (defn create-last-three-rows [data]
   (into [] (map (fn [item]
-                  (if (= item :1)
-                    (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])
-                    (let [element (item data)]
-                      (if (float? element)
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]]))))) (keys data))))
+                  (case item
+                    :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])
+                    :3 (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])
+                    :5 (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])
+                    (if (float? (item data))
+                      (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" (item data)) " €")]])
+                      (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (item data)]])))) (keys data))))
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
