@@ -70,7 +70,7 @@
 
       [:paragraph {:size 10 :align :left :spacing-after 125} "Bei Rückfragen sind wir gerne behilflich."]
 
-      [:paragraph {:size 10 :align :left :spacing-before 65} "Mit freundlichen Grüßen"]
+      [:paragraph {:size 10 :align :left :spacing-before 50} "Mit freundlichen Grüßen"]
 
       [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]
 
