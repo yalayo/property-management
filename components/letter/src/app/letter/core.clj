@@ -17,22 +17,22 @@
                   (let [element (item data)]
                     (case item
                       :1 (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} element]])
-                      :3 (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true} [:paragraph {:size 7} element]]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} element]]))))) (keys data))))
 
 (defn create-last-three-rows [data]
   (into [] (map (fn [item]
                   (let [element (item data)]
                     (case item
                       :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]])
-                      :3 (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (= element (Math/floor element)) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
@@ -42,7 +42,7 @@
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
         scaffold [:pdf-table {:width-percent 100 :cell-border true} nil]
-        with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :center :valign :middle :border true :background-color [189 215 238]} %]) headers)))
+        with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} %]) headers)))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
     (pdf/pdf
@@ -116,7 +116,7 @@
 
   ;; recreate the table
   (let [table [:pdf-table {:cell-border true} nil]
-        with-headers (conj table (into [] (map #(into [:pdf-cell {:align :center} %]) (:headers data))))
+        with-headers (conj table (into [] (map #(into [:pdf-cell {:align :left} %]) (:headers data))))
         result (into with-headers (map create-row (:content data)))]
     result)
 
