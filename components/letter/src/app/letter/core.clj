@@ -58,13 +58,13 @@
 
       [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
 
-      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte(r) " (:last-name tenant) ",")]
+      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
       [:paragraph {:size 10 :align :left :spacing-after 50} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2023."]
 
       (if (:refund tenant)
         [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
-        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Belastung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]])
+        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Nachzahlung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]])
 
       [:paragraph {:size 10 :align :left :spacing-before 50 :spacing-after 2} "Weitere Details finden Sie auf der nächsten Seite."]
 
