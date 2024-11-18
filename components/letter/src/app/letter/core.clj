@@ -8,8 +8,8 @@
   (into [] (map (fn [item]
                   (let [element (item data)]
                     (case item
-                      :1 (into [] [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} element])
-                      (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} element])))) (keys data))))
+                      :1 (into [] [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10} element]])
+                      (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10} element]])))) (keys data))))
 
 (defn get-rows-but-last-three [rows]
   (let [n (count rows)
@@ -23,23 +23,23 @@
   (into [] (map (fn [item]
                   (let [element (item data)]
                     (case item
-                      :1 (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 7} element]])
-                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :1 (into [] [:pdf-cell {:valign :middle :border true} [:paragraph {:size 10} element]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 10} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 10} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 7} element]]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 10} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 10} element]]))))) (keys data))))
 
 (defn create-last-three-rows [data]
   (into [] (map (fn [item]
                   (let [element (item data)]
                     (case item
-                      :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]])
-                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
-                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10 :style :bold} element]])
+                      :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
+                      :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10 :style :bold} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 10 :style :bold} element]]))))) (keys data))))
 
 (defn payment-information [total payment-info]
   [:pdf-table
@@ -57,7 +57,7 @@
         content (:content tenant)
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
-        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [40] (repeatedly (dec (count headers)) #(/ 60 (dec (count headers)))))]
+        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [20] (repeatedly (dec (count headers)) #(/ 80 (dec (count headers)))))]
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
