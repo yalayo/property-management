@@ -34,6 +34,14 @@
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
 
+(defn payment-information [total]
+  [:pdf-table
+   {:width-percent 100 :cell-border false
+    :header [[[:pdf-cell {:colspan 2} [:paragraph {:size 10 :align :left} "Sie schließt mit einer Nachzahlung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
+   [15 85]
+   [[:pdf-cell {:colspan 2 :padding-bottom 10} [:paragraph {:size 10 :style :bold :align :left} "Zahlungsinformation"]]]
+   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "IBAN"]]]])
+
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
         today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
@@ -68,7 +76,7 @@
 
       (if (:refund tenant)
         [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
-        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Nachzahlung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]])
+        (payment-information (:total tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 50 :spacing-after 2} "Weitere Details finden Sie auf der nächsten Seite."]
 
