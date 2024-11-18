@@ -49,7 +49,7 @@
         content (:content tenant)
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
-        scaffold [:pdf-table {:width-percent 100 :cell-border true} nil]
+        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [40] (repeatedly (dec (count headers)) #(/ 60 (dec (count headers)))))]
         with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} %]) headers)))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
