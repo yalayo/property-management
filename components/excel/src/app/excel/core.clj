@@ -25,6 +25,10 @@
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type)))))))
 
+(defn format-headers [headers]
+  (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
+          headers))
+
 (defn get-content [cells]
   (map get-cell-value cells))
 
@@ -71,7 +75,7 @@
                        :total total
                        :payment-info {:iban iban :bank-name bank-name}
                        :refund refund?
-                       :headers headers
+                       :headers (format-headers headers)
                        :content (format-content content (count headers))})) filtered))))
 
 (comment

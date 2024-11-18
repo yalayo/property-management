@@ -4,6 +4,13 @@
            [java.time LocalDate]
            [java.time.format DateTimeFormatter]))
 
+(defn create-headers [data]
+  (into [] (map (fn [item]
+                  (let [element (item data)]
+                    (case item
+                      :1 (into [] [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} element])
+                      (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} element])))) (keys data))))
+
 (defn get-rows-but-last-three [rows]
   (let [n (count rows)
         split-point (max 0 (- n 3))]
@@ -51,10 +58,9 @@
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
         scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [40] (repeatedly (dec (count headers)) #(/ 60 (dec (count headers)))))]
-        with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} %]) headers)))
+        with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
-    (println "ID: " (:property-id tenant))
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
