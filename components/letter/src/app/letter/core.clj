@@ -34,13 +34,14 @@
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} (str (format "%.2f" element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 7 :style :bold} element]]))))) (keys data))))
 
-(defn payment-information [total]
+(defn payment-information [total payment-info]
   [:pdf-table
    {:width-percent 100 :cell-border false
     :header [[[:pdf-cell {:colspan 2} [:paragraph {:size 10 :align :left} "Sie schließt mit einer Nachzahlung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
    [15 85]
-   [[:pdf-cell {:colspan 2 :padding-bottom 10} [:paragraph {:size 10 :style :bold :align :left} "Zahlungsinformation"]]]
-   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} "IBAN"]]]])
+   [[:pdf-cell {:colspan 2 :padding-bottom 10} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
+   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:iban payment-info)]]]
+   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "BANK:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:bank-name payment-info)]]]])
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
@@ -53,11 +54,13 @@
         with-headers (conj scaffold (into [] (map #(into [:pdf-cell {:align :left :valign :middle :border true :background-color [189 215 238]} %]) headers)))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
+    (println "ID: " (:property-id tenant))
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
-       :font {:family "Helvetica" :size 6}}
+       :font {:family "Helvetica" :size 6}
+       :footer {:text (:property-id tenant) :page-numbers false :align :right}}
 
       ;; Title Section
       [:heading {:size 16} "Christian Friese & Rosa Martinez"]
@@ -76,20 +79,21 @@
 
       (if (:refund tenant)
         [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
-        (payment-information (:total tenant)))
+        (payment-information (:total tenant) (:payment-info tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 50 :spacing-after 2} "Weitere Details finden Sie auf der nächsten Seite."]
 
       [:paragraph {:size 10 :align :left :spacing-after 125} "Bei Rückfragen sind wir gerne behilflich."]
 
-      [:paragraph {:size 10 :align :left :spacing-before 50} "Mit freundlichen Grüßen"]
+      [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
 
       [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]
 
       [:pagebreak]
 
       [:paragraph {:size 10 :style :bold :align :left :spacing-after 10} "Abrechnung"]
-      table] output)
+      table] 
+      output)
     (.toByteArray output)))
 
 
