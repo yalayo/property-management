@@ -66,10 +66,10 @@
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
        :font {:family "Helvetica" :size 6}
-       :footer {:text (:property-id tenant) :page-numbers false :align :right}}
+       :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
 
       ;; Title Section
-      [:heading {:size 16} "Christian Friese & Rosa Martinez"]
+      [:heading {:size 10} "Christian Friese & Rosa Martinez"]
 
       [:paragraph {:size 10 :align :right :spacing-after 10} (str "Essen, " today)]
 
@@ -97,7 +97,17 @@
 
       [:pagebreak]
 
-      [:paragraph {:size 10 :style :bold :align :left :spacing-after 10} "Abrechnung"]
+      [:pdf-table
+       {:width-percent 70 :cell-border true}
+       [50 50] 
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :address])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :apartment])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :time-period])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :calculated-days])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :days-per-person])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Druckdatum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} today]]]]
+
+      [:paragraph {:size 10 :style :bold :align :left :spacing-before 20 :spacing-after 10} "Abrechnung"]
       table] 
       output)
     (.toByteArray output)))

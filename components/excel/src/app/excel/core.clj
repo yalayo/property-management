@@ -65,8 +65,7 @@
                           headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                           content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
                       {:tenant-id (str (java.util.UUID/randomUUID))
-                       :last-name last-name
-                       :property-id property-id
+                       :last-name last-name 
                        :street street
                        :location location
                        :total-costs total-costs
@@ -76,7 +75,14 @@
                        :payment-info {:iban iban :bank-name bank-name}
                        :refund refund?
                        :headers (format-headers headers)
-                       :content (format-content content (count headers))})) filtered))))
+                       :content (format-content content (count headers))
+                       :property-info {:id property-id
+                                       :name (get-cell-value (docj/select-cell "L5" sheet))
+                                       :address (get-cell-value (docj/select-cell "M5" sheet))
+                                       :apartment (get-cell-value (docj/select-cell "M6" sheet))
+                                       :time-period (get-cell-value (docj/select-cell "M7" sheet))
+                                       :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
+                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))))
 
 (comment
   (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
