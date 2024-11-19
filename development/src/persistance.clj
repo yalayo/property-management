@@ -46,6 +46,19 @@
         address (:address property-info)]
     (d/transact conn [{:property/id id :property/name name :property/address address}])))
 
+(defn get-properties []
+  (d/q '[:find [(pull ?tg [*]) ...]
+         :where
+         [?tg :task-group/name ?tgn]]
+       @conn))
+
+(d/q '[:find [(pull ?tg [*]) ...]
+       :where
+       [?tg :property/id ?tgn]]
+     @conn)
+
+(d/pull @conn '[*] [:property/id "01-WH1-EG"])
+
 (comment
   ;; From the input-data take what we need and store it
   (store-property input-data)
