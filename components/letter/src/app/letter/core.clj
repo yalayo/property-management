@@ -103,8 +103,8 @@
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :address])]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :apartment])]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :time-period])]]]
-       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :calculated-days])]]]
-       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :days-per-person])]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :calculated-days])))]]]
+       [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Druckdatum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} today]]]]
 
       [:paragraph {:size 10 :style :bold :align :left :spacing-before 20 :spacing-after 10} "Abrechnung"]
