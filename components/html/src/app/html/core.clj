@@ -37,7 +37,6 @@
   (respond index/index-page))
 
 (defn dashboard-handler [context]
-  (println "TEST: " (-> context :session))
   (let [session (-> context :session)]
     (if (empty? session)
       (response/redirect "/sign-in")
@@ -82,8 +81,6 @@
             (let [tenants (-> context :request :session :tenants)
                   tenant-id (-> context :request :path-params :tenant-id)
                   tenant (some #(when (= (:tenant-id %) tenant-id) %) tenants)]
-              (println "ID: " context)
-              (println "Tenant: " tenant)
               (assoc context :response {:status 200
                                         :headers {"Content-Type" "application/pdf" "Content-Disposition" "inline; filename=letter.pdf"}
                                         :body (java.io.ByteArrayInputStream. (letter/create tenant))})))})
