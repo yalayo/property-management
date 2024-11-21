@@ -69,8 +69,7 @@
        :font {:family "Helvetica" :size 6}
        :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
 
-      ;; Title Section
-      [:heading {:size 10} "Christian Friese & Rosa Martinez"]
+      [:paragraph {:size 6 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
 
       [:paragraph {:size 10 :align :right :spacing-after 10} (str "Essen, " today)]
 
