@@ -71,7 +71,7 @@
 
       [:paragraph {:size 6 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
 
-      [:paragraph {:size 10 :align :right :spacing-after 10} (str "Essen, " today)]
+      [:paragraph {:size 10 :align :right :spacing-after 80} (str "Essen, " today)]
 
       [:pdf-table
        {:width-percent 100}
@@ -90,9 +90,9 @@
           (when (some? (get-in tenant [:property-info :days-per-person]))
             [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])]]]] 
 
-      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
+      [:paragraph {:size 10 :align :left :spacing-before 100 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
-      [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
+      [:paragraph {:size 10 :align :left :spacing-after 20} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
 
       table
 
