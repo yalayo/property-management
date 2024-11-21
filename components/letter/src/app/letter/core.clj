@@ -83,13 +83,13 @@
         [:pdf-cell 
          [:pdf-table
           {:width-percent 100 :cell-border false}
-          [50 50]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 10} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :address])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 10} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :apartment])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 10} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :time-period])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 10} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :calculated-days])))]]]
+          [40 60]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :address])]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :apartment])]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :time-period])]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :calculated-days])))]]]
           (when (some? (get-in tenant [:property-info :days-per-person]))
-            [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])]]]] 
+            [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])]]]] 
 
       [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
