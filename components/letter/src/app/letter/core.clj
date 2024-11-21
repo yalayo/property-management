@@ -94,15 +94,14 @@
       [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
       [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
-      
-      [:paragraph {:size 10 :style :bold :align :left :spacing-after 10} "Abrechnung"]
+
       table
 
       (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 40 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
+        [:paragraph {:size 10 :align :left :spacing-before 40} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
-      [:paragraph {:size 10 :align :left :spacing-after 75} "Bei Rückfragen sind wir gerne behilflich."]
+      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 75} "Bei Rückfragen sind wir gerne behilflich."]
 
       [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
 
