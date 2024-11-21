@@ -43,7 +43,7 @@
 
 (defn payment-information [total payment-info]
   [:pdf-table
-   {:width-percent 100 :cell-border false
+   {:width-percent 100 :cell-border false :spacing-before 40
     :header [[[:pdf-cell {:colspan 2} [:paragraph {:size 10 :align :left} "Sie schließt mit einer Nachzahlung für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
    [15 85]
    [[:pdf-cell {:colspan 2 :padding-bottom 10} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
@@ -76,41 +76,38 @@
 
       [:paragraph {:size 10} (:last-name tenant)]
       [:paragraph {:size 10} (:street tenant)]
-      [:paragraph {:size 10 :spacing-after 80} (:location tenant)]
+      [:paragraph {:size 10 :spacing-after 20} (:location tenant)]
 
-      [:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
-
-      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
-
-      [:paragraph {:size 10 :align :left :spacing-after 50} "anbei erhalten Sie die Betriebskostenabrechnung für das Jahr 2023."]
-
-      (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
-        (payment-information (:total tenant) (:payment-info tenant)))
-
-      [:paragraph {:size 10 :align :left :spacing-before 50 :spacing-after 2} "Weitere Details finden Sie auf der nächsten Seite."]
-
-      [:paragraph {:size 10 :align :left :spacing-after 125} "Bei Rückfragen sind wir gerne behilflich."]
-
-      [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
-
-      [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]
-
-      [:pagebreak]
-
+      ;; Can be at the same level as the content above
       [:pdf-table
        {:width-percent 70 :cell-border true}
-       [50 50] 
+       [50 50]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :address])]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :apartment])]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (get-in tenant [:property-info :time-period])]]]
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :calculated-days])))]]]
        (when (some? (get-in tenant [:property-info :days-per-person]))
-         [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]]) 
+         [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])
        [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "Druckdatum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10} today]]]]
 
-      [:paragraph {:size 10 :style :bold :align :left :spacing-before 20 :spacing-after 10} "Abrechnung"]
-      table] 
+      #_[:heading {:style {:size 14}} "Nebenkostenabrechnung 2023"]
+
+      [:paragraph {:size 10 :align :left :spacing-before 25 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
+
+      [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
+      
+      [:paragraph {:size 10 :style :bold :align :left :spacing-after 10} "Abrechnung"]
+      table
+
+      (if (:refund tenant)
+        [:paragraph {:size 10 :align :left :spacing-before 40 :spacing-after 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
+        (payment-information (:total tenant) (:payment-info tenant)))
+
+      [:paragraph {:size 10 :align :left :spacing-after 75} "Bei Rückfragen sind wir gerne behilflich."]
+
+      [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
+
+      [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]] 
       output)
     (.toByteArray output)))
 
