@@ -67,6 +67,8 @@
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
        :font {:family "Helvetica" :size 6}
+       :left-margin   50
+       :right-margin  50
        :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
 
       [:paragraph {:size 6 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
@@ -100,7 +102,7 @@
         [:paragraph {:size 10 :align :left :spacing-before 40} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
-      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 75} "Bei Rückfragen sind wir gerne behilflich."]
+      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 40} "Bei Rückfragen sind wir gerne behilflich."]
 
       [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
 
