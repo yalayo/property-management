@@ -67,11 +67,11 @@
        :subject "Betriebskostenabrechnung"
        :author "Inmmo GmbH"
        :font {:family "Helvetica" :size 6}
-       :left-margin   50
-       :right-margin  50
+       :left-margin   60
+       :right-margin  60
        :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
 
-      [:paragraph {:size 6 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
+      [:paragraph {:size 8 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
 
       [:paragraph {:size 10 :align :right :spacing-after 80} (str "Essen, " today)]
 
@@ -84,7 +84,7 @@
         [:pdf-cell 
          [:pdf-table
           {:width-percent 100 :cell-border false}
-          [40 60]
+          [50 50]
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :address])]]]
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :apartment])]]]
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :time-period])]]]
