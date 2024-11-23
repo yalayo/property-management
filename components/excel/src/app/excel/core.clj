@@ -64,6 +64,7 @@
                           refund? (get-cell-value (docj/select-cell "I6" sheet))
                           headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                           content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
+                      (println "TENANT: " last-name)
                       {:tenant-id (str (java.util.UUID/randomUUID))
                        :last-name last-name 
                        :street street
