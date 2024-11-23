@@ -43,9 +43,9 @@
 
 (defn payment-information [total payment-info]
   [:pdf-table
-   {:width-percent 100 :cell-border false :spacing-before 40
+   {:width-percent 100 :cell-border false :spacing-before 20
     :header [[[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Aus der Abrechnung und  unter Berücksichtigung Ihrer Vorauszahlungen ergibt sich eine "[:phrase {:style :bold} "Nachzahlung"] " in Höhe von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
-   [15 85]
+   [14 86]
    [[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
    [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:iban payment-info)]]]
    [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "BANK:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:bank-name payment-info)]]]])
@@ -68,7 +68,7 @@
        :author "Inmmo GmbH"
        :font {:family "Helvetica" :size 6}
        :left-margin   60
-       :right-margin  60
+       :right-margin  40
        :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
 
       [:paragraph {:size 8 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
@@ -92,14 +92,14 @@
           (when (some? (get-in tenant [:property-info :days-per-person]))
             [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])]]]] 
 
-      [:paragraph {:size 10 :align :left :spacing-before 100 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
+      [:paragraph {:size 10 :align :left :spacing-before 40 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
       [:paragraph {:size 10 :align :left :spacing-after 20} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
 
       table
 
       (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 40} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
+        [:paragraph {:size 10 :align :left :spacing-before 20} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 40} "Bei Rückfragen sind wir gerne behilflich."]
