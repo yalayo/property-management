@@ -1,4 +1,4 @@
 {:main app.server.core
- :base-image {:image-name "gcr.io/distroless/java:11-nonroot"
+ :base-image {:image-name "gcr.io/distroless/java17:nonroot"
               :type :registry}
  :exposed-ports [8080 9669]}
