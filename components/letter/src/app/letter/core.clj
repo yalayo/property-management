@@ -43,7 +43,7 @@
 
 (defn payment-information [total payment-info]
   [:pdf-table
-   {:width-percent 100 :cell-border false :spacing-before 20
+   {:width-percent 100 :cell-border false :spacing-before 10
     :header [[[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Aus der Abrechnung und  unter Berücksichtigung Ihrer Vorauszahlungen ergibt sich eine "[:phrase {:style :bold} "Nachzahlung"] " in Höhe von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
    [14 86]
    [[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
@@ -57,7 +57,7 @@
         content (:content tenant)
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
-        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [20] (repeatedly (dec (count headers)) #(/ 80 (dec (count headers)))))]
+        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [20 20] (repeatedly (- (count headers) 2) #(/ 60 (- (count headers) 2))))]
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
@@ -99,12 +99,12 @@
       table
 
       (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 20} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
+        [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
-      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 40} "Bei Rückfragen sind wir gerne behilflich."]
+      [:paragraph {:size 10 :align :left :spacing-before 10 :spacing-after 10} "Bei Rückfragen sind wir gerne behilflich."]
 
-      [:paragraph {:size 10 :align :left :spacing-before 20} "Mit freundlichen Grüßen"]
+      [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 30} "Mit freundlichen Grüßen"]
 
       [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]] 
       output)
