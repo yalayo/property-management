@@ -102,8 +102,6 @@
         [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
-      [:paragraph {:size 10 :align :left :spacing-before 10} "Bei Rückfragen sind wir gerne behilflich."]
-
       [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 30} "Mit freundlichen Grüßen"]
 
       [:paragraph {:size 10 :align :left} "Christian Friese und Rosa Martinez"]] 
