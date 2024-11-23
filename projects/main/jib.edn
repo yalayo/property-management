@@ -1,4 +1,7 @@
 {:main app.server.core
   :base-image {:image-name "gcr.io/distroless/java:11-nonroot"
               :type :registry}
- :exposed-ports [8080 9669]}
+ :exposed-ports [8080 9669]
+ :jvm-flags ["-Duser.language=de" "-Duser.country=DE"]
+ :environment {:LANG "de_DE.UTF-8"
+               :LC_ALL "de_DE.UTF-8"}}
