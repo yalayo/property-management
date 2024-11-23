@@ -11,7 +11,7 @@ docker exec -it development-db /bin/bash
 
 Create a database
 psql -U user -d postgres
-CREATE DATABASE property-management;
+CREATE DATABASE "property-management";
 
 Connect to the database
 psql db -U user -d property-management;
@@ -24,4 +24,4 @@ create table accounts (email text primary key, password text not null, created_a
 CREATE TABLE session_store (session_id VARCHAR(36) NOT NULL PRIMARY KEY, idle_timeout BIGINT, absolute_timeout BIGINT, value BYTEA);
 
 Check the logs
-docker logs hrdata-app -f
+docker logs management -f
