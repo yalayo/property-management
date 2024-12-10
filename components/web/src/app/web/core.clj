@@ -1,13 +1,20 @@
 (ns app.web.core
   (:require [io.pedestal.http :as http]
+            [hiccup2.core :as h]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [jdbc-ring-session.core :as jdbc-ring-session]
             [app.html.interface :as html]
+            [ring.util.response :as response]
             [app.user.interface :refer [get-routes get-datasource]]))
 
 (def session-interceptor
   (middlewares/session {:store (jdbc-ring-session/jdbc-store (get-datasource) {:table :session_store})}))
+
+(defn session-auth-interceptor [context]
+  (let [session (-> context :session)]
+    (if (empty? session)
+      (response/redirect "/sign-in"))))
 
 (def service
   (-> {:env :prod
@@ -18,6 +25,7 @@
        ::http/port 8080}
       (http/default-interceptors)
       (update ::http/interceptors concat [session-interceptor])
+      (update ::http/interceptors #(conj % (fn [context] (session-auth-interceptor context))))
       http/create-server))
 
 (defn start []

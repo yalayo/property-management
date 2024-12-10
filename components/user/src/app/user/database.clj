@@ -12,7 +12,7 @@
                             :host (if (= (System/getenv "ENVIRONMENT") "prod") "development-db" "localhost")
                             :dbname "property-management"
                             :username "user"
-                            :password "volley@2024"
+                            :password "hrdata@2024"
                             :dataSourceProperties {:socketTimeout 30}}))
 
 (defn create-account [email password]
