@@ -9,6 +9,7 @@
             [app.html.upload-details :as upload-details]
             [app.html.tenants-list :as tenants]
             [app.excel.interface :as excel]
+            [io.pedestal.interceptor :refer [interceptor]]
             [app.letter.interface :as letter]))
 
 ;; Prepare the hicup to return it as html
@@ -32,6 +33,15 @@
 
 (defn respond-with-params [content value]
   (ok (template (str (h/html (content value))))))
+
+(def auth-required
+  (interceptor
+   {:name ::auth-required
+    :enter (fn [context ]
+             (let [session (-> context :session)]
+             (if (empty? session)
+                 (assoc context :response {:status 200 :headers {"HX-Redirect" "/sign-in"}})
+                 context)))}))
 
 (defn index-page-handler [context]
   (respond index/index-page))
@@ -93,7 +103,7 @@
      :post [(ring-mw/multipart-params) post-upload-details-handler]
      :route-name ::post-upload-details]
     ["/dashboard"
-     :get [(body-params/body-params) dashboard-handler]
+     :get [(body-params/body-params) auth-required dashboard-handler]
      :route-name ::dashboard]
     ["/letter"
      :get [letter-handler]

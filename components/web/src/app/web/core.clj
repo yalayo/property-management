@@ -11,11 +11,6 @@
 (def session-interceptor
   (middlewares/session {:store (jdbc-ring-session/jdbc-store (get-datasource) {:table :session_store})}))
 
-(defn session-auth-interceptor [context]
-  (let [session (-> context :session)]
-    (if (empty? session)
-      (response/redirect "/sign-in"))))
-
 (def service
   (-> {:env :prod
        ::http/routes (route/expand-routes (into #{} (concat (get-routes) (html/get-routes))))
@@ -25,7 +20,6 @@
        ::http/port 8080}
       (http/default-interceptors)
       (update ::http/interceptors concat [session-interceptor])
-      (update ::http/interceptors #(conj % (fn [context] (session-auth-interceptor context))))
       http/create-server))
 
 (defn start []
