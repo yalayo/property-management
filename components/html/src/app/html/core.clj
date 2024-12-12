@@ -40,7 +40,7 @@
     :enter (fn [context ]
              (let [session (-> context :session)]
                (if (empty? session)
-                 (assoc context :response {:status 200 :headers {"HX-Redirect" "/sign-in"}})
+                 (assoc context :response {:status 302 :headers {"Location" "/sign-in"}})
                  context)))}))
 
 (defn index-page-handler [context]
