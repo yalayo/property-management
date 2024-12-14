@@ -47,6 +47,7 @@
      :content (format-content data (count headers))}))
 
 (defn process [input-stream]
+ (try
   (let [workbook (docj/load-workbook input-stream)
         sheets (docj/sheet-seq workbook)
         filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
@@ -83,7 +84,8 @@
                                        :apartment (get-cell-value (docj/select-cell "M6" sheet))
                                        :time-period (get-cell-value (docj/select-cell "M7" sheet))
                                        :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
-                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))))
+                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered)))
+   (catch  Exception e {:error true :message (.getMessage e)})))
 
 (comment
   (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
