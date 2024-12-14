@@ -40,11 +40,7 @@
     :enter (fn [context ]
              (let [session (-> context :session)]
                (if (empty? session)
-<<<<<<< HEAD
-                 (assoc context :response {:status 200 :headers {"HX-Redirect" "/sign-in"}})
-=======
                  (assoc context :response {:status 302 :headers {"Location" "/sign-in"}})
->>>>>>> 321cac49d062600bcd6539f10461ca8e2152d717
                  context)))}))
 
 (defn index-page-handler [context]
@@ -68,9 +64,12 @@
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream) 
-                (assoc context :response {:status 200
-                                          :headers {"HX-Redirect" "/tenants"}
-                                          :session {:tenants (excel/process file-input-stream)}})
+                (let [process-result (excel/process file-input-stream)]
+                  (if (:error process-result)
+                    (assoc context :response (respond upload-details/wrong-file-selected))
+                    (assoc context :response {:status 200
+                                              :headers {"HX-Redirect" "/tenants"}
+                                              :session {:tenants process-result}})))
                 (assoc context :response (respond upload-details/no-file-selected)))))})
 
 (def letter-handler
