@@ -47,43 +47,45 @@
      :content (format-content data (count headers))}))
 
 (defn process [input-stream]
-  (let [workbook (docj/load-workbook input-stream)
-        sheets (docj/sheet-seq workbook)
-        filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
-    (into [] (map (fn [sheet]
-                    (let [last-name (get-cell-value (docj/select-cell "B3" sheet))
-                          property-id (get-cell-value (docj/select-cell "C3" sheet))
-                          street (get-cell-value (docj/select-cell "A2" sheet))
-                          location (get-cell-value (docj/select-cell "B2" sheet))
-                          total-costs (get-cell-value (docj/select-cell "I2" sheet))
-                          prepayment (get-cell-value (docj/select-cell "I3" sheet))
-                          heating-costs (get-cell-value (docj/select-cell "I4" sheet))
-                          total (get-cell-value (docj/select-cell "I5" sheet))
-                          iban (get-cell-value (docj/select-cell "L2" sheet))
-                          bank-name (get-cell-value (docj/select-cell "L3" sheet))
-                          refund? (get-cell-value (docj/select-cell "I6" sheet))
-                          headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
-                          content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
-                      (println "TENANT: " last-name)
-                      {:tenant-id (str (java.util.UUID/randomUUID))
-                       :last-name last-name 
-                       :street street
-                       :location location
-                       :total-costs total-costs
-                       :prepayment prepayment
-                       :heating-costs heating-costs
-                       :total total
-                       :payment-info {:iban iban :bank-name bank-name}
-                       :refund refund?
-                       :headers (format-headers headers)
-                       :content (format-content content (count headers))
-                       :property-info {:id property-id
-                                       :name (get-cell-value (docj/select-cell "L5" sheet))
-                                       :address (get-cell-value (docj/select-cell "M5" sheet))
-                                       :apartment (get-cell-value (docj/select-cell "M6" sheet))
-                                       :time-period (get-cell-value (docj/select-cell "M7" sheet))
-                                       :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
-                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))))
+  (try
+    (let [workbook (docj/load-workbook input-stream)
+          sheets (docj/sheet-seq workbook)
+          filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
+      (into [] (map (fn [sheet]
+                      (let [last-name (get-cell-value (docj/select-cell "B3" sheet))
+                            property-id (get-cell-value (docj/select-cell "C3" sheet))
+                            street (get-cell-value (docj/select-cell "A2" sheet))
+                            location (get-cell-value (docj/select-cell "B2" sheet))
+                            total-costs (get-cell-value (docj/select-cell "I2" sheet))
+                            prepayment (get-cell-value (docj/select-cell "I3" sheet))
+                            heating-costs (get-cell-value (docj/select-cell "I4" sheet))
+                            total (get-cell-value (docj/select-cell "I5" sheet))
+                            iban (get-cell-value (docj/select-cell "L2" sheet))
+                            bank-name (get-cell-value (docj/select-cell "L3" sheet))
+                            refund? (get-cell-value (docj/select-cell "I6" sheet))
+                            headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+                            content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
+                        (println "TENANT: " last-name)
+                        {:tenant-id (str (java.util.UUID/randomUUID))
+                         :last-name last-name
+                         :street street
+                         :location location
+                         :total-costs total-costs
+                         :prepayment prepayment
+                         :heating-costs heating-costs
+                         :total total
+                         :payment-info {:iban iban :bank-name bank-name}
+                         :refund refund?
+                         :headers (format-headers headers)
+                         :content (format-content content (count headers))
+                         :property-info {:id property-id
+                                         :name (get-cell-value (docj/select-cell "L5" sheet))
+                                         :address (get-cell-value (docj/select-cell "M5" sheet))
+                                         :apartment (get-cell-value (docj/select-cell "M6" sheet))
+                                         :time-period (get-cell-value (docj/select-cell "M7" sheet))
+                                         :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
+                                         :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered)))
+    (catch  Exception e {:error true :message (.getMessage e)})))
 
 (comment
   (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
