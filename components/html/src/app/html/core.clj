@@ -63,7 +63,11 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
+<<<<<<< HEAD
               (if (some? file-input-stream) 
+=======
+              (if (some? file-input-stream)
+>>>>>>> b1785df32247dd681498bc9cb2214d6de74ed09a
                 (let [process-result (excel/process file-input-stream)]
                   (if (:error process-result)
                     (assoc context :response (respond upload-details/wrong-file-selected))
