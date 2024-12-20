@@ -34,7 +34,7 @@
     [:input {:type "file", :name "file"}]
     [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]])
 
-(defn wrong-file-selected []
+(defn wrong-file-selected [errors]
   [:div
    [:div
     {:class "px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}
@@ -58,7 +58,11 @@
          "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"}]]]
      [:div {:class "mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left"}
       [:div {:class "mt-2"}
-       [:p {:classt-gray-5 "text-sm tex00"} "Your excel contains errors."]]]]]
+       [:p {:class "text-sm text-gray-500"} "Your Excel contains errors."]]
+      [:ul {:class "mt-2 text-sm text-red-600"}
+      ;; Aquí estamos iterando sobre los errores
+       (for [{:keys [cell-address error-message]} errors]
+         [:li (str "Error in cell " cell-address ": " error-message)])]]]]
    [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
     [:form
      {:hx-encoding "multipart/form-data"
