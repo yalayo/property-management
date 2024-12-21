@@ -64,13 +64,13 @@
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream) 
-                (let [{:keys [result errors]} (excel/process file-input-stream)]
-                  (if (seq errors)  ;; Si hay errores
-                    (assoc context :response (respond upload-details/wrong-file-selected errors))  ;; Pasamos los errores a la respuesta
+                (let [result (excel/process file-input-stream)]
+                  (if (some #(:error %) result)
+                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result))
                     (assoc context :response {:status 200
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
-                (assoc context :response (respond upload-details/no-file-selected)))))})
+                (assoc context :response (respond upload-details/no-file-selected)))))}) 
 
 (def letter-handler
   {:name ::get
