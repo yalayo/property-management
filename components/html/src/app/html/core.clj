@@ -63,6 +63,7 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
+<<<<<<< HEAD
               (if (some? file-input-stream) 
                 (let [result (excel/process file-input-stream)]
                   (if (some #(:error %) result)

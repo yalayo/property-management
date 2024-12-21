@@ -27,8 +27,9 @@
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+#_{:error true :message (.getMessage e) :cell-address cell-address}
 #_{:error true :message (.getMessage e)}
-#_(println (.getMessage e))
+#_(println "Las celdas con error:" cell-address)
           
 
 (defn format-headers [headers]
