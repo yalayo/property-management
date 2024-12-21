@@ -60,47 +60,53 @@
         sheets (docj/sheet-seq workbook)
         filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)
         errors (atom {})] ;; Creamos un mapa para almacenar los errores
-    (into [] (map (fn [sheet]
-                    (let [last-name (get-cell-value (docj/select-cell "B3" sheet))
-                          property-id (get-cell-value (docj/select-cell "C3" sheet))
-                          street (get-cell-value (docj/select-cell "A2" sheet))
-                          location (get-cell-value (docj/select-cell "B2" sheet))
-                          total-costs (get-cell-value (docj/select-cell "I2" sheet))
-                          prepayment (get-cell-value (docj/select-cell "I3" sheet))
-                          heating-costs (get-cell-value (docj/select-cell "I4" sheet))
-                          total (get-cell-value (docj/select-cell "I5" sheet))
-                          iban (get-cell-value (docj/select-cell "L2" sheet))
-                          bank-name (get-cell-value (docj/select-cell "L3" sheet))
-                          refund? (get-cell-value (docj/select-cell "I6" sheet))
-                          headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
-                          content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
+    ;; Procesamos las hojas y verificamos si hay errores
+    (let [result (into [] (map (fn [sheet]
+                                 (let [last-name (get-cell-value (docj/select-cell "B3" sheet))
+                                       property-id (get-cell-value (docj/select-cell "C3" sheet))
+                                       street (get-cell-value (docj/select-cell "A2" sheet))
+                                       location (get-cell-value (docj/select-cell "B2" sheet))
+                                       total-costs (get-cell-value (docj/select-cell "I2" sheet))
+                                       prepayment (get-cell-value (docj/select-cell "I3" sheet))
+                                       heating-costs (get-cell-value (docj/select-cell "I4" sheet))
+                                       total (get-cell-value (docj/select-cell "I5" sheet))
+                                       iban (get-cell-value (docj/select-cell "L2" sheet))
+                                       bank-name (get-cell-value (docj/select-cell "L3" sheet))
+                                       refund? (get-cell-value (docj/select-cell "I6" sheet))
+                                       headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+                                       content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
 
-                      ;; Revisamos si alguna celda tiene error y la agregamos al mapa de errores
-                      (doseq [cell [last-name property-id street location total-costs prepayment heating-costs total iban bank-name refund?]]
-                        (when (and (some? cell) (:error cell))
-                            ;; Aquí estamos actualizando el mapa de errores
-                          (swap! errors update (:cell-address cell) #(conj % (:message cell)))))
+                                   ;; Revisamos si alguna celda tiene error y la agregamos al mapa de errores
+                                   (doseq [cell [last-name property-id street location total-costs prepayment heating-costs total iban bank-name refund?]]
+                                     (when (and (some? cell) (:error cell))
+                                       ;; Actualizamos el mapa de errores
+                                       (swap! errors update (:cell-address cell) #(conj % (:message cell)))))
 
 
-                      {:tenant-id (str (java.util.UUID/randomUUID))
-                       :last-name (:message last-name) ;; Esto asume que el mensaje de error está en el :message
-                       :street (:message street)
-                       :location (:message location)
-                       :total-costs (:message total-costs)
-                       :prepayment (:message prepayment)
-                       :heating-costs (:message heating-costs)
-                       :total (:message total)
-                       :payment-info {:iban (:message iban) :bank-name (:message bank-name)}
-                       :refund refund?
-                       :headers (format-headers headers)
-                       :content (format-content content (count headers))
-                       :property-info {:id (:message property-id)
-                                       :name (get-cell-value (docj/select-cell "L5" sheet))
-                                       :address (get-cell-value (docj/select-cell "M5" sheet))
-                                       :apartment (get-cell-value (docj/select-cell "M6" sheet))
-                                       :time-period (get-cell-value (docj/select-cell "M7" sheet))
-                                       :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
-                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))))
+                                   {:tenant-id (str (java.util.UUID/randomUUID))
+                                    :last-name (:message last-name) ;; Esto asume que el mensaje de error está en el :message
+                                    :street (:message street)
+                                    :location (:message location)
+                                    :total-costs (:message total-costs)
+                                    :prepayment (:message prepayment)
+                                    :heating-costs (:message heating-costs)
+                                    :total (:message total)
+                                    :payment-info {:iban (:message iban) :bank-name (:message bank-name)}
+                                    :refund refund?
+                                    :headers (format-headers headers)
+                                    :content (format-content content (count headers))
+                                    :property-info {:id (:message property-id)
+                                                    :name (get-cell-value (docj/select-cell "L5" sheet))
+                                                    :address (get-cell-value (docj/select-cell "M5" sheet))
+                                                    :apartment (get-cell-value (docj/select-cell "M6" sheet))
+                                                    :time-period (get-cell-value (docj/select-cell "M7" sheet))
+                                                    :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
+                                                    :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))]
+      ;; Devolvemos el resultado y los errores
+      {:result result
+       :errors @errors})))
+       
+
        
 
 

@@ -63,10 +63,10 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
-              (if (some? file-input-stream) 
+              (if (some? file-input-stream)
                 (let [{:keys [result errors]} (excel/process file-input-stream)]
-                  (if (seq errors)  
-                    (assoc context :response (respond (upload-details/wrong-file-selected errors)))  ;; Pasamos los errores a la respuesta
+                  (if (seq errors)
+                    (assoc context :response (respond (upload-details/wrong-file-selected errors))) ;; Pasamos los errores a la respuesta
                     (assoc context :response {:status 200
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
