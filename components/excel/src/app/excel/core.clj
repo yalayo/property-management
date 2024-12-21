@@ -27,8 +27,9 @@
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+#_{:error true :message (.getMessage e) :cell-address cell-address}
 #_{:error true :message (.getMessage e)}
-#_(println (.getMessage e))
+#_(println "Las celdas con error:" cell-address)
           
 
 (defn format-headers [headers]
@@ -52,19 +53,7 @@
     {:headers headers
      :content (format-content data (count headers))}))
 
-(defn get-cell-value [cell]
-  (when (some? cell)
-    (let [cell-type (str (.getCellType cell))
-          cell-address (.formatAsString (.getAddress cell))]
-      (try
-        (case cell-type
-          "NUMERIC" (.getNumericCellValue cell)
-          "STRING" (.getStringCellValue cell)
-          "BOOLEAN" (.getBooleanCellValue cell)
-          "FORMULA" (get-formula-value cell)
-          "BLANK" nil
-          (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+
 
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
@@ -88,8 +77,10 @@
 
                       ;; Revisamos si alguna celda tiene error y la agregamos al mapa de errores
                       (doseq [cell [last-name property-id street location total-costs prepayment heating-costs total iban bank-name refund?]]
-                        (when (and (map? cell) (:error cell))
-                          (swap! errors update (:cell-address cell) conj (:message cell))))
+                        (when (and (some? cell) (:error cell))
+                            ;; Aquí estamos actualizando el mapa de errores
+                          (swap! errors update (:cell-address cell) #(conj % (:message cell)))))
+
 
                       {:tenant-id (str (java.util.UUID/randomUUID))
                        :last-name (:message last-name) ;; Esto asume que el mensaje de error está en el :message
@@ -109,13 +100,8 @@
                                        :apartment (get-cell-value (docj/select-cell "M6" sheet))
                                        :time-period (get-cell-value (docj/select-cell "M7" sheet))
                                        :calculated-days (get-cell-value (docj/select-cell "M8" sheet))
-                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered)
-    ;; Verificamos si hay errores en el mapa
-    (if (seq @errors)
-      {:status "error"
-       :errors @errors} ;; Si hay errores, los retornamos
-      {:status "success"
-       :data filtered})))) ;; Si no hay errores, seguimos con los datos procesados
+                                       :days-per-person (get-cell-value (docj/select-cell "M9" sheet))}})) filtered))))
+       
 
 
 #_{:error true :message (.getMessage e)}

@@ -65,8 +65,8 @@
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream) 
                 (let [{:keys [result errors]} (excel/process file-input-stream)]
-                  (if (seq errors)  ;; Si hay errores
-                    (assoc context :response (respond upload-details/wrong-file-selected errors))  ;; Pasamos los errores a la respuesta
+                  (if (seq errors)  
+                    (assoc context :response (respond (upload-details/wrong-file-selected errors)))  ;; Pasamos los errores a la respuesta
                     (assoc context :response {:status 200
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
