@@ -27,10 +27,6 @@
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
-#_{:error true :message (.getMessage e) :cell-address cell-address}
-#_{:error true :message (.getMessage e)}
-#_(println "Las celdas con error:" cell-address)
-          
 
 (defn format-headers [headers]
   (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
@@ -53,21 +49,7 @@
     {:headers headers
      :content (format-content data (count headers))}))
 
-(defn get-cell-value [cell]
-  (when (some? cell)
-    (let [cell-type (str (.getCellType cell))
-          cell-address (.formatAsString (.getAddress cell))]
-      (try
-        (case cell-type
-          "NUMERIC" (.getNumericCellValue cell)
-          "STRING" (.getStringCellValue cell)
-          "BOOLEAN" (.getBooleanCellValue cell)
-          "FORMULA" (get-formula-value cell)
-          "BLANK" nil
-          (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
-
-(defn get-cell-data [cell name]
+(defn get-cell-data [cell name required?]
   (when (some? cell)
     (let [cell-type (str (.getCellType cell))
           cell-address (.formatAsString (.getAddress cell))]
@@ -77,7 +59,9 @@
           "STRING" {name (.getStringCellValue cell)}
           "BOOLEAN" {name (.getBooleanCellValue cell)}
           "FORMULA" {name (get-formula-value cell)}
-          "BLANK" nil
+          "BLANK" (if required?
+                    (throw (IllegalArgumentException. (str "Error: The cell is empty: " cell-address)))
+                    {name nil})
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
 
@@ -91,13 +75,21 @@
                  {:name "total" :cell "I5"}
                  {:name "iban" :cell "L2"}
                  {:name "bank-name" :cell "L3"}
-                 {:name "refund?" :cell "I6"}])
+                 {:name "refund?" :cell "I6"}
+                 {:name "property-name" :cell "L5" :required true}
+                 {:name "property-address" :cell "M5" :required true}
+                 {:name "property-apartment" :cell "M6" :required true}
+                 {:name "property-time-period" :cell "M7" :required true}
+                 {:name "property-calculated-days" :cell "M8" :required true}
+                 {:name "property-days-per-person" :cell "M9" :required true}])
+
 
 (defn get-attribute-value [data]
   (let [sheet (:sheet data)
         name (keyword (:name data))
-        cell (:cell data)]
-    (get-cell-data (docj/select-cell cell sheet) name)))
+        cell (:cell data)
+       required? (:required data)]
+    (get-cell-data (docj/select-cell cell sheet) name required?)))
 
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
@@ -111,7 +103,7 @@
                  result (map get-attribute-value data)]
              (if (some #(:error %) result)
                (filter :error result)
-               result))) filtered))))) 
+               result))) filtered)))))
 
 (comment 
   (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate_wrong_data_in_column.xlsx"))

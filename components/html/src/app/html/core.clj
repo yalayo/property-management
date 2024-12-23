@@ -70,7 +70,7 @@
                     (assoc context :response {:status 200
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
-                (assoc context :response (respond upload-details/no-file-selected)))))}) 
+                (assoc context :response (respond upload-details/no-file-selected)))))})
 
 (def letter-handler
   {:name ::get
