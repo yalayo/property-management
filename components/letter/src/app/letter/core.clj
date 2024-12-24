@@ -61,7 +61,6 @@
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
-    (println "Tenant: " tenant)
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
@@ -69,7 +68,7 @@
        :font {:family "Helvetica" :size 6}
        :left-margin   60
        :right-margin  40
-       :footer {:text (get-in tenant [:property-info :id]) :page-numbers false :align :right}}
+       :footer {:text (:property-id tenant) :page-numbers false :align :right}}
 
       [:paragraph {:size 8 :align :left :spacing-after 20} "Christian Friese & Rosa Martinez - Reckmannshof 10 45133 Essen"] 
 
@@ -85,12 +84,12 @@
          [:pdf-table
           {:width-percent 100 :cell-border false}
           [50 50]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} (get-in tenant [:property-info :name])]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :address])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :apartment])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (get-in tenant [:property-info :time-period])]]]
-          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :calculated-days])))]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} (:property-name tenant)]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (:property-address tenant)]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (:property-apartment tenant)]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (:property-time-period tenant)]]]
+          [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (:property-calculated-days tenant)))]]]
           (when (some? (get-in tenant [:property-info :days-per-person]))
-            [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (get-in tenant [:property-info :days-per-person])))]]])]]]] 
+            [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (:property-days-per-person tenant)))]]])]]]] 
 
       [:paragraph {:size 10 :align :left :spacing-before 30 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
