@@ -103,10 +103,10 @@
                  result (map get-attribute-value data)]
              (if (some #(:error %) result)
                (filter :error result)
-               result))) filtered)))))
+               (into {} result)))) filtered)))))
 
 (comment 
-  (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate_wrong_data_in_column.xlsx"))
+  (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate.xlsx"))
   )
 
 
