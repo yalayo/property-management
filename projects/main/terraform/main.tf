@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "rondon-sarnik"
+
+    workspaces {
+      name = "immo-app"
+    }
+  }
+
   required_providers {
     hcloud = {
       source  = "hetznercloud/hcloud"
