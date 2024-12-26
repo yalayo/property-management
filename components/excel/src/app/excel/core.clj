@@ -96,8 +96,7 @@
         sheets (docj/sheet-seq workbook)
         filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
     (vec (flatten (map (fn [sheet]
-           (let [refund? (get-cell-value (docj/select-cell "I6" sheet))
-                 headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+           (let [headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                  content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
                  data (map #(assoc % :sheet sheet) attributes)
                  result (map get-attribute-value data)]
