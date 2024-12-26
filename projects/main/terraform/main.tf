@@ -73,6 +73,11 @@ resource "hcloud_network_subnet" "network-subnet" {
   ip_range     = "10.0.1.0/24"
 }
 
+## SSH Key 
+data "hcloud_ssh_key" "immo_ssh_key" {
+  name = "ssh-key-1"
+}
+
 ## VM
 resource "hcloud_server" "immo" { 
   name        = "prod-immo"
@@ -80,7 +85,7 @@ resource "hcloud_server" "immo" {
   location    = "nbg1"
   server_type = "cax11" 
   keep_disk   = true
-  ssh_keys    = ["ssh-key-1"]
+  ssh_keys    = [data.hcloud_ssh_key.immo_ssh_key.id]
   user_data   = "${base64encode(file("./immo_bootscript.sh"))}" 
   firewall_ids = [hcloud_firewall.common-firewall.id]
 
