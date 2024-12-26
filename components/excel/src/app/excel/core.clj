@@ -75,7 +75,7 @@
                  {:name "total" :cell "I5"}
                  {:name "iban" :cell "L2"}
                  {:name "bank-name" :cell "L3"}
-                 {:name "refund?" :cell "I6"}
+                 {:name "refund" :cell "I6"}
                  {:name "property-name" :cell "L5" :required true}
                  {:name "property-address" :cell "M5" :required true}
                  {:name "property-apartment" :cell "M6" :required true}
