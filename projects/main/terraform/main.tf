@@ -35,6 +35,15 @@ resource "hcloud_firewall" "common-firewall" {
   rule {
     direction = "in"
     protocol  = "tcp"
+    port      = "22" 
+    source_ips = [
+      "${var.firewall_source_ip}/32" 
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
     port      = "80" 
     source_ips = [
       "${var.firewall_source_ip}/32" 
