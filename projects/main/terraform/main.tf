@@ -63,7 +63,8 @@ resource "hcloud_server" "immo" {
   location    = "nbg1"
   server_type = "cax11" 
   keep_disk   = true
-  ssh_keys    = ["ssh-key-1"] 
+  ssh_keys    = ["ssh-key-1"]
+  user_data   = "${base64encode(file("./immo_bootscript.sh"))}" 
   firewall_ids = [hcloud_firewall.common-firewall.id]
 
   public_net {
