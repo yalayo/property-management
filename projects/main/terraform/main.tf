@@ -59,8 +59,8 @@ resource "hcloud_network_subnet" "network-subnet" {
 ## VM
 resource "hcloud_server" "immo" { 
   name        = "prod-immo"
-  image       = "fedora-40"
-  location    = "fsn1"
+  image       = "ubuntu-24.04"
+  location    = "nbg1"
   server_type = "cax11" 
   keep_disk   = true
   ssh_keys    = ["ssh-key-1"] 
