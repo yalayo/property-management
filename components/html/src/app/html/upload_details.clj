@@ -61,8 +61,8 @@
        [:p {:class "text-sm text-gray-500"} "Your Excel contains errors in the following cells: "]]
       [:ul {:class "mt-2 text-sm text-red-600"}
       ;; Aquí estamos iterando sobre los errores
-       (for [{:keys [cell-address error-message]} errors]
-         [:li (str "Error in cell " cell-address ": " error-message)])]]]]
+       (for [{:keys [cell-address message]} errors]
+         [:li (str "Error in cell " cell-address ": " message)])]]]]
    [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
     [:form
      {:hx-encoding "multipart/form-data"
