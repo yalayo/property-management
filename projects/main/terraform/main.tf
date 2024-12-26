@@ -19,3 +19,26 @@ variable "firewall_source_ip" {
 provider "hcloud" {
   token = "${var.hcloud_token}" 
 }
+
+## Open ports
+resource "hcloud_firewall" "common-firewall" { 
+  name = "common-firewall"
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "80" 
+    source_ips = [
+      "${var.firewall_source_ip}/32" 
+    ]
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443" 
+    source_ips = [
+      "${var.firewall_source_ip}/32" 
+    ]
+  }
+}
