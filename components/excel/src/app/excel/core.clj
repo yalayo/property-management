@@ -17,18 +17,19 @@
 (defn get-cell-value [cell]
   (when (some? cell)
     (let [cell-type (str (.getCellType cell))
-          cell-address (.formatAsString (.getAddress cell))]
+          cell-address (.formatAsString (.getAddress cell))
+          sheet-name (.getSheetName (.getSheet cell))]
       (try
         (case cell-type
           "NUMERIC" (.getNumericCellValue cell)
           "STRING"  (if (or (str/starts-with? cell-address "C") (str/starts-with? cell-address "E"))
-                     {:error true :message "The cell can not be an string" :cell-address cell-address}
+                     {:error true :message "The cell can not be an string" :cell-address cell-address :sheet-name sheet-name}
                     (.getStringCellValue cell))
           "BOOLEAN" (.getBooleanCellValue cell)
           "FORMULA" (get-formula-value cell)
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
 ;;(.getStringCellValue cell)
 (defn format-headers [headers]
   (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
@@ -54,7 +55,8 @@
 (defn get-cell-data [cell name required?]
   (when (some? cell)
     (let [cell-type (str (.getCellType cell))
-          cell-address (.formatAsString (.getAddress cell))]
+          cell-address (.formatAsString (.getAddress cell))
+          sheet-name (.getSheetName (.getSheet cell))]
       (try
         (case cell-type
           "NUMERIC" {name (.getNumericCellValue cell)}
@@ -62,10 +64,10 @@
           "BOOLEAN" {name (.getBooleanCellValue cell)}
           "FORMULA" {name (get-formula-value cell)}
           "BLANK" (if required?
-                    (throw (IllegalArgumentException. (str "Error: The cell is empty: " cell-address)))
+                    (throw (IllegalArgumentException. (str "Error: The cell is empty: " cell-address sheet-name)))
                     {name nil})
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
 
 (def attributes [{:name "last-name" :cell "B3"}
                  {:name "property-id" :cell "C3"}
@@ -108,8 +110,6 @@
              (if (some #(:error %) result)
                (into [] (concat content-errors (filter :error result)))
                (into {:tenant-id (str (java.util.UUID/randomUUID))} result)))) filtered)))))
-
- ;;content-errors (when (contains-error? content) (filter contains-error? content))
 
 (comment 
   (process (io/input-stream "D:/Trabajo/to_validate_wrong_data_in_column.xlsx"))
