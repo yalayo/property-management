@@ -33,6 +33,7 @@
           headers))
 
 (defn get-content [cells]
+  
   (map get-cell-value cells))
 
 (defn format-content [data size]
@@ -64,6 +65,90 @@
                     {name nil})
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address})))))
+
+(def table [{:name "481-Tagen" :cell "A6"}
+            {:name "Allgemeinstrom" :cell "A7"}
+            {:name "Gebäude/Haftpflicht" :cell "A8"}
+            {:name "Grundsteuer" :cell "A9"}
+            {:name "Müllabfuhr" :cell "A10"}
+            {:name "Niederschlagwasser" :cell "A11"}
+            {:name "Schmutzwasser" :cell "A12"}
+            {:name "Trinkwasser" :cell "A13"}
+            {:name "Kostenabrech. 23" :cell "A14"}
+            {:name "Vorauszahlung 23" :cell "A15"}
+            {:name "Gutschrift 23" :cell "A16"}
+            
+            {:name "nullForNow" :cell "B6"}
+            {:name "Allgemeinstrom" :cell "B7"}
+            {:name "Gebäude/Haftpflicht" :cell "B8"}
+            {:name "Grundsteuer" :cell "B9"}
+            {:name "Müllabfuhr" :cell "B10"}
+            {:name "Niederschlagwasser" :cell "B11"}
+            {:name "Schmutzwasser" :cell "B12"}
+            {:name "Trinkwasser" :cell "B13"}
+            {:name "Kostenabrech. 23" :cell "B14"}
+            {:name "Vorauszahlung 23" :cell "B15"}
+            {:name "Gutschrift 23" :cell "B16"}
+
+            {:name "Verteiler" :cell "C6"}
+            {:name "Allgemeinstrom" :cell "C7"}
+            {:name "Gebäude/Haftpflicht" :cell "C8"}
+            {:name "Grundsteuer" :cell "C9"}
+            {:name "Müllabfuhr" :cell "C10"}
+            {:name "Niederschlagwasser" :cell "C11"}
+            {:name "Schmutzwasser" :cell "C12"}
+            {:name "Trinkwasser" :cell "C13"}
+            {:name "Kostenabrech. 23" :cell "C14"}
+            {:name "Vorauszahlung 23" :cell "C15"}
+            {:name "Gutschrift 23" :cell "C16"}
+
+            {:name "Schlüssel" :cell "D6"}
+            {:name "Allgemeinstrom" :cell "D7"}
+            {:name "Gebäude/Haftpflicht" :cell "D8"}
+            {:name "Grundsteuer" :cell "D9"}
+            {:name "Müllabfuhr" :cell "D10"}
+            {:name "Niederschlagwasser" :cell "D11"}
+            {:name "Schmutzwasser" :cell "D12"}
+            {:name "Trinkwasser" :cell "D13"}
+            {:name "Kostenabrech. 23" :cell "D14"}
+            {:name "Vorauszahlung 23" :cell "D15"}
+            {:name "Gutschrift 23" :cell "D16"}
+
+            {:name "Anteil" :cell "E6"}
+            {:name "Allgemeinstrom" :cell "E7"}
+            {:name "Gebäude/Haftpflicht" :cell "E8"}
+            {:name "Grundsteuer" :cell "E9"}
+            {:name "Müllabfuhr" :cell "E10"}
+            {:name "Niederschlagwasser" :cell "E11"}
+            {:name "Schmutzwasser" :cell "E12"}
+            {:name "Trinkwasser" :cell "E13"}
+            {:name "Kostenabrech. 23" :cell "E14"}
+            {:name "Vorauszahlung 23" :cell "E15"}
+            {:name "Gutschrift 23" :cell "E16"}
+
+            {:name "365 Tagen" :cell "F6"}
+            {:name "Allgemeinstrom" :cell "F7"}
+            {:name "Gebäude/Haftpflicht" :cell "F8"}
+            {:name "Grundsteuer" :cell "F9"}
+            {:name "Müllabfuhr" :cell "F10"}
+            {:name "Niederschlagwasser" :cell "F11"}
+            {:name "Schmutzwasser" :cell "F12"}
+            {:name "Trinkwasser" :cell "F13"}
+            {:name "Kostenabrech. 23" :cell "F14"}
+            {:name "Vorauszahlung 23" :cell "F15"}
+            {:name "Gutschrift 23" :cell "F16"}
+
+            {:name "307 Tagen" :cell "G6"}
+            {:name "Allgemeinstrom" :cell "G7"}
+            {:name "Gebäude/Haftpflicht" :cell "G8"}
+            {:name "Grundsteuer" :cell "G9"}
+            {:name "Müllabfuhr" :cell "G10"}
+            {:name "Niederschlagwasser" :cell "G11"}
+            {:name "Schmutzwasser" :cell "G12"}
+            {:name "Trinkwasser" :cell "G13"}
+            {:name "Kostenabrech. 23" :cell "G14"}
+            {:name "Vorauszahlung 23" :cell "G15"}
+            {:name "Gutschrift 23" :cell "G16"}])
 
 (def attributes [{:name "last-name" :cell "B3"}
                  {:name "property-id" :cell "C3"}
