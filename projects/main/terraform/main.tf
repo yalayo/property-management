@@ -81,6 +81,11 @@ resource "hcloud_server" "immo" {
 
   network {
     network_id = hcloud_network.network.id
+    ip         = "10.0.1.1"
+    alias_ips  = [
+      "10.0.1.2",
+      "10.0.1.3"
+    ]
   }
 
   depends_on = [
