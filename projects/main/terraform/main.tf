@@ -101,3 +101,7 @@ resource "hcloud_server" "immo" {
     hcloud_network_subnet.network-subnet
   ]
 }
+
+output "immo_public_ip4" {
+  value = "${hcloud_server.immo.ipv4_address}"
+}
