@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   management:
     image: property-management-app
