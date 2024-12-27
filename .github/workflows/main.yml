@@ -57,7 +57,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} " \
           if [ -d ~/${{ secrets.WORK_DIR }}/docker ]; then 
             cd ~/${{ secrets.WORK_DIR }}/docker
-            docker-compose down
+            docker compose down
             docker rmi ${{ secrets.APP_NAME }}-app:latest
             cd ~/${{ secrets.WORK_DIR }} 
             rm -rf ~/${{ secrets.WORK_DIR }}/
