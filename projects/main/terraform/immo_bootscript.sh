@@ -10,3 +10,5 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 sudo usermod -aG docker ubuntu
 sudo chmod 777 /var/run/docker.sock
+sudo sed -i 's/^#*\s*PermitRootLogin\s.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
