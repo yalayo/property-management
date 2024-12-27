@@ -61,15 +61,6 @@
         content (partition size data)]
     (mapv #(zipmap items %) content)))
 
-(defn process-details [input-stream]
-  (let [workbook (docj/load-workbook input-stream)
-        headers (get-content (-> workbook 
-                                 (docj/select-name "headers")))
-        data (get-content (-> workbook
-                    (docj/select-name "table1")))]
-    {:headers headers
-     :content (format-content data (count headers))}))
-
 (defn get-cell-data [cell name required?]
   (when (some? cell)
     (let [cell-type (str (.getCellType cell))
@@ -137,26 +128,3 @@
 (comment 
   (process (io/input-stream "D:/Trabajo/to_validate_wrong_data_in_column.xlsx"))
   )
-
-
-(comment
-  (process-details (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/test.xlsx"))
-
-  (let [input-stream (io/input-stream "D:/personal/projects/inmo-verwaltung/code/property-management/components/excel/resources/NK_ 2023_kuni_2.xlsx")
-        workbook (docj/load-workbook input-stream)
-        sheets (docj/sheet-seq workbook) 
-        filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
-    (into [] (map (fn [sheet]
-           (let [last-name (subs (.getSheetName sheet) 3)
-                 street (get-cell-value (docj/select-cell "A2" sheet))
-                 location (get-cell-value (docj/select-cell "B2" sheet))
-                 headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
-                 content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))]
-             {:tenant-id (str (java.util.UUID/randomUUID))
-              :last-name last-name 
-              :street street
-              :location location
-              :headers headers 
-              :content (format-content content (count headers))})) filtered)))
-
-)
