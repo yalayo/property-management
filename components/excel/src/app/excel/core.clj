@@ -23,7 +23,7 @@
         (case cell-type
           "NUMERIC" (.getNumericCellValue cell)
           "STRING"  (if (or (str/starts-with? cell-address "C") (str/starts-with? cell-address "E"))
-                      {:error true :message "The cell can not be an string" :cell-address cell-address :sheet-name sheet-name}
+                      {:error true :message "Der Inhalt dieser Zelle kann kein Text sein" :cell-address cell-address :sheet-name sheet-name}
                       (.getStringCellValue cell))
           "BOOLEAN" (.getBooleanCellValue cell)
           "FORMULA" (get-formula-value cell)
@@ -72,9 +72,7 @@
           "STRING" {name (.getStringCellValue cell)}
           "BOOLEAN" {name (.getBooleanCellValue cell)}
           "FORMULA" {name (get-formula-value cell)}
-          "BLANK" (if required?
-                    (throw (IllegalArgumentException. (str "Error: The cell is empty: " cell-address sheet-name)))
-                    {name nil})
+          "BLANK" (when required? (throw (IllegalArgumentException. "Diese Zelle darf nicht leer sein")))
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
 
@@ -94,7 +92,7 @@
                  {:name "property-apartment" :cell "M6" :required true}
                  {:name "property-time-period" :cell "M7" :required true}
                  {:name "property-calculated-days" :cell "M8" :required true}
-                 {:name "property-days-per-person" :cell "M9" :required true}])
+                 {:name "property-days-per-person" :cell "M9"}])
 
 (defn get-attribute-value [data]
   (let [sheet (:sheet data)
