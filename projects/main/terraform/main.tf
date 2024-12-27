@@ -91,6 +91,7 @@ resource "hcloud_server" "immo" {
 
   public_net {
     ipv6_enabled = true
+    ipv4_enabled = false
   }
 
   network {
