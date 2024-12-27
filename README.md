@@ -7,7 +7,7 @@ Connect to the instance
 ssh -i instance.key ubuntu@129.151.206.131
 
 Connect to postgres container
-docker exec -it development-db /bin/bash
+docker exec -it prod-db /bin/bash
 
 Create a database
 psql -U user -d postgres
