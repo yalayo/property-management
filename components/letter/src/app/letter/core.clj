@@ -2,7 +2,14 @@
   (:require [clj-pdf.core :as pdf])
   (:import [java.io ByteArrayOutputStream]
            [java.time LocalDate]
-           [java.time.format DateTimeFormatter]))
+           [java.time.format DateTimeFormatter]
+           [java.util Locale]
+           [java.text NumberFormat]))
+
+(def german-locale (Locale. "de" "DE"))
+(def formatter (NumberFormat/getInstance german-locale))
+(.setMaximumFractionDigits formatter 2)
+(.setMinimumFractionDigits formatter 2)
 
 (defn create-headers [data]
   (into [] (map (fn [item]
@@ -27,7 +34,7 @@
                       :3 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 9} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       :5 (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 9} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 9} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 9} (str (.format formatter element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true} [:paragraph {:size 9} element]]))))) (keys data))))
 
 (defn create-last-three-rows [data]
@@ -38,13 +45,13 @@
                       :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       (if (float? (item data))
-                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (str (format "%.2f" element) " €")]])
+                        (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (str (.format formatter element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} element]]))))) (keys data))))
 
 (defn payment-information [total payment-info]
   [:pdf-table
    {:width-percent 100 :cell-border false :spacing-before 10
-    :header [[[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Aus der Abrechnung und  unter Berücksichtigung Ihrer Vorauszahlungen ergibt sich eine "[:phrase {:style :bold} "Nachzahlung"] " in Höhe von " [:phrase {:style :bold} (str (format "%.2f" total) " €")]]]]]}
+    :header [[[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Aus der Abrechnung und  unter Berücksichtigung Ihrer Vorauszahlungen ergibt sich eine "[:phrase {:style :bold} "Nachzahlung"] " in Höhe von " [:phrase {:style :bold} (str (.format formatter total) " €")]]]]]}
    [14 86]
    [[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
    [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:iban payment-info)]]]
@@ -98,7 +105,7 @@
       table
 
       (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (format "%.2f" (:total tenant)) " €")]]
+        [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (.format formatter (:total tenant)) " €")]]
         (payment-information (:total tenant) (:payment-info tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 30} "Mit freundlichen Grüßen"]
