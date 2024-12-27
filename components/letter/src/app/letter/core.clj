@@ -95,7 +95,7 @@
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Wohnung"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (:property-apartment tenant)]]]
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Zeitraum"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (:property-time-period tenant)]]]
           [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (:property-calculated-days tenant)))]]]
-          (when (some? (get-in tenant [:property-info :days-per-person]))
+          (when (some? (:property-days-per-person tenant))
             [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (:property-days-per-person tenant)))]]])]]]] 
 
       [:paragraph {:size 10 :align :left :spacing-before 30 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
