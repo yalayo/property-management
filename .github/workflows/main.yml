@@ -22,6 +22,7 @@ jobs:
             terraform init
             terraform apply -auto-approve
   deploy:
+    needs: infrastructure
     name: Deploy to OCI
     runs-on: ubuntu-latest
     steps:
