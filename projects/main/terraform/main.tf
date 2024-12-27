@@ -37,7 +37,7 @@ resource "hcloud_firewall" "common-firewall" {
     protocol  = "tcp"
     port      = "22" 
     source_ips = [
-      "${var.firewall_source_ip}/32" 
+      "${var.firewall_source_ip}/0" 
     ]
   }
 
@@ -46,7 +46,7 @@ resource "hcloud_firewall" "common-firewall" {
     protocol  = "tcp"
     port      = "80" 
     source_ips = [
-      "${var.firewall_source_ip}/32" 
+      "${var.firewall_source_ip}/0" 
     ]
   }
 
@@ -55,7 +55,7 @@ resource "hcloud_firewall" "common-firewall" {
     protocol  = "tcp"
     port      = "443" 
     source_ips = [
-      "${var.firewall_source_ip}/32" 
+      "${var.firewall_source_ip}/0" 
     ]
   }
 }
@@ -78,7 +78,7 @@ data "hcloud_ssh_key" "immo_ssh_key" {
   name = "ssh-key-1"
 }
 
-## VM
+## VM 97aNREFMkaqPhuXcEq4C
 resource "hcloud_server" "immo" { 
   name        = "prod-immo"
   image       = "ubuntu-24.04"
