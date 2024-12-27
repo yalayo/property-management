@@ -2,6 +2,12 @@ services:
   management:
     image: property-management-app
     container_name: management
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+        reservations:
+          memory: 3g
     ports:
       - 8080:8080
       - 9669:9669
