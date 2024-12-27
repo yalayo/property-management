@@ -108,8 +108,9 @@
 
 (defn get-tenant-data [general headers content]
   (let [with-headers (into {} {:headers (format-headers headers)})
-        with-content (into with-headers {:content (format-content content (count headers))})]
-    (into with-content general)))
+        with-content (into with-headers {:content (format-content content (count headers))})
+        with-id (into with-content {:tenant-id (str (java.util.UUID/randomUUID))})]
+    (into with-id general)))
 
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
