@@ -23,17 +23,35 @@
         (case cell-type
           "NUMERIC" (.getNumericCellValue cell)
           "STRING"  (if (or (str/starts-with? cell-address "C") (str/starts-with? cell-address "E"))
-                     {:error true :message "The cell can not be an string" :cell-address cell-address :sheet-name sheet-name}
-                    (.getStringCellValue cell))
+                      {:error true :message "The cell can not be an string" :cell-address cell-address :sheet-name sheet-name}
+                      (.getStringCellValue cell))
           "BOOLEAN" (.getBooleanCellValue cell)
           "FORMULA" (get-formula-value cell)
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
-;;(.getStringCellValue cell)
+
+(defn get-header-cell-value [cell]
+  (when (some? cell)
+    (let [cell-type (str (.getCellType cell))
+          cell-address (.formatAsString (.getAddress cell))
+          sheet-name (.getSheetName (.getSheet cell))]
+      (try
+        (case cell-type
+          "NUMERIC" (.getNumericCellValue cell)
+          "STRING"  (str/trim (.getStringCellValue cell))
+          "BOOLEAN" (.getBooleanCellValue cell)
+          "FORMULA" (get-formula-value cell)
+          "BLANK" nil
+          (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
+        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
+
 (defn format-headers [headers]
   (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
           headers))
+
+(defn get-headers-content [cells]
+  (map get-header-cell-value cells))
 
 (defn get-content [cells]
   (map get-cell-value cells))
@@ -97,19 +115,24 @@
 (defn contains-error? [element]
   (and (map? element) (:error element)))
 
+(defn get-tenant-data [general headers content]
+  (let [with-headers (into {} {:headers (format-headers headers)})
+        with-content (into with-headers {:content (format-content content (count headers))})]
+    (into with-content general)))
+
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
         sheets (docj/sheet-seq workbook)
         filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
     (vec (flatten (map (fn [sheet]
-           (let [headers (get-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+           (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
                  content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
                  data (map #(assoc % :sheet sheet) attributes)
                  result (map get-attribute-value data)
                  content-errors (into [] (filter contains-error? content))]
              (if (some #(:error %) result)
                (into [] (concat content-errors (filter :error result)))
-               (into {:tenant-id (str (java.util.UUID/randomUUID))} result)))) filtered)))))
+               (get-tenant-data result headers content)))) filtered)))))
 
 (comment 
   (process (io/input-stream "D:/Trabajo/to_validate_wrong_data_in_column.xlsx"))
