@@ -15,7 +15,7 @@ services:
 
   db:
     image: postgres:11.1
-    container_name: development-db
+    container_name: prod-db
     user: root
     environment:
       - POSTGRES_USER=user
