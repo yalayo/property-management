@@ -1,7 +1,10 @@
 (ns app.excel.core
   (:require [dk.ative.docjure.spreadsheet :as docj]
             [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.core.async :refer [go chan close! >!! <!!]]
+            [clojure.core.async :as async])
+  (:import [java.util.concurrent Executors Callable]))
 
 (defn get-formula-value [cell]
   (let [workbook (.getWorkbook (.getSheet cell))
@@ -110,20 +113,40 @@
         with-id (into with-content {:tenant-id (str (java.util.UUID/randomUUID))})]
     (into with-id general)))
 
+(defn process-sheet [sheet workbook]
+  (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+        content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
+        data (map #(assoc % :sheet sheet) attributes)
+        result (map get-attribute-value data)
+        content-errors (filter contains-error? content)]
+    (if (some #(:error %) result)
+      (concat content-errors (filter :error result))
+      (get-tenant-data result headers content))))
+
+
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
-        sheets (docj/sheet-seq workbook)
-        filtered (filter #(str/starts-with? (.getSheetName %) "W") sheets)]
-    (vec (flatten (map (fn [sheet]
-           (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
-                 content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
-                 data (map #(assoc % :sheet sheet) attributes)
-                 result (map get-attribute-value data)
-                 content-errors (into [] (filter contains-error? content))]
-             (if (some #(:error %) result)
-               (into [] (concat content-errors (filter :error result)))
-               (get-tenant-data result headers content)))) filtered)))))
+        sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
+        pool (Executors/newFixedThreadPool 30)
+        result-chan (chan)]
+    ;; Process all sheets in parallel
+    (doseq [sheet sheets]
+      (.submit pool
+               (reify Callable
+                 (call [_]
+                   (let [result (process-sheet sheet workbook)]
+                     (async/>!! result-chan result)
+                     nil)))))
+
+    ;; Close the channel after all threads are spawned
+    (go
+      (.shutdown pool) ;; Shutdown the thread pool
+      (.awaitTermination pool 5 java.util.concurrent.TimeUnit/SECONDS) ;; Wait for all tasks to complete
+      (close! result-chan))
+
+    ;; Collect results
+    (<!! (async/into [] result-chan))))
 
 (comment 
-  (process (io/input-stream "D:/Trabajo/to_validate_wrong_data_in_column.xlsx"))
+  (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_ 2023_kuni.xlsx"))
   )
