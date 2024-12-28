@@ -120,7 +120,7 @@
         result (map get-attribute-value data)
         content-errors (filter contains-error? content)]
     (if (some #(:error %) result)
-      (concat content-errors (filter :error result))
+      (into [] (concat content-errors (filter :error result)))
       (get-tenant-data result headers content))))
 
 

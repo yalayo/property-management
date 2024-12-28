@@ -64,7 +64,7 @@
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream) 
-                (let [result (excel/process file-input-stream)]
+                (let [result (flatten (excel/process file-input-stream))]
                   (if (some #(:error %) result)
                     (assoc context :response (respond-with-params upload-details/wrong-file-selected result))
                     (assoc context :response {:status 200
