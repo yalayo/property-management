@@ -48,14 +48,14 @@
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (str (.format formatter element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} element]]))))) (keys data))))
 
-(defn payment-information [total payment-info]
+(defn payment-information [total iban bank-name]
   [:pdf-table
    {:width-percent 100 :cell-border false :spacing-before 10
     :header [[[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Aus der Abrechnung und  unter Berücksichtigung Ihrer Vorauszahlungen ergibt sich eine "[:phrase {:style :bold} "Nachzahlung"] " in Höhe von " [:phrase {:style :bold} (str (.format formatter total) " €")]]]]]}
    [14 86]
    [[:pdf-cell {:colspan 2 :padding-bottom 20} [:paragraph {:size 10 :align :left} "Wir bitten um Ausgleich unter Angabe Ihrer Wohnungsnummer binnen 14 Tagen auf folgendes Bankkonto:"]]]
-   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:iban payment-info)]]]
-   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "BANK:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} (:bank-name payment-info)]]]])
+   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} iban]]]
+   [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "BANK:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} bank-name]]]])
 
 (defn create [tenant]
   (let [output (ByteArrayOutputStream.)
@@ -64,7 +64,7 @@
         content (:content tenant)
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
-        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [20 20] (repeatedly (- (count headers) 2) #(/ 60 (- (count headers) 2))))]
+        scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [25 15] (repeatedly (- (count headers) 2) #(/ 60 (- (count headers) 2))))]
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))]
@@ -98,7 +98,7 @@
           (when (some? (:property-days-per-person tenant))
             [[:pdf-cell {:valign :middle :background-color [189 215 238]} [:paragraph {:size 9} "Abrechnungstage*Pers"]] [:pdf-cell {:valign :middle} [:paragraph {:size 9} (int (Math/floor (:property-days-per-person tenant)))]]])]]]] 
 
-      [:paragraph {:size 10 :align :left :spacing-before 30 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
+      [:paragraph {:size 10 :align :left :spacing-before 15 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
       [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
 
@@ -106,7 +106,7 @@
 
       (if (:refund tenant)
         [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (.format formatter (:total tenant)) " €")]]
-        (payment-information (:total tenant) (:payment-info tenant)))
+        (payment-information (:total tenant) (:iban tenant) (:bank-name tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 30} "Mit freundlichen Grüßen"]
 
