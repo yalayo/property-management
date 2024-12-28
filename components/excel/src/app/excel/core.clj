@@ -128,7 +128,7 @@
   (let [workbook (docj/load-workbook input-stream)
         sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
         pool (Executors/newFixedThreadPool 30)
-        result-chan (chan)]
+        result-chan (chan 10)]
     ;; Process all sheets in parallel
     (doseq [sheet sheets]
       (.submit pool
