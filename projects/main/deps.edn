@@ -1,4 +1,6 @@
-{:deps {io.pedestal/pedestal.service {:mvn/version "0.5.9"}
+{:paths ["src"]
+ :deps {com.stuartsierra/component {:mvn/version "1.1.0"}
+        io.pedestal/pedestal.service {:mvn/version "0.5.9"}
         io.pedestal/pedestal.route {:mvn/version "0.5.9"}
         io.pedestal/pedestal.immutant {:mvn/version "0.5.9"}
         jdbc-ring-session/jdbc-ring-session {:mvn/version "1.5.4"}
