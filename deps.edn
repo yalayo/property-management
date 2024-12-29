@@ -7,7 +7,9 @@
                                "components/user/src"
                                "components/excel/src"
                                "components/excel/resources"
-                               "components/letter/src"]
+                               "components/letter/src"
+                               "components/storage/src"
+                               "components/route/src"]
                  :extra-deps {com.stuartsierra/component {:mvn/version "1.1.0"}
                               io.pedestal/pedestal.service {:mvn/version "0.5.9"}
                               io.pedestal/pedestal.route {:mvn/version "0.5.9"}
@@ -33,7 +35,9 @@
                                 "components/web/test"
                                 "components/user/test"
                                 "components/excel/test"
-                                "components/letter/test"]
+                                "components/letter/test"
+                                "components/storage/test"
+                                "components/route/test"]
                   :extra-deps {polylith-kaocha/kaocha-wrapper
                                {:git/url "https://github.com/imrekoszo/polylith-kaocha"
                                 :git/tag "v0.8.2"
