@@ -9,7 +9,7 @@
    (assoc (:db-spec config)
           :init-fn (fn [datasource]
                      (println "Running database init")
-                     (.migrate
+                     #_(.migrate
                       (.. (Flyway/configure)
                           (dataSource datasource)
                           (locations (into-array String ["classpath:database/migrations"]))
