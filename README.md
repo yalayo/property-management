@@ -1,6 +1,6 @@
 ## Run the main project
 cd projects/main
-clojure -M -m app.server.core
+clojure -M -m app.main.core
 
 ## Devops
 Connect to the instance
