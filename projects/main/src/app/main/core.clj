@@ -4,6 +4,13 @@
             [app.route.interface :as route]
             [app.server.core :as server]))
 
+(def config {:db-spec {:dbtype "postgres"
+                       :host (if (= (System/getenv "ENVIRONMENT") "prod") "prod-db" "localhost")
+                       :dbname "property-management"
+                       :username "user"
+                       :password (if (= (System/getenv "ENVIRONMENT") "prod") "hrdata@2024" "volley@2024")
+                       :dataSourceProperties {:socketTimeout 30}}})
+
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
@@ -13,7 +20,7 @@
             [:datasource :route])))
 
 (defn -main []
-  (let [system (-> {}
+  (let [system (-> config
                    (create-system)
                    (component/start-system))]
     (println "Starting system for project: main with config")
