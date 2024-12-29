@@ -1,4 +1,4 @@
-{:main app.server.core
+{:main app.main.core
   :base-image {:image-name "gcr.io/distroless/java17-debian12:nonroot-arm64"
               :type :registry}
  :exposed-ports [8080 9669]
