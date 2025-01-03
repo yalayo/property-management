@@ -97,11 +97,11 @@
                  {:name "property-calculated-days" :cell "M8" :required true}
                  {:name "property-days-per-person" :cell "M9"}])
 
-(defn get-attribute-value [data]
-  (let [sheet (:sheet data)
-        name (keyword (:name data))
-        cell (:cell data)
-       required? (:required data)]
+(defn get-attribute-value [dat]
+  (let [sheet (:sheet dat)
+        name (keyword (:name dat))
+        cell (:cell dat)
+       required? (:required dat)]
     (get-cell-data (docj/select-cell cell sheet) name required?)))
 
 (defn contains-error? [element]
