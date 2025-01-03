@@ -9,9 +9,9 @@
    (assoc (:db-spec config)
           :init-fn (fn [datasource]
                      (println "Running database init")
-                     #_(.migrate
+                     (.migrate
                       (.. (Flyway/configure)
                           (dataSource datasource)
-                          (locations (into-array String ["classpath:database/migrations"]))
+                          (locations (into-array String ["classpath:migrations"]))
                           (table "schema_version")
                           (load)))))))
