@@ -10,7 +10,8 @@
             [app.html.tenants-list :as tenants]
             [app.excel.interface :as excel]
             [io.pedestal.interceptor :refer [interceptor]]
-            [app.letter.interface :as letter]))
+            [app.letter.interface :as letter]
+            [app.user.database :as db]))
 
 ;; Prepare the hicup to return it as html
 (defn template [html-body]
@@ -98,6 +99,31 @@
                                         :headers {"Content-Type" "application/pdf" "Content-Disposition" "inline; filename=letter.pdf"}
                                         :body (java.io.ByteArrayInputStream. (letter/create tenant))})))})
 
+(def email-regex #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+
+(defn email-verification [email]
+  (if (empty? email)
+    (println "Email cannot be empty.")  
+    (if (not (re-matches email-regex email))
+      (println "Email format is not valid.")  
+      (println "Email is valid."))))
+
+(def upload-details-email
+  (interceptor
+   {:name ::get
+    :enter (fn [context]
+             (assoc context :response (respond upload-details/email-matters)))}))
+
+(def post-email-handler
+ (interceptor
+  {:name ::post
+   :enter (fn [context]
+            (let [params (-> context :request :params)
+                  email (:email params)]
+            (println "Received email:" email) 
+            (email-verification email)))}))
+
+
 (def routes
   #{["/"
      :get [(body-params/body-params) upload-details-handler]
@@ -108,6 +134,12 @@
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
      :route-name ::dashboard]
+     ["/questions"
+     :get [(body-params/body-params) upload-details-email]
+     :route-name ::questions]
+     ["/questions"
+     :post [(body-params/body-params) params/keyword-params post-email-handler]
+     :route-name ::post-questions]
     ["/letter"
      :get [letter-handler]
      :route-name ::letter]
