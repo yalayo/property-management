@@ -109,19 +109,17 @@
       (println "Email is valid."))))
 
 (def upload-details-email
-  (interceptor
    {:name ::get
     :enter (fn [context]
-             (assoc context :response (respond upload-details/email-matters)))}))
+             (assoc context :response (respond upload-details/email-matters)))})
 
 (def post-email-handler
- (interceptor
   {:name ::post
    :enter (fn [context]
             (let [params (-> context :request :params)
                   email (:email params)]
             (println "Received email:" email) 
-            (email-verification email)))}))
+            (email-verification email)))})
 
 
 (def routes
