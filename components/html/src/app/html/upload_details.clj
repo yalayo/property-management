@@ -71,15 +71,51 @@
      [:input {:type "file", :name "file"}]
      [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]])
 
-(defn email-matters []
+(defn email-matters [errors]
   [:div
-   {:class
-    "relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32"}
+   {:class "relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32"}
    [:div
     {:class "mx-auto max-w-7xl px-6 lg:px-8"}
     [:div
-     {:class
-      "mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2"}
+     {:class "mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2"}
+     [:div
+      {:class "max-w-xl lg:max-w-lg"}
+      [:h2
+       {:class "text-4xl font-semibold tracking-tight text-black"}
+       "Subscribe to our newsletter"]
+      [:p
+       {:class "mt-4 text-lg text-gray-300"}
+       "Nostrud amet eu ullamco nisi aute in ad minim nostrud adipisicing velit quis. Duis tempor incididunt dolore."]
+      
+      (println errors)
+
+      (when (not (empty? errors))
+        [:div {:class "mt-2 text-sm text-red-600"}
+         [:li (str "Error: " errors)]])
+      
+      [:div
+       {:class "mt-6 flex max-w-md gap-x-4"}
+       [:label {:for "email-address", :class "sr-only"} "Email address"]
+       [:form {:action "/questions" :method "post"}
+        [:input
+         {:id "email-address",
+          :name "email",
+          :type "text",
+          :autocomplete "email",
+          :class "min-w-0 flex-auto rounded-md bg-black/5 px-3.5 py-2 text-base text-black outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6",
+          :placeholder "Enter your email"}]
+        [:button
+         {:type "submit",
+          :class "flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"}
+         "Subscribe"]]]]]]])
+
+(defn email-matters-aux []
+  [:div
+   {:class "relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32"}
+   [:div
+    {:class "mx-auto max-w-7xl px-6 lg:px-8"}
+    [:div
+     {:class "mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2"}
      [:div
       {:class "max-w-xl lg:max-w-lg"}
       [:h2
@@ -95,16 +131,13 @@
         [:input
          {:id "email-address",
           :name "email",
-          :type "email",
-          :autocomplete "email",
-          :required "",
-          :class
-          "min-w-0 flex-auto rounded-md bg-black/5 px-3.5 py-2 text-base text-black outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6",
-          :placeholder "Enter your email"}]
+          :type "text"  
+          :autocomplete "email"
+          :class "min-w-0 flex-auto rounded-md bg-black/5 px-3.5 py-2 text-base text-black outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6",
+          :placeholder "Enter your email"}]  
         [:button
          {:type "submit",
-          :class
-          "flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"}
+          :class "flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"}
          "Subscribe"]]]]]]])
 
 (defn page []

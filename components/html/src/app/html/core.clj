@@ -102,25 +102,28 @@
 (def email-regex #"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
 (defn email-verification [email]
-  (if (empty? email)
-    (println "Email cannot be empty.")  
-    (if (not (re-matches email-regex email))
-      (println "Email format is not valid.")  
-      (println "Email is valid."))))
+  (cond
+    (empty? email) "Email cannot be empty."
+    (not (re-matches email-regex email)) "Email format is not valid."
+    :else nil))
 
 (def upload-details-email
    {:name ::get
     :enter (fn [context]
-             (assoc context :response (respond upload-details/email-matters)))})
+             (assoc context :response (respond upload-details/email-matters-aux)))})
 
 (def post-email-handler
   {:name ::post
    :enter (fn [context]
             (let [params (-> context :request :params)
-                  email (:email params)]
-            (println "Received email:" email) 
-            (email-verification email)))})
-
+                  email (:email params)
+                  error-message (email-verification email)]
+              (if (not (empty? error-message))
+                (assoc context :response (respond-with-params upload-details/email-matters error-message))
+                (do
+                  (println "Received email:" email)
+                  (assoc context :response {:status 200
+                                            :headers {"HX-Redirect" "/thank-you"}})))))})
 
 (def routes
   #{["/"
