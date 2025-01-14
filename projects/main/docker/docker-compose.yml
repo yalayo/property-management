@@ -13,6 +13,8 @@ services:
       - 9669:9669
     environment:
       - ENVIRONMENT=prod
+      - DB_HOST=${DB_HOST}
+      - DB_PASSWORD=${DB_PASSWORD}
       - LANG=de_DE.UTF-8
       - LANGUAGE=de_DE:de
       - LC_ALL=de_DE.UTF-8
