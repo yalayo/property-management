@@ -9,10 +9,10 @@
 
 (def ds (connection/->pool com.zaxxer.hikari.HikariDataSource
                            {:dbtype "postgres"
-                            :host (if (= (System/getenv "ENVIRONMENT") "prod") "prod-db" "localhost")
+                            :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
                             :dbname "property-management"
                             :username "user"
-                            :password (if (= (System/getenv "ENVIRONMENT") "prod") "hrdata@2024" "volley@2024")
+                            :password (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_PASSWORD") "hrdata@2024")
                             :dataSourceProperties {:socketTimeout 30}}))
 
 (defn create-account [email password]
