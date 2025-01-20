@@ -23,6 +23,5 @@
     (rb/clear buffer)))
 
 
-(defn telegram-publisher
-  [config]
+(defn telegram-publisher [config]
   (TelegramPublisher config (rb/agent-buffer 10000)))
