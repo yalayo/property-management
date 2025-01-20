@@ -17,7 +17,7 @@
       (doseq [item (map second (rb/items buffer))]
         (http/post (str "https://api.telegram.org/bot" bot-token "/sendMessage")
                    {:form-params {:chat_id chat-id
-                                  :text item}
+                                  :text (str "Event " (:mulog/event-name item) " - " (:message item))}
                     :content-type :json})))
     ;; return the buffer minus the published elements
     (rb/clear buffer)))
