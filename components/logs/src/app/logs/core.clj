@@ -24,4 +24,4 @@
 
 
 (defn telegram-publisher [config]
-  (TelegramPublisher config (rb/agent-buffer 10000)))
+  (TelegramPublisher. config (rb/agent-buffer 10000)))
