@@ -1,6 +1,7 @@
 {:aliases {:dev {:extra-paths ["development/src"
                                "bases/server/src"
                                "bases/server/resources"
+                               "components/logs/src"
                                "components/html/src"
                                "components/web/src"
                                "components/web/resources"
@@ -32,6 +33,7 @@
                               dk.ative/docjure {:mvn/version "1.19.0"}
                               org.slf4j/slf4j-simple {:mvn/version "2.0.9"}}}
            :test {:extra-paths ["bases/server/test"
+                                "components/logs/test"
                                 "components/html/test"
                                 "components/web/test"
                                 "components/user/test"

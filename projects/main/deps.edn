@@ -21,14 +21,15 @@
         org.slf4j/slf4j-simple {:mvn/version "2.0.9"}
 
 		;; Bricks
+        poly/server {:local/root "../../bases/server"}
+        poly/logs {:local/root "../../components/logs"}
 		poly/html {:local/root "../../components/html"}
 		poly/web {:local/root "../../components/web"}
         poly/user {:local/root "../../components/user"}
         poly/excel {:local/root "../../components/excel"}
         poly/letter {:local/root "../../components/letter"}
         poly/storage {:local/root "../../components/storage"}
-        poly/route {:local/root "../../components/route"}
-		poly/server {:local/root "../../bases/server"}}
+        poly/route {:local/root "../../components/route"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}
            :jib {:deps {io.github.atomisthq/jibbit {:git/url "https://github.com/yalayo/jibbit.git"
