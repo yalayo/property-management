@@ -39,21 +39,23 @@
                    (create-system)
                    (component/start-system))]
     (reset! state system)
-    (println "Starting system for project: main with config")
+    (mu/log :system-started :message "Starting system for project: main")
     (.addShutdownHook
      (Runtime/getRuntime)
      (new Thread #(component/stop-system system)))))
 
 (defn stop []
   (when-let [running-system @state]
-    (println "Stopping system for project: main")
+    (mu/log :system-started :message "Stopping system for project: main")
     (component/stop-system running-system)
     (reset! state nil)))
 
 ;; Optional: A `restart` function for convenience
 (defn restart []
+  (mu/log :system-started :message "Restarting system!")
   (stop)
-  (start))
+  (start)
+  (mu/log :system-started :message "System restarted!"))
 
 (comment
   ;; Evaluate to start the system
