@@ -123,7 +123,7 @@
                 (do
                   (println "Received email:" email)
                   (assoc context :response {:status 200
-                                            :headers {"HX-Redirect" "/thank-you"}})))))})
+                                            :headers {"HX-Redirect" "/thank-you"}})))))}) 
 
 (def routes
   #{["/"
