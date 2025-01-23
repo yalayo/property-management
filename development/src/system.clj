@@ -30,7 +30,10 @@
    :datasource (storage/datasource-component config)
    :route (route/route-component config)
    :server (component/using
-            (server/server-component config)
+            (server/server-component {:port 8080})
+            [:datasource :route])
+   :internal-server (component/using
+            (server/server-component {:port 9090})
             [:datasource :route])))
 
 (defn start []
