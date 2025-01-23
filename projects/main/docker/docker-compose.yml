@@ -10,6 +10,7 @@ services:
           memory: 3g
     ports:
       - 8080:8080
+      - 9090:9090
       - 9669:9669
     environment:
       - ENVIRONMENT=prod

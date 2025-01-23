@@ -1,7 +1,7 @@
 {:main app.main.core
   :base-image {:image-name "gcr.io/distroless/java17-debian12:nonroot-arm64"
               :type :registry}
- :exposed-ports [8080 9669]
+ :exposed-ports [8080 9090 9669]
  :jvm-flags ["-Duser.language=de" "-Duser.country=DE" "-Xms3g" "-Xmx4g" "-Xlog:gc" "-XX:+UseG1GC"]
  :environment {:LANG "de_DE.UTF-8"
                :LC_ALL "de_DE.UTF-8"}}
