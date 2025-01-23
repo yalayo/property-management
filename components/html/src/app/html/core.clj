@@ -11,7 +11,10 @@
             [app.excel.interface :as excel]
             [io.pedestal.interceptor :refer [interceptor]]
             [app.letter.interface :as letter]
-            [app.user.database :as db]))
+            [app.user.database :as db]
+            [cheshire.core :as json]
+            [clj-http.client :as client])
+  (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
 (defn template [html-body]
@@ -112,6 +115,25 @@
     :enter (fn [context]
              (assoc context :response (respond upload-details/email-matters-aux)))})
 
+(def sendgrid-api-key "YOUR_SENDGRID_API_KEY");;Env: SENDGRID_API_KEY
+
+(defn generate-verification-link [email]
+  (let [uuid (str (UUID/randomUUID))]
+    (str "http://localhost:8080/verify-email?email=" email "&token=" uuid)))
+
+(defn send-verification-email [email]
+  (let [verification-link (generate-verification-link email)
+        sendgrid-url "https://api.sendgrid.com/v3/mail/send"
+        payload {:personalizations [{:to [{:email email}]}]
+                 :from {:email "no-reply@yourdomain.com"}
+                 :subject "Email Verification"
+                 :content [{:type "text/plain"
+                            :value (str "Click the following link to verify your email: " verification-link)}]}]
+    (client/post sendgrid-url
+                 {:headers {"Authorization" (str "Bearer " sendgrid-api-key)
+                            "Content-Type" "application/json"}
+                  :body (json/generate-string payload)})))
+
 (def post-email-handler
   {:name ::post
    :enter (fn [context]
@@ -122,8 +144,28 @@
                 (assoc context :response (respond-with-params upload-details/email-matters error-message))
                 (do
                   (println "Received email:" email)
+                  (send-verification-email email)
                   (assoc context :response {:status 200
                                             :headers {"HX-Redirect" "/thank-you"}})))))})
+
+(defn mark-user-as-verified [email token]
+  (if (and email token)
+    {:status :success, :message "Email successfully verified."}
+    {:status :error, :message "Invalid verification link."}))
+
+;;Test: http://localhost:8080/verify-email?email=pruebas@seudominio.com&token=12345678-1234-5678-1234-567812345678
+(def verify-email-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [params (-> context :request :query-params)
+                  email (:email params)
+                  token (:token params)
+                  verification-result (mark-user-as-verified email token)]
+              (println verification-result)
+              (if (= (:status verification-result) :success)
+                (assoc context :response (respond upload-details/email-succes-checked))
+                (assoc context :response (respond upload-details/email-error-checking)))))})
+
 
 (def routes
   #{["/"
@@ -141,6 +183,9 @@
      ["/questions"
      :post [(body-params/body-params) params/keyword-params post-email-handler]
      :route-name ::post-questions]
+     ["/verify-email"
+     :get [params/keyword-params verify-email-handler]
+     :route-name ::verify-email] 
     ["/letter"
      :get [letter-handler]
      :route-name ::letter]
