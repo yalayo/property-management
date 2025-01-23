@@ -140,6 +140,17 @@
           :class "flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"}
          "Subscribe"]]]]]]])
 
+(defn email-succes-checked []
+   [:div
+    [:h1 "Your email has been successfully verified!"]
+    [:p "You can now access all features."]])
+
+(defn email-error-checking []
+  [:div
+   [:h1 "Invalid verification link."]
+   [:p "Please check the link or request a new one."]])
+
+
 (defn page []
   [:div
    {:class "bg-white"}
