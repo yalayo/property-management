@@ -9,11 +9,11 @@
 (def state (atom nil))
 
 (def config {:db-spec {:dbtype "postgres"
-                    :host (if (= (System/getenv "ENVIRONMENT") "prod") "prod-db" "localhost")
-                    :dbname "property-management"
-                    :username "user"
-                    :password (if (= (System/getenv "ENVIRONMENT") "prod") "hrdata@2024" "volley@2024")
-                    :dataSourceProperties {:socketTimeout 30}}})
+                       :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
+                       :dbname "property-management"
+                       :username "user"
+                       :password (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_PASSWORD") "volley@2024")
+                       :dataSourceProperties {:socketTimeout 30}}})
 
 (defn init-logging []
   (let [prod (System/getenv "ENVIRONMENT")
