@@ -1,6 +1,5 @@
 (ns app.server.core
-	(:require [app.web.interface :as web]
-          	[com.stuartsierra.component :as component]
+	(:require [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.ring-middlewares :as middlewares]
@@ -17,7 +16,7 @@
                            ::http/resource-path "/public"
                            ::http/type :immutant
                            ::http/host "0.0.0.0"
-                           ::http/port 8080}
+                           ::http/port (:port config)}
                           (http/default-interceptors)
                           (update ::http/interceptors concat [session-interceptor])
                           (http/create-server)
