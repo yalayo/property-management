@@ -16,14 +16,18 @@
                     :dataSourceProperties {:socketTimeout 30}}})
 
 (defn init-logging []
-  (mu/start-publisher!
-    {:type :multi
-     :publishers
-     [{:type :console}
-      {:type :custom
-       :fqn-function "app.logs.interface/telegram-publisher"
-       :bot-token (System/getenv "BOT_TOKEN")
-       :chat-id (System/getenv "CHAT_ID")}]}))
+  (let [prod (System/getenv "ENVIRONMENT")
+        prod? (if (= prod "prod") true false)
+        data {:type :multi}
+        publishers [{:type :console}]
+        telegram {:type :custom
+                  :fqn-function "app.logs.interface/telegram-publisher"
+                  :bot-token (System/getenv "BOT_TOKEN")
+                  :chat-id (System/getenv "CHAT_ID")}
+        config (if prod?
+                 (assoc data :publishers (conj publishers telegram))
+                 (assoc data :publishers publishers))]
+    (mu/start-publisher! config)))
 
 (defn create-system [config]
   (component/system-map
@@ -49,7 +53,7 @@
 
 (defn stop []
   (when-let [running-system @state]
-    (mu/log :system-started :message "Stopping system for project: main")
+    (mu/log :system-stoped :message "Stopping system for project: main")
     (component/stop-system running-system)
     (reset! state nil)))
 
