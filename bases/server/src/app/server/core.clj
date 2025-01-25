@@ -5,14 +5,14 @@
             [io.pedestal.http.ring-middlewares :as middlewares]
             [jdbc-ring-session.core :as jdbc-ring-session]))
 
-(defrecord ServerComponent [config datasource route]
+(defrecord ServerComponent [config datasource routes]
   component/Lifecycle
   
   (start [component]
          (println "Starting server-component")
          (let [session-interceptor (middlewares/session {:store (jdbc-ring-session/jdbc-store (datasource) {:table :session_store})})
                server (-> {:env :prod
-                           ::http/routes (route/expand-routes (:routes route))
+                           ::http/routes (route/expand-routes (get-in routes [:routes (:active-route config)]))
                            ::http/resource-path "/public"
                            ::http/type :immutant
                            ::http/host "0.0.0.0"
