@@ -3,14 +3,19 @@
             [com.brunobonacci.mulog :as mu]
             [app.storage.interface :as storage]
             [app.route.interface :as route]
-            [app.server.core :as server]))
+            [app.server.core :as server]
+            [app.flags.interface :as flags]
+            [app.html.interface :as html]
+            [app.user.interface :as user]))
 
 (def config {:db-spec {:dbtype "postgres"
                        :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
                        :dbname "property-management"
                        :username "user"
                        :password (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_PASSWORD") "volley@2024")
-                       :dataSourceProperties {:socketTimeout 30}}})
+                       :dataSourceProperties {:socketTimeout 30}}
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes)))
+                      :internal (flags/get-routes)}})
 
 (defn init-logging []
   (let [prod (System/getenv "ENVIRONMENT")
@@ -29,13 +34,13 @@
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
-   :route (route/route-component config)
+   :routes (route/route-component {:config (:routes config)})
    :server (component/using
-            (server/server-component {:port 8080})
-            [:datasource :route])
+            (server/server-component {:port 8080 :active-route :external})
+            [:datasource :routes])
    :internal-server (component/using
-            (server/server-component {:port 9090})
-            [:datasource :route])))
+            (server/server-component {:port 9090 :active-route :internal})
+            [:datasource :routes])))
 
 (defn -main []
   (init-logging)
