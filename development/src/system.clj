@@ -3,7 +3,9 @@
             [com.brunobonacci.mulog :as mu]
             [app.storage.interface :as storage]
             [app.route.interface :as route]
-            [app.server.core :as server]))
+            [app.server.core :as server]
+            [app.html.interface :as html]
+            [app.user.interface :as user]))
 
 ;; Atom to hold the system state
 (def state (atom nil))
@@ -13,7 +15,9 @@
                        :dbname "property-management"
                        :username "user"
                        :password (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_PASSWORD") "volley@2024")
-                       :dataSourceProperties {:socketTimeout 30}}})
+                       :dataSourceProperties {:socketTimeout 30}}
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes)))
+                      :internal {}}})
 
 (defn init-logging []
   (let [prod (System/getenv "ENVIRONMENT")
@@ -32,7 +36,8 @@
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
-   :route (route/route-component config)
+   :route (route/route-component {:config (get-in config [:routes :external])})
+   :internal-routes (route/route-component {:config (get-in config [:routes :external])})
    :server (component/using
             (server/server-component {:port 8080})
             [:datasource :route])
