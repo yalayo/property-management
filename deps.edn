@@ -2,6 +2,7 @@
                                "bases/server/src"
                                "bases/server/resources"
                                "components/logs/src"
+                               "components/flags/src"
                                "components/html/src"
                                "components/web/src"
                                "components/web/resources"
@@ -37,6 +38,7 @@
                               org.slf4j/slf4j-simple {:mvn/version "2.0.9"}}}
            :test {:extra-paths ["bases/server/test"
                                 "components/logs/test"
+                                "components/flags/test"
                                 "components/html/test"
                                 "components/web/test"
                                 "components/user/test"

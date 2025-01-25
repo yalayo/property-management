@@ -26,6 +26,7 @@
 		;; Bricks
         poly/server {:local/root "../../bases/server"}
         poly/logs {:local/root "../../components/logs"}
+        poly/flags {:local/root "../../components/flags"}
 		poly/html {:local/root "../../components/html"}
 		poly/web {:local/root "../../components/web"}
         poly/user {:local/root "../../components/user"}
