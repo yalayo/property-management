@@ -25,3 +25,8 @@ CREATE TABLE session_store (session_id VARCHAR(36) NOT NULL PRIMARY KEY, idle_ti
 
 Check the logs
 docker logs management -f
+
+## Feature management
+Open feature flags UI
+ssh -i ssh-key-2023-04-27.key -L 4000:127.0.0.1:9090 root@195.201.1.232
+Open http://localhost:4000/flags
