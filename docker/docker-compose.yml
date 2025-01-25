@@ -6,7 +6,7 @@ services:
     user: root
     environment:
       - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=property-management
     restart: always
     ports: 
