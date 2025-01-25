@@ -11,16 +11,15 @@
             [app.excel.interface :as excel]
             [io.pedestal.interceptor :refer [interceptor]]
             [app.letter.interface :as letter]
-            [app.user.database :as db]
             [cheshire.core :as json]
             [clj-http.client :as client])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
-(defn template [html-body]
+(defn template [html-body title]
   [:html
    [:head
-    [:title "Title"]
+    [:title title]
     [:link {:href "tailwind.min.css" :rel "stylesheet"}]
     [:script {:src "htmx.min.js"}]]
    [:body (h/raw html-body)]])
@@ -32,11 +31,11 @@
              (h/html)
              (str))})
 
-(defn respond [content]
-  (ok (template (str (h/html (content))))))
+(defn respond [content title]
+  (ok (template (str (h/html (content))) title)))
 
-(defn respond-with-params [content value]
-  (ok (template (str (h/html (content value))))))
+(defn respond-with-params [content value title]
+  (ok (template (str (h/html (content value))) title)))
 
 (def auth-required
   (interceptor
@@ -48,18 +47,18 @@
                  context)))}))
 
 (defn index-page-handler [context]
-  (respond index/index-page))
+  (respond index/index-page "Wilkommen"))
 
 (defn dashboard-handler [context]
   (let [session (-> context :session)]
     (if (empty? session)
       (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)}))))
+      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)} "Dashboard"))))
 
 (def upload-details-handler
   {:name ::get
    :enter (fn [context]
-            (assoc context :response (respond upload-details/page)))})
+            (assoc context :response (respond upload-details/page "Hochladen")))})
 
 (def post-upload-details-handler
   {:name ::post
@@ -70,11 +69,11 @@
               (if (some? file-input-stream) 
                 (let [result (flatten (excel/process file-input-stream))]
                   (if (some #(:error %) result)
-                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result))
+                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
                     (assoc context :response {:status 200
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
-                (assoc context :response (respond upload-details/no-file-selected)))))})
+                (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
 (def letter-handler
   {:name ::get
@@ -90,7 +89,7 @@
   {:name ::get
    :enter (fn [context]
             (let [session (-> context :request :session)]
-              (assoc context :response (respond-with-params tenants/content (:tenants session)))))})
+              (assoc context :response (respond-with-params tenants/content (:tenants session) "Mieter(innen) Liste"))))})
 
 (def create-letter-handler
   {:name ::get
@@ -113,7 +112,7 @@
 (def upload-details-email
    {:name ::get
     :enter (fn [context]
-             (assoc context :response (respond upload-details/email-matters-aux)))})
+             (assoc context :response (respond upload-details/email-matters-aux "Umfrage")))})
 
 (def sendgrid-api-key "YOUR_SENDGRID_API_KEY");;Env: SENDGRID_API_KEY
 
@@ -141,7 +140,7 @@
                   email (:email params)
                   error-message (email-verification email)]
               (if (not (empty? error-message))
-                (assoc context :response (respond-with-params upload-details/email-matters error-message))
+                (assoc context :response (respond-with-params upload-details/email-matters error-message "Umfrage"))
                 (do
                   (println "Received email:" email)
                   (send-verification-email email)
@@ -163,8 +162,8 @@
                   verification-result (mark-user-as-verified email token)]
               (println verification-result)
               (if (= (:status verification-result) :success)
-                (assoc context :response (respond upload-details/email-succes-checked))
-                (assoc context :response (respond upload-details/email-error-checking)))))})
+                (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
+                (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
 
 (def routes
