@@ -12,7 +12,7 @@
                        :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
                        :dbname "property-management"
                        :username "user"
-                       :password (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_PASSWORD") "volley@2024")
+                       :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
              :routes {:external (into #{} (concat (user/get-routes) (html/get-routes)))
                       :internal (flags/get-routes)}})
