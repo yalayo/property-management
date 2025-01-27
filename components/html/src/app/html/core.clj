@@ -167,11 +167,11 @@
 
 
 (def routes
-  #{["/"
-     :get [(body-params/body-params) upload-details-handler]
-     :route-name ::upload-details]
+  #{["/upload-excel"
+     :get [(body-params/body-params) auth-required upload-details-handler]
+     :route-name ::upload-excel]
     ["/upload-details"
-     :post [(ring-mw/multipart-params) post-upload-details-handler]
+     :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
      :route-name ::post-upload-details]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
