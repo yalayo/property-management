@@ -1,4 +1,4 @@
-(ns app.html.user-buildings)
+(ns app.user.userbuildings)
 
 (def data  {:cur-user "Current user"
             :buildings [{:id 1 :name "Building 1" :address "Address 1" :pic "https://unsplash.com/es/fotos/una-gran-casa-blanca-sentada-al-costado-de-una-carretera-27dyESJ0RIk"}
@@ -23,7 +23,7 @@
        [:div
         {:class "flex min-w-0 gap-x-4"}
         [:img
-         {:class "w-32 h-32 flex-none rounded-3xl bg-gray-50",
+         {:class "w-48 h-48 flex-none rounded-3xl bg-gray-50",
           :src (:pic building),
           :alt "Picture of building"}]
         [:div
