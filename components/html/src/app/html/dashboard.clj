@@ -1,6 +1,15 @@
 (ns app.html.dashboard)
 
-(defn content [{:keys [email created-at]}]
+(defn content 
+  "Returns the main page content.\n
+   Args:\n
+   email: from current session,\n
+   created-at: date from current session,\n
+   content: is a map like {:title \"\" :content [...]}\n
+   where :title is the nav bar title and :content is the page main section content.\n
+   Returns: Hiccup page content.
+   " 
+  [{:keys [email created-at content]}]
   [:div
    {:class "min-h-full"}
    [:nav
@@ -22,7 +31,7 @@
            :class
            "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white",
            :aria-current "page"}
-          "Dashboard"]
+          (:title content)]
          [:a
           {:href "#",
            :class
@@ -235,7 +244,8 @@
      {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
      [:h1
       {:class "text-3xl font-bold tracking-tight text-gray-900"}
-      "Dashboard"]]]
+      (:title content)]]]
    [:main
     [:div
-     {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}]]])
+     {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
+     (:content content)]]])

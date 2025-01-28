@@ -54,7 +54,7 @@
   (let [session (-> context :session)]
     (if (empty? session)
       (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)} "Dashboard"))))
+      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content {:title "Dashboard" :content"Here the content..."}} "Dashboard"))))
 
 (def upload-details-handler
   {:name ::get
@@ -167,7 +167,10 @@
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
 (defn- loadUserBuildings []
-  (respond user-buildings/get-buildings "Buildings"));TODO probar que se cargue la pagina correctamente
+  ;(respond user-buildings/get-buildings "Buildings")
+  (let [content {:title "Buildings" :content (user-buildings/get-buildings)}]
+    (respond-with-params dashboard/content {:email (:email "user@example.com") :created-at (:created-at "2023-10-01") :content content} (:title content))
+  ));TODO probar que se cargue la pagina correctamente
 
 
 (defn usr-buildings-handler [context]
