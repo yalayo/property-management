@@ -1,18 +1,19 @@
 (ns app.html.core
 	(:require [hiccup2.core :as h]
-            [io.pedestal.http.params :as params]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.ring-middlewares :as ring-mw]
-            [ring.util.response :as response]
-            [app.html.index :as index]
-            [app.html.dashboard :as dashboard]
-            [app.html.upload-details :as upload-details]
-            [app.html.tenants-list :as tenants]
-            [app.excel.interface :as excel]
-            [io.pedestal.interceptor :refer [interceptor]]
-            [app.letter.interface :as letter]
-            [cheshire.core :as json]
-            [clj-http.client :as client])
+           [io.pedestal.http.params :as params]
+           [io.pedestal.http.body-params :as body-params]
+           [io.pedestal.http.ring-middlewares :as ring-mw]
+           [ring.util.response :as response]
+           [app.html.index :as index]
+           [app.html.dashboard :as dashboard]
+           [app.html.upload-details :as upload-details]
+           [app.html.tenants-list :as tenants]
+           [app.excel.interface :as excel]
+           [io.pedestal.interceptor :refer [interceptor]]
+           [app.letter.interface :as letter]
+           [cheshire.core :as json]
+           [clj-http.client :as client]
+           [app.html.user-buildings :as user-buildings])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -165,6 +166,19 @@
                 (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
+(defn- loadUserBuildings []
+  (respond user-buildings/get-buildings "Buildings"));TODO probar que se cargue la pagina correctamente
+
+
+(defn usr-buildings-handler [context]
+  ;(if (empty? (-> context :session))
+    ;(respond (user-buildings/get-buildings nil))
+    ;(response/redirect "/sign-in")
+    ;(respond (user-buildings/get-buildings (select-keys (-> context :session) [:email :created-at]))))
+  (loadUserBuildings))
+
+;(str (h/html (user-buildings/get-buildings nil)))
+
 
 (def routes
   #{["/"
@@ -193,4 +207,7 @@
      :route-name ::tenants]
     ["/tenants/:tenant-id"
      :get [params/keyword-params create-letter-handler]
-     :route-name ::create-letter]})
+     :route-name ::create-letter]
+     ["/cur-usr-buildings"
+      :get usr-buildings-handler
+      :route-name ::usr-buildings]})

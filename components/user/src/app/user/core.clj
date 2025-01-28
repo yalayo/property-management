@@ -4,8 +4,7 @@
             [io.pedestal.http.params :as params]
             [ring.util.response :as response]
             [buddy.hashers :as bh]
-            [app.user.database :as db]
-            [app.user.userbuildings :as user-buildings]))
+            [app.user.database :as db]))
 
 (defn home-page
   []
@@ -212,19 +211,6 @@
                                           :session (select-keys (into {} account) [:email :created-at])})
                 (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))})
 
-(defn- loadUserBuildings []
-  (respond user-buildings/get-buildings));TODO probar que se cargue la pagina correctamente
-
-
-(defn usr-buildings-handler [context]
-  ;(if (empty? (-> context :session))
-    ;(respond (user-buildings/get-buildings nil))
-    ;(response/redirect "/sign-in")
-    ;(respond (user-buildings/get-buildings (select-keys (-> context :session) [:email :created-at]))))
-  (loadUserBuildings))
-
-;(str (h/html (user-buildings/get-buildings nil)))
-
 
 (def routes
   #{["/sign-in"
@@ -236,7 +222,4 @@
     ["/sign-up" :post [(body-params/body-params) params/keyword-params post-sign-up-handler]
      :route-name ::post-sign-up]
     ["/sign-in" :post [(body-params/body-params) params/keyword-params post-sign-in-handler]
-     :route-name ::post-sign-in]
-    ["/cur-usr-buildings"
-     :get usr-buildings-handler
-     :route-name ::usr-buildings]})
+     :route-name ::post-sign-in]})

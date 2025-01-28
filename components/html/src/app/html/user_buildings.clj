@@ -1,4 +1,4 @@
-(ns app.user.userbuildings)
+(ns app.html.user-buildings)
 
 (def data  {:cur-user "Current user"
             :buildings [{:id 1 :name "Building 1" :address "Address 1" :pic "https://unsplash.com/es/fotos/una-gran-casa-blanca-sentada-al-costado-de-una-carretera-27dyESJ0RIk"}
