@@ -166,11 +166,12 @@
                 (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
-(defn user-buildings-handler [context]
-  (let [session (-> context :session) content {:title "Gebäude" :content (user-buildings/get-buildings)}]
-    (if (empty? session)
-      (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
+(defn user-buildings-handler [context] 
+  (let [session (-> context :session) 
+        content {:title "Gebäude" :content (user-buildings/get-buildings)}]
+      (if (empty? session)
+        (response/redirect "/sign-in")
+        (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
 
 (def routes
   #{["/"
@@ -200,6 +201,6 @@
     ["/tenants/:tenant-id"
      :get [params/keyword-params create-letter-handler]
      :route-name ::create-letter]
-     ["/usr-buildings"
+     ["/user-buildings"
       :get user-buildings-handler
-      :route-name ::usr-buildings]})
+      :route-name ::user-buildings]})
