@@ -168,10 +168,17 @@
 
 (defn user-buildings-handler [context] 
   (let [session (-> context :session) 
-        content {:title "Gebäude" :content (user-buildings/get-buildings)}]
+        content {:title "Buildings" :content (user-buildings/get-buildings)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
+
+(comment
+(defn user-buildings-handler [context];test function
+  (let [session (-> context :session)
+        content {:title "Buildings" :content (user-buildings/get-buildings)}]
+      (respond-with-params dashboard/content {:email (:email "test@example.com") :created-at (:created-at "2025-01-28") :content content} (:title content))))
+)
 
 (def routes
   #{["/"
