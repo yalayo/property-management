@@ -1,6 +1,6 @@
 (ns app.user.userbuildings)
 
-(def data  {:cur-user "Current user loged in..."
+(def data  {:cur-user "Current user"
             :buildings [{:id 1 :name "Building 1" :address "Address 1" :pic "https://unsplash.com/es/fotos/una-gran-casa-blanca-sentada-al-costado-de-una-carretera-27dyESJ0RIk"}
                         {:id 2 :name "Building 2" :address "Address 2" :pic "https://unsplash.com/es/fotos/un-patio-con-fogata-y-zona-de-estar-E_6gn_IdJMs"}
                         {:id 3 :name "Building 3" :address "Address 3" :pic "https://unsplash.com/es/fotos/una-vista-aerea-de-una-casa-en-el-otono-ljnOUFtwzFA"}
@@ -12,9 +12,9 @@
                         {:id 9 :name "Building 9" :address "Address 9" :pic "https://unsplash.com/es/fotos/una-pequena-cabana-en-el-bosque-con-una-cubierta-5Bnb9Ec07HI"}
                         {:id 10 :name "Building 10" :address "Address 10" :pic "https://unsplash.com/es/fotos/una-gran-casa-blanca-con-una-puerta-roja-yIZZucnwJWA"}]})
 
-(defn get-buildings [session-data]
-  [:div
-   [:h1 {:class "text-2xl font-semibold text-gray-900"} (str (:curuser data) "s'Buildings:")]
+(defn get-buildings []
+  [:div.container.mx-auto
+   [:h1 {:class "text-2xl font-semibold text-gray-900"} (str (:cur-user data) " s'Buildings:")]
    [:ul
     {:role "list", :class "divide-y divide-gray-100"}
     (for [building (:buildings data)]
@@ -23,7 +23,7 @@
        [:div
         {:class "flex min-w-0 gap-x-4"}
         [:img
-         {:class "w-12 h-12 flex-none rounded-full bg-gray-50",
+         {:class "w-48 h-48 flex-none rounded-3xl bg-gray-50",
           :src (:pic building),
           :alt "Picture of building"}]
         [:div

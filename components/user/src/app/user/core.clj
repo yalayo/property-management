@@ -169,7 +169,7 @@
 
 (defn ok [body]
   {:status 200
-   :headers {"Content-Type" "text/html" "Content-Security-Policy" "img-src 'self'"}
+   :headers {"Content-Type" "text/html" "Content-Security-Policy" "img-src *"};"img-src 'self'"
    :body (-> body
              (h/html)
              (str))})
@@ -213,7 +213,8 @@
                 (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))})
 
 (defn- loadUserBuildings []
-  (respond (user-buildings/get-buildings nil)));TODO probar que se cargue la pagina correctamente
+  (respond user-buildings/get-buildings));TODO probar que se cargue la pagina correctamente
+
 
 (defn usr-buildings-handler [context]
   ;(if (empty? (-> context :session))
@@ -221,6 +222,8 @@
     ;(response/redirect "/sign-in")
     ;(respond (user-buildings/get-buildings (select-keys (-> context :session) [:email :created-at]))))
   (loadUserBuildings))
+
+;(str (h/html (user-buildings/get-buildings nil)))
 
 
 (def routes
