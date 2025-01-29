@@ -2,14 +2,14 @@
 
 (def ^{:private true} mnu-config
   "Configuration for the navigation bar and user profile menus."
-   {:navbar {:menu [{:name "Dashboard" :href "#"}
-                                                  {:name "Buildings" :href "#"}
-                                                  {:name "Projects" :href "#"}
-                                                  {:name "Calendar" :href "#"}
-                                                  {:name "Reports" :href "#"}]}
-                                  :profile {:menu [{:name "Your Profile" :href "#"}
-                                                   {:name "Settings" :href "#"}
-                                                   {:name "Sign out" :href "#"}]}})
+   {:navbar {:menu [{:name "Dashboard" :href "#"} 
+                    {:name "Buildings" :href "/user-buildings"} 
+                    {:name "Projects" :href "#"} 
+                    {:name "Calendar" :href "#"} 
+                    {:name "Reports" :href "#"}]} 
+    :profile {:menu [{:name "Your Profile" :href "#"} 
+                     {:name "Settings" :href "#"} 
+                     {:name "Sign out" :href "#"}]}})
 
 (defn ^{:private true} load-navbar-menu 
   "Renders the navigation bar menus.\n
@@ -32,7 +32,6 @@
             "rounded-md px-3 py-2 text-sm font-medium text-white hover:text-gray-300"))
         :aria-current "page"}
        (menu :name)])))
-
 
 (defn ^{:private true} load-profile-menu 
   "Renders the user profile menus.\n
