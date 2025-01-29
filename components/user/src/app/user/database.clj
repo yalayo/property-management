@@ -16,16 +16,19 @@
                             :dataSourceProperties {:socketTimeout 30}}))
 
 (defn create-account [email password]
-  (jdbc/execute-one!
-   ds
-   (-> {:insert-into [:accounts]
-        :columns [:email :password]
-        :values [[email (bh/derive password)]]
-        :returning :*}
-       (sql/format))
-   {:builder-fn rs/as-unqualified-kebab-maps}))
+  (let [usr_id (str (java.util.UUID/randomUUID))]
+    (jdbc/execute-one!
+     ds
+     (-> {:insert-into [:accounts]
+          :columns [:user_id :email :password]
+          :values [[usr_id email (bh/derive password)]]
+          :returning :*}
+         (sql/format))
+     {:builder-fn rs/as-unqualified-kebab-maps})))
 
-;; (create-account "prueba@mail.com" "password")
+(comment
+  (create-account "prueba@mail.com" "password")
+  )
 
 (defn get-account [email]
   (jdbc/execute-one!

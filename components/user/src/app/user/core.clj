@@ -187,17 +187,32 @@
     (respond sign-up-page)
     (response/redirect "/dashboard")))
 
+(defn verifyPassw-Email  
+  "Verify the matching user password and new password, also check if email is registered.\n
+   Args: Receive an struct like {:psw \"password\" :pswc \"new password\" :email \"email\"}\n
+   Returns: an struct: {:status true :msg \"Ok\"}\n
+   If status is false and email is registered the message is about email\n
+   If status is false and password do not mathc but email isn't registered, the message is about password"
+  [data]
+  (let [result {:status true :msg "Ok"} db-email (db/get-account (:email data))]
+   (if (and (= (:psw data) (:pswc data)) (= db-email nil))
+     result
+     (if (not= db-email nil)
+       (assoc result :status false :msg "The email is already registered in the system")
+       (assoc result :status false :msg "Passwords do not match")))))
+
 (def post-sign-up-handler
   {:name ::post
    :enter (fn [context]
             (let [params (-> context :request :params)
-                  {:keys [email password password-confirmation]} params]
-              (if (= password password-confirmation)
+                  {:keys [email password password-confirmation]} params
+                  verify (verifyPassw-Email {:psw password :pswc password-confirmation :email email})] 
+              (if (= (:status verify) true)
                 (let [account (db/create-account email password)]
                   (assoc context :response {:status 200
                                            :headers {"HX-Redirect" "/dashboard"}
                                            :session (select-keys (into {} account) [:email :created-at])}))
-                (assoc context :response (-> (sign-up-form {:error "Passwords are not matching" :email email}) (ok))))))})
+                (assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
 
 (def post-sign-in-handler
   {:name ::post
