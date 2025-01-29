@@ -136,8 +136,7 @@
            [:span {:class "sr-only"} "Open user menu"]
            [:img
             {:class "h-8 w-8 rounded-full",
-             :src
-             "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+             :src "def-building.jpg",
              :alt ""}]]]
          (comment
            "Dropdown menu, show/hide based on menu state.\n\n                Entering: \"transition ease-out duration-100\"\n                  From: \"transform opacity-0 scale-95\"\n                  To: \"transform opacity-100 scale-100\"\n                Leaving: \"transition ease-in duration-75\"\n                  From: \"transform opacity-100 scale-100\"\n                  To: \"transform opacity-0 scale-95\"")
@@ -201,8 +200,7 @@
         {:class "flex-shrink-0"}
         [:img
          {:class "h-10 w-10 rounded-full",
-          :src
-          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+          :src "def-building.jpg",
           :alt ""}]]
        [:div
         {:class "ml-3"}
