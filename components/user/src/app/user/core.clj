@@ -230,10 +230,12 @@
   #{["/sign-in"
      :get sign-in-handler
      :route-name ::sign-in]
-    ["/sign-up"
+    ["/sign-in" :post [(body-params/body-params) params/keyword-params post-sign-in-handler]
+     :route-name ::post-sign-in]})
+
+(def internal-routes
+  #{["/sign-up"
      :get sign-up-handler
      :route-name ::sign-up]
     ["/sign-up" :post [(body-params/body-params) params/keyword-params post-sign-up-handler]
-     :route-name ::post-sign-up]
-    ["/sign-in" :post [(body-params/body-params) params/keyword-params post-sign-in-handler]
-     :route-name ::post-sign-in]})
+     :route-name ::post-sign-up]})
