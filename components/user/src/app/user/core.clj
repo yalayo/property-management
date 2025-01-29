@@ -210,7 +210,7 @@
               (if (= (:status verify) true)
                 (let [account (db/create-account email password)]
                   (assoc context :response {:status 200
-                                           :headers {"HX-Redirect" "/dashboard"}
+                                           :headers {"HX-Redirect" "/flags"}
                                            :session (select-keys (into {} account) [:email :created-at])}))
                 (assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
 
@@ -222,7 +222,7 @@
                   account (db/get-account email)]
               (if (and account (:valid (bh/verify password (:password account))))
                 (assoc context :response {:status 200
-                                          :headers {"HX-Location" "/dashboard"}
+                                          :headers {"HX-Location" "/upload-excel"}
                                           :session (select-keys (into {} account) [:email :created-at])})
                 (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))})
 

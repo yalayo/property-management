@@ -46,14 +46,16 @@
                  (assoc context :response {:status 302 :headers {"Location" "/sign-in"}})
                  context)))}))
 
-(defn index-page-handler [context]
-  (respond index/index-page "Wilkommen"))
+(def index-page-handler
+  {:name ::index
+   :enter (fn [context]
+            (assoc context :response {:status 302 :headers {"Location" "/sign-in"}}))})
 
-(defn dashboard-handler [context]
-  (let [session (-> context :session)]
-    (if (empty? session)
-      (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)} "Dashboard"))))
+(def dashboard-handler
+  {:name ::dashboard-handler
+   :enter (fn [context]
+            (let [session (-> context :request :session)]
+              (assoc context :response (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session)} "Dashboard"))))})
 
 (def post-dashboard-handler
   {:name ::post-dashboard
@@ -176,7 +178,10 @@
 
 
 (def routes
-  #{["/upload-excel"
+  #{["/"
+     :get [index-page-handler]
+     :route-name ::index]
+    ["/upload-excel"
      :get [(body-params/body-params) auth-required upload-details-handler]
      :route-name ::upload-excel]
     ["/upload-details"
@@ -188,13 +193,13 @@
     ["/dashboard"
      :post [(body-params/body-params) auth-required post-dashboard-handler]
      :route-name ::post-dashboard]
-     ["/questions"
+    ["/questions"
      :get [(body-params/body-params) upload-details-email]
      :route-name ::questions]
-     ["/questions"
+    ["/questions"
      :post [(body-params/body-params) params/keyword-params post-email-handler]
      :route-name ::post-questions]
-     ["/verify-email"
+    ["/verify-email"
      :get [params/keyword-params verify-email-handler]
      :route-name ::verify-email] 
     ["/letter"
