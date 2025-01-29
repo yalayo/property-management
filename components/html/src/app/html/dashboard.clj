@@ -1,6 +1,8 @@
 (ns app.html.dashboard)
 
-(def ^{:private true} mnu-config {:navbar {:menu [{:name "Dashboard" :href "#"}
+(def ^{:private true} mnu-config
+  "Configuration for the navigation bar and user profile menus."
+   {:navbar {:menu [{:name "Dashboard" :href "#"}
                                                   {:name "Buildings" :href "#"}
                                                   {:name "Projects" :href "#"}
                                                   {:name "Calendar" :href "#"}
@@ -70,13 +72,13 @@
   )
 
 (defn content 
-  "Returns the main page content.\n
+  "Renders the main page content.\n
    Args:\n
-   email: from current session,\n
-   created-at: date from current session,\n
-   content: is a map like {:title \"\" :content [...] :mnu-id \"Dashboard\"}\n
+   \temail: from current session,\n
+   \tcreated-at: date from current session,\n
+   \tcontent: is a map like {:title \"\" :content [...] :mnu-id \"Dashboard\"}\n
    where :title is the nav bar title, :content is the page main section content\n
-   and :mnu-id is the name of the menu to select.
+   and :mnu-id is the name of the menu to select.\n
    Returns: Hiccup page content.
    " 
   [{:keys [email created-at content]}]
