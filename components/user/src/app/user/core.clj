@@ -168,7 +168,7 @@
 
 (defn ok [body]
   {:status 200
-   :headers {"Content-Type" "text/html" "Content-Security-Policy" "img-src *"};"img-src 'self'"
+   :headers {"Content-Type" "text/html" "Content-Security-Policy" "img-src 'self'"}
    :body (-> body
              (h/html)
              (str))})
