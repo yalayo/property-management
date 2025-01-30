@@ -53,8 +53,8 @@
             (assoc context :response {:status 302 :headers {"Location" "/sign-in"}}))})
 
 (defn dashboard-handler [context]
-  (let [session (-> context :session)
-        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :mnu-id "Dashboard"}]
+  (let [session (-> context :requet :session)
+        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id "Dashboard"}]
     (if (empty? session)
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
@@ -178,19 +178,12 @@
                 (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
-(comment
 (defn user-buildings-handler [context] 
   (let [session (-> context :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :mnu-id "Buildings"}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :mneu-id "Buildings"}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
-)
-
-(defn user-buildings-handler [context];test function
-  (let [session (-> context :session)
-        content {:title "Buildings" :content (user-buildings/get-buildings) :mnu-id "Buildings"}]
-      (respond-with-params dashboard/content {:email (:email "test@example.com") :created-at (:created-at "2025-01-28") :content content} (:title content))))
 
 (def routes
   #{["/"

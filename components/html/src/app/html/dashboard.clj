@@ -20,7 +20,7 @@
     (construct-form-details id name)
     ))
 
-(def ^{:private true} mnu-config
+(def ^{:private true} menu-config
   "Configuration for the navigation bar and user profile menus."
    {:navbar {:menu [{:name "Dashboard" :href "#"} 
                     {:name "Buildings" :href "/user-buildings"} 
@@ -37,7 +37,7 @@
    \tmobile: (true, false) indicates whether the user is in landscape or portrait mode.\n
    Returns: Hiccup user profile menus from configuration."
   [mobile]
-  (let [profile-menu (:menu (:profile mnu-config))]
+  (let [profile-menu (:menu (:profile menu-config))]
     (for [menu profile-menu]
       [:a
        (if mobile
@@ -55,7 +55,7 @@
    \tselected: is the name of the selected menu\n
    Returns: Hiccup navigation bar menus from configuration."
   [mobile selected]
-  (let [navbar-menu (:menu (:navbar mnu-config))]
+  (let [navbar-menu (:menu (:navbar menu-config))]
     (for [menu navbar-menu]
       [:a
        {:href (menu :href),
@@ -75,9 +75,9 @@
    Args:\n
    \temail: from current session,\n
    \tcreated-at: date from current session,\n
-   \tcontent: is a map like {:title \"\" :content [...] :mnu-id \"Dashboard\"}\n
+   \tcontent: is a map like {:title \"\" :content [...] :menu-id \"Dashboard\"}\n
    where :title is the nav bar title, :content is the page main section content\n
-   and :mnu-id is the name of the menu to select.\n
+   and :menu-id is the name of the menu to select.\n
    Returns: Hiccup page content.
    "
   [{:keys [email created-at content]}] 
@@ -97,7 +97,7 @@
          {:class "ml-10 flex items-baseline space-x-4"}
          (comment
            "Current: \"bg-gray-900 text-white\", Default: \"text-gray-300 hover:bg-gray-700 hover:text-white\"")
-         (load-navbar-menu false (:mnu-id content))]]]
+         (load-navbar-menu false (:menu-id content))]]]
       [:div
        {:class "hidden md:block"}
        [:div
@@ -190,7 +190,7 @@
       {:class "space-y-1 px-2 pb-3 pt-2 sm:px-3"}
       (comment
         "Current: \"bg-gray-900 text-white\", Default: \"text-gray-300 hover:bg-gray-700 hover:text-white\"")
-      (load-navbar-menu true (:mnu-id content))]
+      (load-navbar-menu true (:menu-id content))]
      [:div
       {:class "border-t border-gray-700 pb-3 pt-4"}
       [:div
