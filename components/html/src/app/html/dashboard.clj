@@ -26,10 +26,10 @@
         (if mobile
           (if (= (menu :name) selected)
             "block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-            "block rounded-md px-3 py-2 text-base font-medium text-white hover:text-gray-500")
+            "block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-gray-500")
           (if (= (menu :name) selected)
             "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-            "rounded-md px-3 py-2 text-sm font-medium text-white hover:text-gray-300"))
+            "rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 hover:text-gray-300"))
         :aria-current "page"}
        (menu :name)])))
 
