@@ -179,7 +179,7 @@
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
 (defn user-buildings-handler [context] 
-  (let [session (-> context :session) 
+  (let [session (-> context :requet :session) 
         content {:title "Buildings" :content (user-buildings/get-buildings) :mneu-id "Buildings"}]
       (if (empty? session)
         (response/redirect "/sign-in")
