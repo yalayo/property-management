@@ -18,7 +18,7 @@
                        :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
              :routes {:external (into #{} (concat (user/get-routes) (html/get-routes)))
-                      :internal (flags/get-routes)}})
+                      :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes)))}})
 
 (defn init-logging []
   (let [prod (System/getenv "ENVIRONMENT")
@@ -51,7 +51,6 @@
                    (create-system)
                    (component/start-system))]
     (reset! state system)
-    (mu/log :system-started :message "Starting system for project: main")
     (.addShutdownHook
      (Runtime/getRuntime)
      (new Thread #(component/stop-system system)))))
