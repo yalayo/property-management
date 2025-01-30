@@ -208,10 +208,8 @@
                   {:keys [email password password-confirmation]} params
                   verify (verifyPassw-Email {:psw password :pswc password-confirmation :email email})] 
               (if (= (:status verify) true)
-                (let [account (db/create-account email password)]
-                  (assoc context :response {:status 200
-                                           :headers {"HX-Redirect" "/flags"}
-                                           :session (select-keys (into {} account) [:email :created-at])}))
+                (assoc context :response {:status 200
+                                          :headers {"HX-Redirect" "/flags"}})
                 (assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
 
 (def post-sign-in-handler
