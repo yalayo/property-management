@@ -3,14 +3,7 @@
 (def data  {:cur-user "Current user"
             :buildings [{:id 1 :name "Building 1" :address "Address 1" :pic "def-building.jpg"}
                         {:id 2 :name "Building 2" :address "Address 2" :pic "def-building.jpg"}
-                        {:id 3 :name "Building 3" :address "Address 3" :pic "def-building.jpg"}
-                        {:id 4 :name "Building 4" :address "Address 4" :pic "def-building.jpg"}
-                        {:id 5 :name "Building 5" :address "Address 5" :pic "def-building.jpg"}
-                        {:id 6 :name "Building 6" :address "Address 6" :pic "def-building.jpg"}
-                        {:id 7 :name "Building 7" :address "Address 7" :pic "def-building.jpg"}
-                        {:id 8 :name "Building 8" :address "Address 8" :pic "def-building.jpg"}
-                        {:id 9 :name "Building 9" :address "Address 9" :pic "def-building.jpg"}
-                        {:id 10 :name "Building 10" :address "Address 10" :pic "def-building.jpg"}]})
+                        {:id 3 :name "Building 3" :address "Address 3" :pic "def-building.jpg"}]})
 
 (defn get-buildings []
   [:div.container.mx-auto

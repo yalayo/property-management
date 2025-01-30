@@ -205,10 +205,10 @@
         {:class "ml-3"}
         [:div
          {:class "text-base font-medium leading-none text-white"}
-         "Property Management"]
+         (str "Create at: " created-at)]
         [:div
          {:class "text-sm font-medium leading-none text-gray-400"}
-         "property-m@example.com"]]
+         email]]
        [:button
         {:type "button",
          :class
