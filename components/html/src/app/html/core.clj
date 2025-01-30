@@ -41,7 +41,7 @@
   (interceptor
    {:name ::auth-required
     :enter (fn [context ]
-             (let [session (-> context :session)]
+             (let [session (-> context :request :session)]
                (if (empty? session)
                  (assoc context :response {:status 302 :headers {"Location" "/sign-in"}})
                  context)))}))
