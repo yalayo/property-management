@@ -11,7 +11,24 @@
                      {:name "Settings" :href "#"} 
                      {:name "Sign out" :href "#"}]}})
 
-(defn ^{:private true} load-navbar-menu 
+(defn- load-profile-menu
+  "Renders the user profile menus.\n
+   Args:\n
+   \tmobile: (true, false) indicates whether the user is in landscape or portrait mode.\n
+   Returns: Hiccup user profile menus from configuration."
+  [mobile]
+  (let [profile-menu (:menu (:profile mnu-config))]
+    (for [menu profile-menu]
+      [:a
+       (if mobile
+         {:href (menu :href)
+          :class "block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"}
+         {:href (menu :href)
+          :class "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          :role "menuitem"})
+       (menu :name)])))
+
+(defn- load-navbar-menu
   "Renders the navigation bar menus.\n
    Args:\n
    \tmobile: (true, false) indicates whether it is in landscape or portrait mode.\n
@@ -33,44 +50,7 @@
         :aria-current "page"}
        (menu :name)])))
 
-(defn ^{:private true} load-profile-menu 
-  "Renders the user profile menus.\n
-   Args:\n
-   \tmobile: (true, false) indicates whether the user is in landscape or portrait mode.\n
-   Returns: Hiccup user profile menus from configuration."
-  [mobile]
-  (let [profile-menu (:menu (:profile mnu-config))]
-    (for [menu profile-menu]
-      [:a
-        (if mobile
-          {:href (menu :href) 
-           :class "block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"}
-          {:href (menu :href) 
-           :class "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
-           :role "menuitem"})
-       (menu :name)])))
-
-(comment
-  (load-navbar-menu true "Projects");test landscape
-  (load-profile-menu true);test portrait
-  ;navbar
-  [:a
-   {:href "#",
-    :class "block px-4 py-2 text-sm text-gray-700",
-    :role "menuitem",
-    :tabindex "-1",
-    :id "user-menu-item-2"}
-   "Sign out"]
-  ;mobile
-  [:a
-   {:href "#",
-    :class
-    "block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"}
-   "Settings"]
-  
-  )
-
-(defn content 
+(defn content
   "Renders the main page content.\n
    Args:\n
    \temail: from current session,\n
@@ -79,8 +59,8 @@
    where :title is the nav bar title, :content is the page main section content\n
    and :mnu-id is the name of the menu to select.\n
    Returns: Hiccup page content.
-   " 
-  [{:keys [email created-at content]}]
+   "
+  [{:keys [email created-at content]}] 
   [:div
    {:class "min-h-full"}
    [:nav
@@ -205,10 +185,10 @@
         {:class "ml-3"}
         [:div
          {:class "text-base font-medium leading-none text-white"}
-         "Tom Cook"]
+         "Property Management"]
         [:div
          {:class "text-sm font-medium leading-none text-gray-400"}
-         "tom@example.com"]]
+         "property-m@example.com"]]
        [:button
         {:type "button",
          :class
