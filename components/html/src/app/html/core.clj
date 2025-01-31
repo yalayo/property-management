@@ -180,7 +180,7 @@
 
 (defn user-buildings-handler [context] 
   (let [session (-> context :requet :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :mneu-id "Buildings"}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id "Buildings"}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
