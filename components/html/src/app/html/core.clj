@@ -1,5 +1,5 @@
 (ns app.html.core
-	(:require [hiccup2.core :as h]
+	(:require [hiccup2.core :as h] 
            [io.pedestal.http.params :as params]
            [io.pedestal.http.body-params :as body-params]
            [io.pedestal.http.ring-middlewares :as ring-mw]
@@ -20,7 +20,7 @@
 (defn template [html-body title]
   [:html
    [:head
-    [:title title]
+    [:title title] 
     [:link {:href "tailwind.min.css" :rel "stylesheet"}]
     [:script {:src "htmx.min.js"}]]
    [:body (h/raw html-body)]])
