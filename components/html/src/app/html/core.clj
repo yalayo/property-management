@@ -21,6 +21,7 @@
   [:html
    [:head
     [:title title] 
+    [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
     [:link {:href "tailwind.min.css" :rel "stylesheet"}]
     [:script {:src "htmx.min.js"}]]
    [:body (h/raw html-body)]])
