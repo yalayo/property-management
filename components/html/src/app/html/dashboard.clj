@@ -55,6 +55,7 @@
    \tselected: is the name of the selected menu\n
    Returns: Hiccup navigation bar menus from configuration."
   [mobile selected]
+  (println selected)
   (let [navbar-menu (:menu (:navbar menu-config))]
     (for [menu navbar-menu]
       [:a
