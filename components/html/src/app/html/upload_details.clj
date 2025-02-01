@@ -34,6 +34,41 @@
     [:input {:type "file", :name "file"}]
     [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]])
 
+(defn no-file-selected2 []
+  [:div
+   [:div
+    {:class "px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}
+    [:div
+     {:class "sm:flex sm:items-start"}
+     [:div
+      {:class
+       "mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10"}
+      [:svg
+       {:class "size-6 text-red-600",
+        :fill "none",
+        :viewBox "0 0 24 24",
+        :stroke-width "1.5",
+        :stroke "currentColor",
+        :aria-hidden "true",
+        :data-slot "icon"}
+       [:path
+        {:stroke-linecap "round",
+         :stroke-linejoin "round",
+         :d
+         "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"}]]]
+     [:div {:class "mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left"}
+      [:div {:class "mt-2"}
+       [:p {:class "text-sm text-gray-500"} "Fehlende Informationen. Stellen Sie sicher, dass eine Datei ausgewählt wurde."]]]]]
+   [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
+    [:form
+     {:hx-encoding "multipart/form-data"
+      :hx-post "/upload-details-2"
+      :hx-target "this"
+      :hx-swap "#upload-file"}
+     [:input {:type "file", :name "file"}]
+     [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]])
+
+
 (defn wrong-file-selected [errors]
   [:div
    [:div
@@ -66,6 +101,43 @@
     [:form
      {:hx-encoding "multipart/form-data"
       :hx-post "/upload-details"
+      :hx-target "this"
+      :hx-swap "#upload-file"}
+     [:input {:type "file", :name "file"}]
+     [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]])
+
+(defn wrong-file-selected2 [errors]
+  [:div
+   [:div
+    {:class "px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}
+    [:div
+     {:class "sm:flex sm:items-start"}
+     [:div
+      {:class
+       "mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10"}
+      [:svg
+       {:class "size-6 text-red-600",
+        :fill "none",
+        :viewBox "0 0 24 24",
+        :stroke-width "1.5",
+        :stroke "currentColor",
+        :aria-hidden "true",
+        :data-slot "icon"}
+       [:path
+        {:stroke-linecap "round",
+         :stroke-linejoin "round",
+         :d
+         "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"}]]]
+     [:div {:class "mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left"}
+      [:div {:class "mt-2"}
+       [:p {:class "text-sm text-gray-500"} "Die Excel-Datei enthält Fehler in den folgenden Zellen: "]]
+      [:ul {:class "mt-2 text-sm text-red-600"}
+       (for [{:keys [cell-address message sheet-name]} errors]
+         [:li (str "Auf Blatt: " sheet-name " in Zelle: " cell-address ", Fehlermeldung: " message)])]]]]
+   [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
+    [:form
+     {:hx-encoding "multipart/form-data"
+      :hx-post "/upload-details-2"
       :hx-target "this"
       :hx-swap "#upload-file"}
      [:input {:type "file", :name "file"}]
@@ -165,6 +237,34 @@
        [:form
         {:hx-encoding "multipart/form-data"
          :hx-post "/upload-details"
+         :hx-target "this"
+         :hx-swap "#upload-file"}
+        [:input {:type "file", :name "file"}]
+        [:button.inline-block.shrink-0.rounded-md.border.border-blue-600.bg-blue-600.px-12.py-3.text-sm.font-medium.text-white.transition.hover:bg-transparent.hover:text-blue-600.focus:outline-none.focus:ring.active:text-blue-500.dark:hover:bg-blue-700.dark:hover:text-white "Hochladen"]]]]]
+    [:div
+     {:class
+      "absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]",
+      :aria-hidden "true"}
+     [:div
+      {:class
+       "relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]",
+       :style
+       "clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"}]]]])
+
+(defn page2 []
+  [:div
+   {:class "bg-white"}
+   [:div
+    {:class "relative isolate px-6 pt-14 lg:px-8"}
+    [:div
+     {:class "mx-auto max-w-2xl"}
+     [:div
+      {:class "text-center"}
+      [:h1 {:class "text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"} "Kalkulationen importieren"]
+      [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
+       [:form
+        {:hx-encoding "multipart/form-data"
+         :hx-post "/upload-details-2"
          :hx-target "this"
          :hx-swap "#upload-file"}
         [:input {:type "file", :name "file"}]

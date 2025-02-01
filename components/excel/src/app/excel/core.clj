@@ -97,6 +97,9 @@
                  {:name "property-calculated-days" :cell "M8" :required true}
                  {:name "property-days-per-person" :cell "M9"}])
 
+(def apartment-data [{:name "last-name" :cell "B3"}
+                     {:name "property-id" :cell "C3"}])
+
 (defn get-attribute-value [data]
   (let [sheet (:sheet data)
         name (keyword (:name data))
