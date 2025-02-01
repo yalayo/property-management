@@ -67,6 +67,11 @@
    :enter (fn [context]
             (assoc context :response (respond upload-details/page "Hochladen")))})
 
+(def upload-details-handler-2
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response (respond upload-details/page "Hochladen")))})
+
 (def post-upload-details-handler
   {:name ::post
    :enter (fn [context]
@@ -223,6 +228,9 @@
     ["/upload-details"
      :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
      :route-name ::post-upload-details]
+    ["/upload-excel-2"
+     :get [(body-params/body-params) upload-details-handler-2]
+     :route-name ::upload-excel-2]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
      :route-name ::dashboard] 
