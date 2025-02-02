@@ -13,7 +13,8 @@
            [app.letter.interface :as letter]
            [cheshire.core :as json]
            [clj-http.client :as client]
-           [app.html.user-buildings :as user-buildings])
+           [app.html.user-buildings :as user-buildings]
+           [app.html.building-apartments :as building-apartments])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -55,7 +56,7 @@
 
 (defn dashboard-handler [context]
   (let [session (-> context :requet :session)
-        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id "Dashboard"}]
+        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:dashboard dashboard/menu-id)}]
     (if (empty? session)
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
@@ -179,12 +180,27 @@
                 (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
-(defn user-buildings-handler [context] 
+#_(defn user-buildings-handler [context] 
   (let [session (-> context :requet :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id "Buildings"}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
+
+(defn user-buildings-handler [context];;Test function
+  (let [session (-> context :requet :session)
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
+    (if (empty? session)
+      (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
+      (response/redirect "/sign-in"))))
+
+(defn building-apartments-handler [context]
+  (let [session (-> context :requet :session)
+        params (-> context :request :path-params)
+        content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
+    (if (empty? session)
+      (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
+      (response/redirect "/sign-in"))))
 
 (def routes
   #{["/"
@@ -222,4 +238,7 @@
      :route-name ::create-letter]
      ["/user-buildings"
       :get user-buildings-handler
-      :route-name ::user-buildings]})
+      :route-name ::user-buildings]
+      ["/buildings-apartments"
+      :get [params/keyword-params building-apartments-handler]
+      :route-name ::building-apartments]})

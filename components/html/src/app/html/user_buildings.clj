@@ -16,7 +16,7 @@
        [:div
         {:class "flex min-w-0 gap-x-4"}
         [:img
-         {:class "w-32 h-32 flex-none rounded-3xl bg-gray-50",
+         {:class "w-24 h-24 flex-none rounded-3xl bg-gray-50",
           :src (:pic building),
           :alt "Picture of building"}]
         [:div
