@@ -18,26 +18,25 @@
     (println "ID in method: " id)
     (println "Name in method: " name)
     (construct-form-details id name)))
-
-
+ 
 (defn get-apartments-detail [building]
-  (let [[building-id building-name] building]
-    (println (str building)) 
+  (let [{:keys [id name]} building]
+    (println (str "Params received: " building)) 
     [:div.container.mx-auto
-     [:h2
-      {:class "text-3xl font-bold tracking-tight text-gray-900"}
-      (str building-name " apatments:")]
+     [:h3
+      {:class "text-2xl font-bold tracking-tight text-gray-900"}
+      (str name ": ID-" id)]
      [:ul
       {:class "space-y-4"}
       (for [{:keys [id name]} apartments]
         [:li
          {:key id, :class "border rounded-md p-4 shadow-sm"}
          [:form {:action "/dashboard" :method "post"}
-          [:h2
-           {:class "text-3xl font-bold tracking-tight text-gray-900"}
+          [:p
+           {:class "text-xl font-bold tracking-tight text-gray-900"}
            (str "ID: " id)]
           [:p
-           {:class "text-3xl font-bold tracking-tight text-gray-900"}
+           {:class "text-xl font-bold tracking-tight text-gray-900"}
            (str "Name: " name)]
           [:input {:type "hidden", :name "id",  :value id}]
           [:input {:type "hidden", :name "name", :value name}]
