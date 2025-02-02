@@ -185,21 +185,29 @@
         content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
-        (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
+        (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
 
-(defn user-buildings-handler [context];;Test function
-  (let [session (-> context :request :session)
+#_(defn building-apartments-post-handler [context]
+    (let [session (-> context :request :session)
+          params (-> context :request :form-params)
+          content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
+      (if (empty? session)
+        (response/redirect "/sign-in")
+        (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
+
+(defn user-buildings-handler [context];;Test function to ignore session data
+  (let [session (-> context :session)
         content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
     (if (empty? session)
-      (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
+      (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content))
       (response/redirect "/sign-in"))))
 
-(defn building-apartments-handler [context]
+(defn building-apartments-post-handler [context];;Test function to ignore session data
   (let [session (-> context :session)
-        params (-> context :query-params)
+        params (-> context :form-params)
         content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
     (if (empty? session)
-      (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
+      (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content))
       (response/redirect "/sign-in"))))
 
 (def routes
@@ -238,7 +246,7 @@
      :route-name ::create-letter]
      ["/user-buildings"
       :get user-buildings-handler
-      :route-name ::user-buildings]
-      ["/building-apartments"
-      :get [params/keyword-params building-apartments-handler]
-      :route-name ::building-apartments]})
+      :route-name ::user-buildings] 
+    ["/building-apartments"
+     :post [(body-params/body-params) building-apartments-post-handler]
+     :route-name ::building-apartments-post]})
