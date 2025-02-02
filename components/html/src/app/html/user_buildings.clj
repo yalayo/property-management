@@ -1,9 +1,12 @@
 (ns app.html.user-buildings)
 
-(def data  {:cur-user "Current user"
-            :buildings [{:id 1 :name "Building 1" :address "Address 1" :pic "def-building.jpg"}
-                        {:id 2 :name "Building 2" :address "Address 2" :pic "def-building.jpg"}
-                        {:id 3 :name "Building 3" :address "Address 3" :pic "def-building.jpg"}]})
+(def ^{:private true} data  {:cur-user "Current user"
+            :buildings [{:id "0001" :name "Building 1" :address "Address 1" :pic "def-building.jpg"}
+                        {:id "0002" :name "Building 2" :address "Address 2" :pic "def-building.jpg"}
+                        {:id "0003" :name "Building 3" :address "Address 3" :pic "def-building.jpg"}]})
+
+(defn- get-detail-url [id name]
+  (str "/building-apartments?id=" id "&name=" name))
 
 (defn get-buildings []
   [:div.container.mx-auto
@@ -23,7 +26,7 @@
          {:class "min-w-0 flex-auto"}
          [:p
           {:class "text-sm/6 font-semibold text-gray-900"}
-          (:name building)]
+          [:a {:href (get-detail-url (:id building) (:name building)) :class "hover:underline"} (:name building)]]
          [:p
           {:class "mt-1 truncate text-xs/5 text-gray-500"}
           (:address building)]]]

@@ -195,8 +195,8 @@
       (response/redirect "/sign-in"))))
 
 (defn building-apartments-handler [context]
-  (let [session (-> context :requet :session)
-        params (-> context :request :path-params)
+  (let [session (-> context :session)
+        params (-> context :query-params)
         content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
     (if (empty? session)
       (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
@@ -239,6 +239,6 @@
      ["/user-buildings"
       :get user-buildings-handler
       :route-name ::user-buildings]
-      ["/buildings-apartments"
+      ["/building-apartments"
       :get [params/keyword-params building-apartments-handler]
       :route-name ::building-apartments]})
