@@ -181,14 +181,14 @@
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
 #_(defn user-buildings-handler [context] 
-  (let [session (-> context :requet :session) 
+  (let [session (-> context :request :session) 
         content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
 
 (defn user-buildings-handler [context];;Test function
-  (let [session (-> context :requet :session)
+  (let [session (-> context :request :session)
         content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
     (if (empty? session)
       (respond-with-params dashboard/content {:email (:email "prop#example.com") :created-at (:created-at "2025-01-29") :content content} (:title content))
