@@ -1,15 +1,24 @@
 (ns app.html.dashboard)
 
+(def menu-id {:dashboard "Dashboard" 
+              :buildings "Buildings" 
+              :projects "Projects"
+              :calendar "Calendar"
+              :reports "Reports" 
+              :profile "Your Profile"
+              :settings "Settings"
+              :sign-out "Sign out"})
+
 (def ^{:private true} menu-config
   "Configuration for the navigation bar and user profile menus."
-   {:navbar {:menu [{:name "Dashboard" :href "#"} 
-                    {:name "Buildings" :href "/user-buildings"} 
-                    {:name "Projects" :href "#"} 
-                    {:name "Calendar" :href "#"} 
-                    {:name "Reports" :href "#"}]} 
-    :profile {:menu [{:name "Your Profile" :href "#"} 
-                     {:name "Settings" :href "#"} 
-                     {:name "Sign out" :href "/sign-in"}]}})
+   {:navbar {:menu [{:name (:dashboard menu-id ) :href "#"} 
+                    {:name (:buildings menu-id ) :href "/user-buildings"} 
+                    {:name (:projects menu-id ) :href "#"} 
+                    {:name (:calendar menu-id ) :href "#"} 
+                    {:name (:reports menu-id ) :href "#"}]} 
+    :profile {:menu [{:name (:profile menu-id ) :href "#"} 
+                     {:name (:settings menu-id ) :href "#"} 
+                     {:name (:sign-out menu-id ) :href "/sign-in"}]}})
 
 (defn- load-profile-menu
   "Renders the user profile menus.\n
