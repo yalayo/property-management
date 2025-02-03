@@ -21,7 +21,6 @@
  
 (defn get-apartments-detail [building]
   (let [{:keys [id name]} building]
-    (println (str "Params received: " building)) 
     [:div.container.mx-auto
      [:h3
       {:class "text-2xl font-bold tracking-tight text-gray-900 mb-4"}
@@ -32,7 +31,7 @@
         [:li
          {:key id, :class "border rounded-md p-4 shadow-sm"}
          [:form {:action "/apartment-datails" :method "post"};;TODO create this route and handler
-          [:p
+          #_[:p
            {:class "text-x font-bold tracking-tight text-gray-900"}
            (str "ID: " id)]
           [:p
