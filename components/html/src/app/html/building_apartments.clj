@@ -3,23 +3,8 @@
 (def ^{:private true} apartments [{:id 1 :name "Apartamento Central"}
                  {:id 2 :name "Villa Vista"}
                  {:id 3 :name "Residencia Aurora"}])
-
-(defn- construct-form-details [id name]
-  [:div
-   [:h2
-    {:class "text-3xl font-bold tracking-tight text-gray-900"}
-    (str "ID: " id)]
-   [:p
-    {:class "text-3xl font-bold tracking-tight text-gray-900"}
-    (str "Name: " name)]])
-
-(defn show-apartment-details [details]
-  (let [[id name] details]
-    (println "ID in method: " id)
-    (println "Name in method: " name)
-    (construct-form-details id name)))
  
-(defn get-apartments-detail [building]
+(defn get-building-apartments [building]
   (let [{:keys [id name]} building]
     [:div.container.mx-auto
      [:h3
@@ -30,7 +15,7 @@
       (for [{:keys [id name]} apartments]
         [:li
          {:key id, :class "border rounded-md p-4 shadow-sm"}
-         [:form {:action "/apartment-datails" :method "post"};;TODO create this route and handler
+         [:form {:action "/apartment-datails" :method "post"}
           #_[:p
            {:class "text-x font-bold tracking-tight text-gray-900"}
            (str "ID: " id)]

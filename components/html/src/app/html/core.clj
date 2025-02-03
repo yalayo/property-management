@@ -14,7 +14,8 @@
            [cheshire.core :as json]
            [clj-http.client :as client]
            [app.html.user-buildings :as user-buildings]
-           [app.html.building-apartments :as building-apartments])
+           [app.html.building-apartments :as building-apartments]
+           [app.html.apartment-details :as apartment-datails])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -190,24 +191,35 @@
 #_(defn building-apartments-post-handler [context]
     (let [session (-> context :request :session)
           params (-> context :request :form-params)
-          content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
+          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
 
 (defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
-      (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content))
+      (respond-with-params dashboard/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
 (defn building-apartments-post-handler [context];;Test function to ignore session data (it's called inside /user-buildings)
   (let [session (-> context :session)
         params (-> context :form-params)
-        content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]
+        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
-      (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content))
+      (respond-with-params dashboard/content dashboard-content (:title content))
+      (response/redirect "/sign-in"))))
+
+(defn post-apartment-datails-handler [context];;Test function to ignore session data (it's called inside /building-apartments)
+  (let [session (-> context :session)
+        params (-> context :form-params)
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
+    (if (empty? session)
+      (respond-with-params dashboard/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
 (def routes
@@ -222,10 +234,7 @@
      :route-name ::post-upload-details]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
-     :route-name ::dashboard]
-    #_["/dashboard"
-     :post [(body-params/body-params) auth-required post-dashboard-handler]
-     :route-name ::post-dashboard]
+     :route-name ::dashboard] 
     ["/questions"
      :get [(body-params/body-params) upload-details-email]
      :route-name ::questions]
@@ -245,8 +254,11 @@
      :get [params/keyword-params create-letter-handler]
      :route-name ::create-letter]
      ["/user-buildings"
-      :get user-buildings-handler
+      :get user-buildings-handler;TODO include auth-required
       :route-name ::user-buildings] 
     ["/building-apartments"
-     :post [(body-params/body-params) building-apartments-post-handler]
-     :route-name ::building-apartments-post]})
+     :post [(body-params/body-params) building-apartments-post-handler];TODO include auth-required
+     :route-name ::building-apartments-post]
+    ["/apartment-datails"
+     :post [(body-params/body-params) post-apartment-datails-handler];TODO include auth-required
+     :route-name ::post-apartment-datails]})
