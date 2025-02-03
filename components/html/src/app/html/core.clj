@@ -195,14 +195,14 @@
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
 
-(defn user-buildings-handler [context];;Test function to ignore session data
+(defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
         content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
     (if (empty? session)
       (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content))
       (response/redirect "/sign-in"))))
 
-(defn building-apartments-post-handler [context];;Test function to ignore session data
+(defn building-apartments-post-handler [context];;Test function to ignore session data (it's called inside /user-buildings)
   (let [session (-> context :session)
         params (-> context :form-params)
         content {:title "Building apartments" :content (building-apartments/get-apartments-detail params) :menu-id (:buildings dashboard/menu-id)}]

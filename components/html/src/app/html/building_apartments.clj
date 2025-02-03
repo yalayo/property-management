@@ -31,7 +31,7 @@
       (for [{:keys [id name]} apartments]
         [:li
          {:key id, :class "border rounded-md p-4 shadow-sm"}
-         [:form {:action "/dashboard" :method "post"}
+         [:form {:action "/apartment-datails" :method "post"};;TODO create this route and handler
           [:p
            {:class "text-x font-bold tracking-tight text-gray-900"}
            (str "ID: " id)]
