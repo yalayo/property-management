@@ -62,15 +62,6 @@
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
 
-#_(def post-dashboard-handler
-  {:name ::post-dashboard
-   :enter (fn [context]
-            (let [params (->  context :request :params)
-                  id (get params "id")
-                  name (get params "name")
-                  details [id, name]]
-              (assoc context :response (respond-with-params apartments-detail/show-apartment-details details "Apartment details"))))})
-
 (def upload-details-handler
   {:name ::get
    :enter (fn [context]
