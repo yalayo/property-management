@@ -58,9 +58,7 @@
 (defn dashboard-handler [context]
   (let [session (-> context :requet :session)
         dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:dashboard dashboard/menu-id)}]
-    (if (empty? session)
-      (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
+    (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard")))
 
 (def upload-details-handler
   {:name ::get
