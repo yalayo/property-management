@@ -25,7 +25,8 @@
     [:title title] 
     [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
     [:link {:href "tailwind.min.css" :rel "stylesheet"}]
-    [:script {:src "htmx.min.js"}]]
+    [:script {:src "htmx.min.js"}]
+    [:script {:src "_hyperscript.min.js"}]]
    [:body (h/raw html-body)]])
 
 (defn ok [body]
@@ -206,6 +207,15 @@
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
+
+#_(defn post-apartment-datails-handler [context]
+  (let [session (-> context :request :session)
+        params (-> context :request :form-params)
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-02-03" :content content}]
+    (if (empty? session)
+      (response/redirect "/sign-in")
+      (respond-with-params dashboard/content dashboard-content (:title content)))))
 
 (defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
