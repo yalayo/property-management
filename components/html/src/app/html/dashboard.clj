@@ -115,7 +115,7 @@
          [:div
           [:button
            {:type "button",
-            :_ "on click toggle .hidden on #dropdown-menu",;;Hyperscript code to control landscape dropdown menu
+            :_ "on click toggle .hidden on #dropdown-menu on blur wait 180ms then toggle .hidden on #dropdown-menu",;;Hyperscript code to control landscape dropdown menu
             :class
             "relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800",
             :aria-expanded "false",
