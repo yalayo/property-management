@@ -182,11 +182,13 @@
   {:name ::get
    :enter (fn [context]
             (if (empty? (-> context :request :session))
-              (respond sign-in-page)
+              (assoc context :response (respond sign-in-page))
               (assoc context :response {:status 200 :headers {"HX-Redirect" "/upload-excel"}})))})
 
-(defn sign-up-handler [_]
-  (respond sign-up-page))
+(def sign-up-handler
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response (respond sign-up-page)))})
 
 (defn verifyPassw-Email  
   "Verify the matching user password and new password, also check if email is registered.\n
