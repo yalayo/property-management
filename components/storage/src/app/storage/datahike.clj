@@ -18,6 +18,7 @@
   (try
     (when-not (d/database-exists? config)
       (d/create-database config))
+    (d/connect config)
     (catch ExceptionInfo e
       (mu/log :log-exception :exception e))))
 
