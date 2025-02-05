@@ -183,7 +183,7 @@
    :enter (fn [context]
             (if (empty? (-> context :request :session))
               (assoc context :response (respond sign-in-page))
-              (assoc context :response {:status 200 :headers {"HX-Redirect" "/upload-excel"}})))})
+              (assoc context :response {:status 302 :headers {"Location" "/upload-excel"}})))})
 
 (def sign-up-handler
   {:name ::get
