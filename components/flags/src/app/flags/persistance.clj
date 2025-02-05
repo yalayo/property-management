@@ -22,5 +22,5 @@
 
 (comment
   "Store the schema, for the moment let's do it manually"
-  (storage/transact schema "feature-flags")
+  (storage/transact schema "flags")
   )
