@@ -178,15 +178,15 @@
   (ok (template (str (h/html (content))))))
 
 ;; Handlers
-(defn sign-in-handler [context]
-  (if (empty? (-> context :session)) 
-   (respond sign-in-page)
-   (response/redirect "/dashboard")))
+(def sign-in-handler
+  {:name ::get
+   :enter (fn [context]
+            (if (empty? (-> context :request :session))
+              (respond sign-in-page)
+              (assoc context :response {:status 200 :headers {"HX-Redirect" "/upload-excel"}})))})
 
-(defn sign-up-handler [context]
-  (if (empty? (-> context :session))
-    (respond sign-up-page)
-    (response/redirect "/dashboard")))
+(defn sign-up-handler [_]
+  (respond sign-up-page))
 
 (defn verifyPassw-Email  
   "Verify the matching user password and new password, also check if email is registered.\n
@@ -215,17 +215,24 @@
                                             :headers {"HX-Redirect" "/flags"}})) 
                 (assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
 
+(defn sign-in [context]
+  (let [params (-> context :request :params)
+        {:keys [email password]} params
+        account (db/get-account email)]
+    (if (and account (:valid (bh/verify password (:password account))))
+      (assoc context :response {:status 200
+                                :headers {"HX-Location" "/upload-excel"}
+                                :session (select-keys (into {} account) [:email :created-at])})
+      (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))
+
 (def post-sign-in-handler
   {:name ::post
    :enter (fn [context]
-            (let [params (-> context :request :params)
-                  {:keys [email password]} params
-                  account (db/get-account email)]
-              (if (and account (:valid (bh/verify password (:password account))))
+            (let [session (-> context :requet :session)]
+              (if (empty? session)
+                (sign-in context)
                 (assoc context :response {:status 200
-                                          :headers {"HX-Location" "/upload-excel"}
-                                          :session (select-keys (into {} account) [:email :created-at])})
-                (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))})
+                                          :headers {"HX-Location" "/upload-excel"}}))))})
 
 
 (def routes
