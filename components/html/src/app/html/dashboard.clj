@@ -1,35 +1,24 @@
 (ns app.html.dashboard)
 
-(def apartments [{:id 1 :name "Apartamento Central"}
-                 {:id 2 :name "Villa Vista"}
-                 {:id 3 :name "Residencia Aurora"}])
-
-(defn construct-form-details [id name]
-  [:div
-   [:h2
-    {:class "text-3xl font-bold tracking-tight text-gray-900"}
-    (str "ID: " id)]
-   [:p
-    {:class "text-3xl font-bold tracking-tight text-gray-900"}
-    (str "Name: " name)]])
-
-(defn show-apartment-details [details]
-  (let [[id name] details] 
-    (println "ID in method: " id)
-    (println "Name in method: " name)
-    (construct-form-details id name)
-    ))
+(def menu-id {:dashboard "Dashboard" 
+              :buildings "Buildings" 
+              :projects "Projects"
+              :calendar "Calendar"
+              :reports "Reports" 
+              :profile "Your Profile"
+              :settings "Settings"
+              :sign-out "Sign out"})
 
 (def ^{:private true} menu-config
   "Configuration for the navigation bar and user profile menus."
-   {:navbar {:menu [{:name "Dashboard" :href "#"} 
-                    {:name "Buildings" :href "/user-buildings"} 
-                    {:name "Projects" :href "#"} 
-                    {:name "Calendar" :href "#"} 
-                    {:name "Reports" :href "#"}]} 
-    :profile {:menu [{:name "Your Profile" :href "#"} 
-                     {:name "Settings" :href "#"} 
-                     {:name "Sign out" :href "/sign-in"}]}})
+   {:navbar {:menu [{:name (:dashboard menu-id ) :href "#"} 
+                    {:name (:buildings menu-id ) :href "/user-buildings"} 
+                    {:name (:projects menu-id ) :href "#"} 
+                    {:name (:calendar menu-id ) :href "#"} 
+                    {:name (:reports menu-id ) :href "#"}]} 
+    :profile {:menu [{:name (:profile menu-id ) :href "#"} 
+                     {:name (:settings menu-id ) :href "#"} 
+                     {:name (:sign-out menu-id ) :href "/sign-in"}]}})
 
 (defn- load-profile-menu
   "Renders the user profile menus.\n
@@ -55,7 +44,6 @@
    \tselected: is the name of the selected menu\n
    Returns: Hiccup navigation bar menus from configuration."
   [mobile selected]
-  (println selected)
   (let [navbar-menu (:menu (:navbar menu-config))]
     (for [menu navbar-menu]
       [:a
@@ -247,22 +235,4 @@
 [:main
  [:div
   {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
-     (:content content)
-  [:ul
-   {:class "space-y-4"}
-   (for [{:keys [id name]} apartments]
-     [:li
-      {:key id, :class "border rounded-md p-4 shadow-sm"}
-      [:form {:action "/dashboard" :method "post"}
-      [:h2
-       {:class "text-3xl font-bold tracking-tight text-gray-900"}
-       (str "ID: " id)]
-      [:p
-       {:class "text-3xl font-bold tracking-tight text-gray-900"}
-       (str "Name: " name)]
-       [:input {:type "hidden", :name "id",  :value id}]
-       [:input {:type "hidden", :name "name", :value name}]
-       [:button
-        {:type "submit",
-         :class "flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"}
-        "Show Details"]]])]]]])
+     (:content content)]]])

@@ -13,7 +13,9 @@
            [app.letter.interface :as letter]
            [cheshire.core :as json]
            [clj-http.client :as client]
-           [app.html.user-buildings :as user-buildings])
+           [app.html.user-buildings :as user-buildings]
+           [app.html.building-apartments :as building-apartments]
+           [app.html.apartment-details :as apartment-datails])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -55,24 +57,20 @@
 
 (defn dashboard-handler [context]
   (let [session (-> context :requet :session)
-        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id "Dashboard"}]
+        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:dashboard dashboard/menu-id)}]
     (if (empty? session)
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
-
-(def post-dashboard-handler
-  {:name ::post-dashboard
-   :enter (fn [context]
-            (let [params (->  context :request :params)
-                  id (get params "id")
-                  name (get params "name")
-                  details [id, name]]
-              (assoc context :response (respond-with-params dashboard/show-apartment-details details "Apartment details"))))})
 
 (def upload-details-handler
   {:name ::get
    :enter (fn [context]
             (assoc context :response (respond upload-details/page "Hochladen")))})
+
+(def upload-details-handler-2
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response (respond upload-details/page2 "Hochladen")))})
 
 (def post-upload-details-handler
   {:name ::post
@@ -88,6 +86,21 @@
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
+
+(def post-upload-details-handler-2
+  {:name ::post
+   :enter (fn [context]
+            (let [multipart-data (:multipart-params (-> context :request))
+                  file (get multipart-data "file")
+                  file-input-stream (:tempfile file)]
+              (if (some? file-input-stream)
+                (let [result (flatten (excel/process file-input-stream))]
+                  (if (some #(:error %) result)
+                    (assoc context :response (respond-with-params upload-details/wrong-file-selected2 result "Hochladen"))
+                    (assoc context :response {:status 200
+                                              :headers {"HX-Redirect" "/tenants"}
+                                              :session {:tenants result}})))
+                (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
 
 (def letter-handler
   {:name ::get
@@ -179,12 +192,46 @@
                 (assoc context :response (respond upload-details/email-succes-checked "Email Prüfung"))
                 (assoc context :response (respond upload-details/email-error-checking "Email Prüfung")))))})
 
-(defn user-buildings-handler [context] 
-  (let [session (-> context :requet :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id "Buildings"}]
+#_(defn user-buildings-handler [context] 
+  (let [session (-> context :request :session) 
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
-        (respond-with-params dashboard/content {:email (:email (:email session)) :created-at (:created-at (:created-at session)) :content content} (:title content)))))
+        (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
+
+#_(defn building-apartments-post-handler [context]
+    (let [session (-> context :request :session)
+          params (-> context :request :form-params)
+          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}]
+      (if (empty? session)
+        (response/redirect "/sign-in")
+        (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
+
+(defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
+  (let [session (-> context :session)
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
+    (if (empty? session)
+      (respond-with-params dashboard/content dashboard-content (:title content))
+      (response/redirect "/sign-in"))))
+
+(defn building-apartments-post-handler [context];;Test function to ignore session data (it's called inside /user-buildings)
+  (let [session (-> context :session)
+        params (-> context :form-params)
+        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
+    (if (empty? session)
+      (respond-with-params dashboard/content dashboard-content (:title content))
+      (response/redirect "/sign-in"))))
+
+(defn post-apartment-datails-handler [context];;Test function to ignore session data (it's called inside /building-apartments)
+  (let [session (-> context :session)
+        params (-> context :form-params)
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:buildings dashboard/menu-id)}
+        dashboard-content {:email "prop#example.com" :created-at "2025-01-29" :content content}]
+    (if (empty? session)
+      (respond-with-params dashboard/content dashboard-content (:title content))
+      (response/redirect "/sign-in"))))
 
 (def routes
   #{["/"
@@ -196,12 +243,15 @@
     ["/upload-details"
      :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
      :route-name ::post-upload-details]
+    ["/upload-excel-2"
+     :get [(body-params/body-params) upload-details-handler-2]
+     :route-name ::upload-excel-2]
+    ["/upload-details-2"
+     :post [(ring-mw/multipart-params) post-upload-details-handler-2]
+     :route-name ::post-upload-details-2]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
-     :route-name ::dashboard]
-    ["/dashboard"
-     :post [(body-params/body-params) auth-required post-dashboard-handler]
-     :route-name ::post-dashboard]
+     :route-name ::dashboard] 
     ["/questions"
      :get [(body-params/body-params) upload-details-email]
      :route-name ::questions]
@@ -221,5 +271,11 @@
      :get [params/keyword-params create-letter-handler]
      :route-name ::create-letter]
      ["/user-buildings"
-      :get user-buildings-handler
-      :route-name ::user-buildings]})
+      :get user-buildings-handler;TODO include auth-required
+      :route-name ::user-buildings] 
+    ["/building-apartments"
+     :post [(body-params/body-params) building-apartments-post-handler];TODO include auth-required
+     :route-name ::building-apartments-post]
+    ["/apartment-datails"
+     :post [(body-params/body-params) post-apartment-datails-handler];TODO include auth-required
+     :route-name ::post-apartment-datails]})
