@@ -1,24 +1,24 @@
 (ns app.html.dashboard)
 
-(def menu-id {:dashboard "Dashboard" 
-              :buildings "Buildings" 
-              :projects "Projects"
-              :calendar "Calendar"
-              :reports "Reports" 
-              :profile "Your Profile"
-              :settings "Settings"
-              :sign-out "Sign out"})
+(def menu-id {:main-menu-1 "Dashboard" 
+              :main-menu-2 "Buildings" 
+              :main-menu-3 "Projects"
+              :main-menu-4 "Calendar"
+              :main-menu-5 "Reports" 
+              :sec-menu-1 "Your Profile"
+              :sec-menu-2 "Settings"
+              :sec-menu-3 "Sign out"})
 
 (def ^{:private true} menu-config
   "Configuration for the navigation bar and user profile menus."
-   {:navbar {:menu [{:name (:dashboard menu-id ) :href "#"} 
-                    {:name (:buildings menu-id ) :href "/user-buildings"} 
-                    {:name (:projects menu-id ) :href "#"} 
-                    {:name (:calendar menu-id ) :href "#"} 
-                    {:name (:reports menu-id ) :href "#"}]} 
-    :profile {:menu [{:name (:profile menu-id ) :href "#"} 
-                     {:name (:settings menu-id ) :href "#"} 
-                     {:name (:sign-out menu-id ) :href "/sign-in"}]}})
+   {:navbar {:menu [{:name (:main-menu-1 menu-id ) :href "#"} 
+                    {:name (:main-menu-2 menu-id ) :href "/user-buildings"} 
+                    {:name (:main-menu-3 menu-id ) :href "#"} 
+                    {:name (:main-menu-4 menu-id ) :href "#"} 
+                    {:name (:main-menu-5 menu-id ) :href "#"}]} 
+    :profile {:menu [{:name (:sec-menu-1 menu-id ) :href "#"} 
+                     {:name (:sec-menu-2 menu-id ) :href "#"} 
+                     {:name (:sec-menu-3 menu-id ) :href "/sign-in"}]}})
 
 (defn- load-profile-menu
   "Renders the user profile menus.\n

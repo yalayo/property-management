@@ -58,7 +58,7 @@
 
 (defn dashboard-handler [context]
   (let [session (-> context :requet :session)
-        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:dashboard dashboard/menu-id)}]
+        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 dashboard/menu-id)}]
     (if (empty? session)
       (response/redirect "/sign-in")
       (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
@@ -195,7 +195,7 @@
 
 #_(defn user-buildings-handler [context] 
   (let [session (-> context :request :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
@@ -203,7 +203,7 @@
 #_(defn building-apartments-post-handler [context]
     (let [session (-> context :request :session)
           params (-> context :request :form-params)
-          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}]
+          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
         (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
@@ -211,7 +211,7 @@
 #_(defn post-apartment-datails-handler [context]
   (let [session (-> context :request :session)
         params (-> context :request :form-params)
-        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:buildings dashboard/menu-id)}
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 dashboard/menu-id)}
         dashboard-content {:email (:email session) :created-at (:created-at session) :content content}]
     (if (empty? session)
       (response/redirect "/sign-in")
@@ -219,7 +219,7 @@
 
 (defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:buildings dashboard/menu-id)}
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 dashboard/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
       (respond-with-params dashboard/content dashboard-content (:title content))
@@ -228,7 +228,7 @@
 (defn building-apartments-post-handler [context];;Test function to ignore session data (it's called inside /user-buildings)
   (let [session (-> context :session)
         params (-> context :form-params)
-        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}
+        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 dashboard/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
       (respond-with-params dashboard/content dashboard-content (:title content))
@@ -237,7 +237,7 @@
 (defn post-apartment-datails-handler [context];;Test function to ignore session data (it's called inside /building-apartments)
   (let [session (-> context :session)
         params (-> context :form-params)
-        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:buildings dashboard/menu-id)}
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 dashboard/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
       (respond-with-params dashboard/content dashboard-content (:title content))
