@@ -62,7 +62,7 @@
    [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
     [:form
      {:hx-encoding "multipart/form-data"
-      :hx-post "/upload-details-2"
+      :hx-post "/upload-clients-details"
       :hx-target "this"
       :hx-swap "#upload-file"}
      [:input {:type "file", :name "file"}]
@@ -137,7 +137,7 @@
    [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
     [:form
      {:hx-encoding "multipart/form-data"
-      :hx-post "/upload-details-2"
+      :hx-post "/upload-clients-details"
       :hx-target "this"
       :hx-swap "#upload-file"}
      [:input {:type "file", :name "file"}]
@@ -264,7 +264,7 @@
       [:div {:id "upload-file" :class "mt-10 flex items-center justify-center gap-x-6"}
        [:form
         {:hx-encoding "multipart/form-data"
-         :hx-post "/upload-details-2"
+         :hx-post "/upload-clients-details"
          :hx-target "this"
          :hx-swap "#upload-file"}
         [:input {:type "file", :name "file"}]
