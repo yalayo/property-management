@@ -115,7 +115,8 @@
          [:div
           [:button
            {:type "button",
-            :_ "on click toggle .hidden on #dropdown-menu on blur wait 180ms then toggle .hidden on #dropdown-menu",;;Hyperscript code to control landscape dropdown menu
+            :_ "on click toggle .hidden on #dropdown-menu
+                on blur wait 180ms then toggle .hidden on #dropdown-menu",;;Hyperscript code to control landscape dropdown menu
             :class
             "relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800",
             :aria-expanded "false",
@@ -127,7 +128,7 @@
              :src "def-building.jpg",
              :alt ""}]]]
          (comment
-           "Dropdown menu, show/hide based on menu state.\n\n                Entering: \"transition ease-out duration-100\"\n                  From: \"transform opacity-0 scale-95\"\n                  To: \"transform opacity-100 scale-100\"\n                Leaving: \"transition ease-in duration-75\"\n                  From: \"transform opacity-100 scale-100\"\n                  To: \"transform opacity-0 scale-95\"")
+           "Dropdown menu, show/hide based on menu state.\n\n Entering: \"transition ease-out duration-100\"\n From: \"transform opacity-0 scale-95\"\n                  To: \"transform opacity-100 scale-100\"\n                Leaving: \"transition ease-in duration-75\"\n                  From: \"transform opacity-100 scale-100\"\n                  To: \"transform opacity-0 scale-95\"")
          [:div#dropdown-menu
           {:class
            "hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
@@ -143,8 +144,12 @@
        [:button
         {:type "button",
          :_ "on click toggle .hidden on #mobile-menu
-             on click toggle .hidden on #svg-v
-             on click toggle .hidden on #svg-h",;;Hiperscript code to control mobile menu
+             then toggle .hidden on #svg-v
+             then toggle .hidden on #svg-h
+             on blur wait 180ms 
+             then toggle .hidden on #mobile-menu
+             then toggle .hidden on #svg-v
+             then toggle .hidden on #svg-h",;;Hyperscript code to control portrait dropdown menu
          :class
          "relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800",
          :aria-controls "mobile-menu",
@@ -177,7 +182,7 @@
            :d "M6 18L18 6M6 6l12 12"}]]]]]]
     (comment "Mobile menu, show/hide based on menu state.")
     [:div#mobile-menu;;Menu mobile (Portrait)
-     {:class "hidden md:hidden", :id "mobile-menu"}
+     {:class "hidden md:hidden"}
      [:div
       {:class "space-y-1 px-2 pb-3 pt-2 sm:px-3"}
       (comment
