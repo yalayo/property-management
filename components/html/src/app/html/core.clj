@@ -67,6 +67,11 @@
    :enter (fn [context]
             (assoc context :response (respond upload-details/page "Hochladen")))})
 
+(def upload-details-handler-2
+  {:name ::get
+   :enter (fn [context]
+            (assoc context :response (respond upload-details/page2 "Hochladen")))})
+
 (def post-upload-details-handler
   {:name ::post
    :enter (fn [context]
@@ -81,6 +86,21 @@
                                               :headers {"HX-Redirect" "/tenants"}
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
+
+(def post-upload-details-handler-2
+  {:name ::post
+   :enter (fn [context]
+            (let [multipart-data (:multipart-params (-> context :request))
+                  file (get multipart-data "file")
+                  file-input-stream (:tempfile file)]
+              (if (some? file-input-stream)
+                (let [result (flatten (excel/process file-input-stream))]
+                  (if (some #(:error %) result)
+                    (assoc context :response (respond-with-params upload-details/wrong-file-selected2 result "Hochladen"))
+                    (assoc context :response {:status 200
+                                              :headers {"HX-Redirect" "/tenants"}
+                                              :session {:tenants result}})))
+                (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
 
 (def letter-handler
   {:name ::get
@@ -223,6 +243,12 @@
     ["/upload-details"
      :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
      :route-name ::post-upload-details]
+    ["/upload-excel-2"
+     :get [(body-params/body-params) upload-details-handler-2]
+     :route-name ::upload-excel-2]
+    ["/upload-details-2"
+     :post [(ring-mw/multipart-params) post-upload-details-handler-2]
+     :route-name ::post-upload-details-2]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
      :route-name ::dashboard] 
