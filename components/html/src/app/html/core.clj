@@ -205,7 +205,7 @@
           content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:buildings dashboard/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
-        (respond-with-params dashboard/content {:email "prop#example.com" :created-at "2025-01-29" :content content} (:title content)))))
+        (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
 
 (defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
