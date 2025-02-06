@@ -96,7 +96,7 @@
                   (if (some #(:error %) result)
                     (assoc context :response (respond-with-params upload-details/wrong-file-selected2 result "Hochladen"))
                     (assoc context :response {:status 200
-                                              :headers {"HX-Redirect" "/tenants"}
+                                              :headers {"HX-Redirect" "/clients"}
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
 
@@ -115,6 +115,11 @@
    :enter (fn [context]
             (let [session (-> context :request :session)]
               (assoc context :response (respond-with-params tenants/content (:tenants session) "Mieter(innen) Liste"))))})
+(def clients-handler
+  {:name ::get
+    :enter (fn [context]
+             (let [session (-> context :request :session)]
+               (assoc context :response (respond-with-params tenants/client-content (:tenants session) "Mieter(innen) Liste"))))})
 
 (def create-letter-handler
   {:name ::get
@@ -266,7 +271,7 @@
      :get [tenants-handler]
      :route-name ::tenants]
     ["/clients"
-     :get [tenants-handler]
+     :get [clients-handler]
      :route-name ::clients]
     ["/tenants/:tenant-id"
      :get [params/keyword-params create-letter-handler]
