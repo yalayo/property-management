@@ -68,7 +68,7 @@
    :enter (fn [context]
             (assoc context :response (respond upload-details/page "Hochladen")))})
 
-(def upload-details-handler-2
+(def upload-client-handler
   {:name ::get
    :enter (fn [context]
             (assoc context :response (respond upload-details/page2 "Hochladen")))})
@@ -88,18 +88,18 @@
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
-(def post-upload-details-handler-2
+(def post-upload-clients-handler
   {:name ::post
    :enter (fn [context]
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream)
-                (let [result (flatten (excel/process file-input-stream))]
+                (let [result (flatten (excel/extract-client-data file-input-stream))]
                   (if (some #(:error %) result)
                     (assoc context :response (respond-with-params upload-details/wrong-file-selected2 result "Hochladen"))
                     (assoc context :response {:status 200
-                                              :headers {"HX-Redirect" "/tenants"}
+                                              :headers {"HX-Redirect" "/clients"}
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
 
@@ -118,6 +118,11 @@
    :enter (fn [context]
             (let [session (-> context :request :session)]
               (assoc context :response (respond-with-params tenants/content (:tenants session) "Mieter(innen) Liste"))))})
+(def clients-handler
+  {:name ::get
+    :enter (fn [context]
+             (let [session (-> context :request :session)]
+               (assoc context :response (respond-with-params tenants/client-content (:tenants session) "Mieter(innen) Liste"))))})
 
 (def create-letter-handler
   {:name ::get
@@ -253,12 +258,12 @@
     ["/upload-details"
      :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
      :route-name ::post-upload-details]
-    ["/upload-excel-2"
-     :get [(body-params/body-params) upload-details-handler-2]
-     :route-name ::upload-excel-2]
-    ["/upload-details-2"
-     :post [(ring-mw/multipart-params) post-upload-details-handler-2]
-     :route-name ::post-upload-details-2]
+    ["/upload-clients"
+     :get [(body-params/body-params) upload-client-handler]
+     :route-name ::upload-clients]
+    ["/upload-clients-details"
+     :post [(ring-mw/multipart-params) post-upload-clients-handler]
+     :route-name ::upload-clients-details]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
      :route-name ::dashboard] 
@@ -277,6 +282,9 @@
     ["/tenants"
      :get [tenants-handler]
      :route-name ::tenants]
+    ["/clients"
+     :get [clients-handler]
+     :route-name ::clients]
     ["/tenants/:tenant-id"
      :get [params/keyword-params create-letter-handler]
      :route-name ::create-letter]

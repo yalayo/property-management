@@ -97,6 +97,10 @@
                  {:name "property-calculated-days" :cell "M8" :required true}
                  {:name "property-days-per-person" :cell "M9"}])
 
+(def client-attributes [{:name "last-name" :cell "B3"}
+                        {:name "IBAN" :cell "L2"}
+                        {:name "BANK" :cell "L3"}])
+
 (def apartment-data [{:name "last-name" :cell "B3"}
                      {:name "property-id" :cell "C3"}])
 
@@ -120,13 +124,26 @@
   (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
         content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
         data (map #(assoc % :sheet sheet) attributes)
+        client-data (map #(assoc % :sheet sheet) client-attributes)
         result (map get-attribute-value data)
+        client-result (map get-attribute-value client-data)
         content-errors (filter contains-error? content)]
+    (println "Payment attributes: " client-result)
     (if (some #(:error %) result)
       (into [] (concat content-errors (filter :error result)))
       (get-tenant-data result headers content))))
 
-
+(defn extract-client-data [sheet workbook]
+    (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+         content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
+         client-data (map #(assoc % :sheet sheet) client-attributes)
+         client-result (map get-attribute-value client-data)
+         content-errors (filter contains-error? content)]
+     (println "Client attributes: " client-result)
+     (if (some #(:error %) client-result)
+       (into [] (concat content-errors (filter :error client-result)))
+       (get-tenant-data client-result headers content))))
+  
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
         sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
@@ -138,6 +155,29 @@
                (reify Callable
                  (call [_]
                    (let [result (process-sheet sheet workbook)]
+                     (async/>!! result-chan result)
+                     nil)))))
+
+    ;; Close the channel after all threads are spawned
+    (go
+      (.shutdown pool) ;; Shutdown the thread pool
+      (.awaitTermination pool 5 java.util.concurrent.TimeUnit/SECONDS) ;; Wait for all tasks to complete
+      (close! result-chan))
+
+    ;; Collect results
+    (<!! (async/into [] result-chan))))
+
+(defn extract [input-stream]
+  (let [workbook (docj/load-workbook input-stream)
+        sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
+        pool (Executors/newFixedThreadPool 30)
+        result-chan (chan 10)]
+    ;; Process all sheets in parallel
+    (doseq [sheet sheets]
+      (.submit pool
+               (reify Callable
+                 (call [_]
+                   (let [result (extract-client-data sheet workbook)]
                      (async/>!! result-chan result)
                      nil)))))
 
