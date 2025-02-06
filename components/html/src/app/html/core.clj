@@ -56,12 +56,12 @@
    :enter (fn [context]
             (assoc context :response {:status 302 :headers {"Location" "/sign-in"}}))})
 
-(defn dashboard-handler [context]
-  (let [session (-> context :requet :session)
-        dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 dashboard/menu-id)}]
-    (if (empty? session)
-      (response/redirect "/sign-in")
-      (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))
+(def dashboard-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [session (-> context :requet :session)
+                  dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 dashboard/menu-id)}]
+              (assoc context :response (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))})
 
 (def upload-details-handler
   {:name ::get
