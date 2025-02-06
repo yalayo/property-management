@@ -15,10 +15,14 @@
               :db/cardinality :db.cardinality/one}])
 
 (defn create-feature-flag [name]
-  (let [data [{:id (java.util.UUID/randomUUID) :name name :enabled false}]]
-    (storage/transact data "feature-flags")))
+  (storage/transact [{:id (java.util.UUID/randomUUID) :name name :enabled false}] "feature-flags"))
 
-(defn enable-feature-flag [id])
+(defn enable-feature-flag [id]
+  (storage/transact [{:id id :enabled true}] "feature-flags"))
+
+(defn list-feature-flags []
+  (storage/query
+   "[:find ?id ?name ?enabled :where [?e :id ?id] [?e :name ?name] [?e :enabled ?enabled]]" ""))
 
 (comment
   "Store the schema, for the moment let's do it manually"
