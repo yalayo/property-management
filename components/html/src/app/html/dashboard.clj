@@ -229,11 +229,13 @@
        (load-profile-menu true)]]]]
    [:header
     {:class "bg-white shadow"}
-    [:div
-     {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
-     [:h1
-      {:class "text-3xl font-bold tracking-tight text-gray-900"}
-      (:title content)]]]
+    [:div {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
+     [:div {:class "flex items-center justify-between"} 
+      [:h1 {:class "text-3xl font-bold tracking-tight text-gray-900"} 
+        (:title content)] 
+      [:button 
+       {:class "flex-none rounded-md bg-gray-600 px-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"}
+       "Add feature"]]]]
 [:main
  [:div
   {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
