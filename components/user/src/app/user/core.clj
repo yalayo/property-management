@@ -4,7 +4,8 @@
             [io.pedestal.http.params :as params]
             [ring.util.response :as response]
             [buddy.hashers :as bh]
-            [app.user.database :as db]))
+            [app.user.database :as db]
+            [app.user.user-details :as user-details]))
 
 (defn home-page
   []
@@ -236,13 +237,19 @@
                 (assoc context :response {:status 200
                                           :headers {"HX-Location" "/upload-excel"}}))))})
 
+(def users-handler
+  {:name ::get
+  :enter (fn [context]
+           (assoc context :response (respond user-details/content)))})
 
 (def routes
   #{["/sign-in"
      :get sign-in-handler
      :route-name ::sign-in]
     ["/sign-in" :post [(body-params/body-params) params/keyword-params post-sign-in-handler]
-     :route-name ::post-sign-in]})
+     :route-name ::post-sign-in]
+    ["/users" :get [(body-params/body-params) params/keyword-params users-handler]
+     :route-name ::users]})
 
 (def internal-routes
   #{["/sign-up"
