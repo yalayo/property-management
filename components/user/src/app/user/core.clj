@@ -237,10 +237,25 @@
                 (assoc context :response {:status 200
                                           :headers {"HX-Location" "/upload-excel"}}))))})
 
+(defn template-aux [html-body title]
+  [:html
+   [:head
+    [:title title]
+    [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
+    [:link {:href "tailwind.min.css" :rel "stylesheet"}]
+    [:script {:src "htmx.min.js"}]
+    [:script {:src "hyperscript.min.js"}]]
+   [:body (h/raw html-body)]])
+
+(defn respond-with-params [content value title]
+  (ok (template-aux (str (h/html (content value))) title)))
+
 (def users-handler
   {:name ::get
-  :enter (fn [context]
-           (assoc context :response (respond user-details/content)))})
+   :enter (fn [context]
+            (let [accounts (db/get-accounts)
+                  users (db/transform-accounts-to-users accounts)]
+              (assoc context :response (respond-with-params user-details/content users "Users"))))})
 
 (def routes
   #{["/sign-in"
