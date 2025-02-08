@@ -1,15 +1,6 @@
 (ns app.user.user-details)
 
-(def users [{:email "juan@gmail.com" :veryfied true}
-            {:email "enmanuel@gmail.com" :veryfied false}
-            {:email "johannes@gmail.com" :veryfied true}])
-
-(defn showList []
-  [:div
-   [:h1 
-    "Lista de usuarios"]])
-
-(defn any-missing-value? [m]
+(defn any-missing-value? [m] 
   (some nil? (vals m)))
 
 (defn user-info [user]
@@ -52,7 +43,7 @@
          [:div {:class "mt-2"}
           [:p {:class "text-sm text-gray-500"} "Fehlende Informationen. Bitte überprüfen Sie Ihre Excel-Datei."]]]]])]])
 
-(defn content []
+(defn content [users]
   [:main
    [:div {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 divide-y divide-gray-100"}
     (map user-info users)]])
