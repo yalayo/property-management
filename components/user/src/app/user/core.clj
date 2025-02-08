@@ -262,13 +262,13 @@
      :get sign-in-handler
      :route-name ::sign-in]
     ["/sign-in" :post [(body-params/body-params) params/keyword-params post-sign-in-handler]
-     :route-name ::post-sign-in]
-    ["/users" :get [(body-params/body-params) params/keyword-params users-handler]
-     :route-name ::users]})
+     :route-name ::post-sign-in]})
 
 (def internal-routes
   #{["/sign-up"
      :get sign-up-handler
      :route-name ::sign-up]
     ["/sign-up" :post [(body-params/body-params) params/keyword-params post-sign-up-handler]
-     :route-name ::post-sign-up]})
+     :route-name ::post-sign-up]
+    ["/users" :get [(body-params/body-params) params/keyword-params users-handler]
+     :route-name ::users]})
