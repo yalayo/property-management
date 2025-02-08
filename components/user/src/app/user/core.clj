@@ -5,6 +5,7 @@
             [ring.util.response :as response]
             [buddy.hashers :as bh]
             [app.user.database :as db]
+            [app.html.dashboard :as layout]
             [app.user.user-details :as user-details]))
 
 (defn home-page
@@ -254,8 +255,9 @@
   {:name ::get
    :enter (fn [context]
             (let [accounts (db/get-accounts)
-                  users (db/transform-accounts-to-users accounts)]
-              (assoc context :response (respond-with-params user-details/content users "Users"))))})
+                  users (db/transform-accounts-to-users accounts)
+                  content {:title "User list" :content (user-details/content users)}]
+              (assoc context :response (respond-with-params layout/content {:content content} "User list"))))})
 
 (def routes
   #{["/sign-in"
