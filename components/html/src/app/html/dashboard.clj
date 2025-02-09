@@ -1,4 +1,6 @@
-(ns app.html.dashboard)
+(ns app.html.dashboard 
+  (:require
+   [app.html.new-feature :as new-feature]))
 
 (def menu-id {:main-menu-1 "Dashboard" 
               :main-menu-2 "Buildings" 
@@ -226,7 +228,7 @@
            "M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"}]]]]
       [:div
        {:class "mt-3 space-y-1 px-2"}
-       (load-profile-menu true)]]]]
+       (load-profile-menu true)]]]] 
    [:header
     {:class "bg-white shadow"}
     [:div {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
@@ -234,8 +236,11 @@
       [:h1 {:class "text-3xl font-bold tracking-tight text-gray-900"} 
         (:title content)] 
       [:button 
-       {:class "flex-none rounded-md bg-gray-600 px-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"}
-       "Add feature"]]]]
+       {:class 
+        "flex-none rounded-md bg-gray-600 px-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
+        :_"on click remove .translate-x-full from #slide-over-panel then remove .opacity-0 from #backdrop"}
+       "Add feature"]]]
+    (new-feature/get-new-feature-form)]
 [:main
  [:div
   {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
