@@ -71,7 +71,7 @@
               [:div {:class "mt-2"}
                [:div
                 {:class
-                 "flex items-center rounded-md bg-white pl-3 outline outline-1 outline-gray-300 outline-offset-1 focus-within:outline-2 focus-within:outline-indigo-600"}
+                 "flex items-center rounded-md bg-white pl-3 border border-gray-300 focus-within:border-2 focus-within:border-indigo-600"}
                 [:div
                  {:class "shrink-0 text-base text-gray-500 select-none sm:text-sm/6"}
                  "Feature:"]
