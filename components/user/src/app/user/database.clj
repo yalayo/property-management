@@ -74,9 +74,3 @@
          {:email (:email account)
           :veryfied (:veryfied account)})
        accounts))
-
-(def users (transform-accounts-to-users (get-accounts)))
-
-;; Example
-(doseq [user users]
-  (println user))
