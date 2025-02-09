@@ -1,11 +1,12 @@
 (ns app.html.new-feature)
 
 (defn get-new-feature-form []
-  [:div#add-feature
+  [:form#add-feature
    {:class "relative z-10 pointer-events-none",
     :aria-labelledby "slide-over-title",
     :role "dialog",
-    :aria-modal "true"}
+    :aria-modal "true"
+    :hx-post "/new-flag"}
    (comment
      "Background backdrop, show/hide based on slide-over state.
       Entering: \"ease-in-out duration-500\"\n      From: \"opacity-0\"\n      To: \"opacity-100\"\n    Leaving: \"ease-in-out duration-500\"\n      From: \"opacity-100\"\n      To: \"opacity-0\"")
