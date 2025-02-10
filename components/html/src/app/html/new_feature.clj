@@ -57,7 +57,11 @@
                :d "M6 18 18 6M6 6l12 12"}]]]]]
          [:div
           {:class "mt-8"}
-          [:form#form-new-ft {:action "#", :method "POST"}
+          [:form#form-new-ft {:hx-post "/new-feature",  ;; Endpoint to which the form will be sent
+                              :hx-target "#response",   ;; Element where the response will be displayed
+                              :hx-swap "innerHTML",     ;; How the answer will be inserted
+                              :hx-trigger "submit",     ;; Trigger request on form submission
+                              :_ "on submit trigger click on #close-panel"} ;; Close the panel after submitting the form    
           [:div
            {:class "flow-root"}
            (comment "Formulary content") 
@@ -81,14 +85,15 @@
                   :id "ft-name",
                   :class
                   "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6",
-                  :placeholder "new feature"}]]]]]]]]]
+                  :placeholder "new feature"}]]]]]
+             [:div#response "Response goes here"]]
+             [:button#btn-submit {:type "submit" :class "hidden"} "Submit"]]]]
         [:div {:class "border-t border-gray-200 px-4 py-6 sm:px-6"}
          [:div
           {:class "mt-6"}
           [:a
            {:href "#",
-            :type "submit",
             :class
             "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700",
-            :_"on click trigger click on #close-panel then trigger submit on #form-new-ft"}
+            :_ "on click call #btn-submit.click()"}
            "Add new feature"]]]]]]]]])

@@ -248,6 +248,13 @@
       (respond-with-params dashboard/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
+(defn post-new-feature-handler [context]
+  (let [session (-> context :session)
+        params (-> context :form-params)]
+    {:status 200
+     :headers {"Content-Type" "text/html"}
+     :body (str "<div><p>New feature params: " (:ft-name params) "</p></div>")}))
+ 
 (def routes
   #{["/"
      :get [index-page-handler]
@@ -296,4 +303,7 @@
      :route-name ::building-apartments-post]
     ["/apartment-datails"
      :post [(body-params/body-params) post-apartment-datails-handler];TODO include auth-required
-     :route-name ::post-apartment-datails]})
+     :route-name ::post-apartment-datails]
+    ["/new-feature"
+     :post [(body-params/body-params) post-new-feature-handler];TODO include auth-required
+     :route-name ::post-new-feature]})
