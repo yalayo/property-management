@@ -248,13 +248,18 @@
       (respond-with-params dashboard/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
+(defn get-body-response [params]
+  ;;(str "<div><p>New feature params: " params "</p></div>")
+  (let [result [:div "New feature params: " (for [[key value] params] [:p key " -> " value])]] 
+  (str (h/html result))))
+
 (defn post-new-feature-handler [context]
   (let [session (-> context :session)
         params (-> context :form-params)]
     {:status 200
      :headers {"Content-Type" "text/html"}
-     :body (str "<div><p>New feature params: " (:ft-name params) "</p></div>")}))
- 
+     :body (get-body-response params)}))
+
 (def routes
   #{["/"
      :get [index-page-handler]
