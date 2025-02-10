@@ -1,6 +1,6 @@
 (ns app.flags.core
   (:require [app.html.interface :as html]
-            [app.html.dashboard :as layout]
+            [app.html.layout :as layout]
             [app.flags.list :as flags]))
 
 (def flags-handler
