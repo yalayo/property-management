@@ -248,6 +248,14 @@
       (respond-with-params dashboard/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
+(def sign-out-handler
+  {:name ::get
+   :enter (fn [context]
+            (println "Entra al sign out")
+            (assoc context :response {:status 302
+                                      :headers {"Location" "/sign-in"}
+                                      context :request :session nil}))})
+
 (def routes
   #{["/"
      :get [index-page-handler]
@@ -264,9 +272,11 @@
     ["/upload-clients-details"
      :post [(ring-mw/multipart-params) post-upload-clients-handler]
      :route-name ::upload-clients-details]
+    ["/sign-out" :get [(body-params/body-params) params/keyword-params sign-out-handler]
+     :route-name ::sign-out]
     ["/dashboard"
      :get [(body-params/body-params) auth-required dashboard-handler]
-     :route-name ::dashboard] 
+     :route-name ::dashboard]
     ["/questions"
      :get [(body-params/body-params) upload-details-email]
      :route-name ::questions]
@@ -275,7 +285,7 @@
      :route-name ::post-questions]
     ["/verify-email"
      :get [params/keyword-params verify-email-handler]
-     :route-name ::verify-email] 
+     :route-name ::verify-email]
     ["/letter"
      :get [letter-handler]
      :route-name ::letter]
@@ -288,9 +298,9 @@
     ["/tenants/:tenant-id"
      :get [params/keyword-params create-letter-handler]
      :route-name ::create-letter]
-     ["/user-buildings"
-      :get user-buildings-handler;TODO include auth-required
-      :route-name ::user-buildings] 
+    ["/user-buildings"
+     :get user-buildings-handler;TODO include auth-required
+     :route-name ::user-buildings]
     ["/building-apartments"
      :post [(body-params/body-params) building-apartments-post-handler];TODO include auth-required
      :route-name ::building-apartments-post]

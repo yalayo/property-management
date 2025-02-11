@@ -6,7 +6,8 @@
             [buddy.hashers :as bh]
             [app.user.database :as db]
             [app.html.dashboard :as layout]
-            [app.user.user-details :as user-details]))
+            [app.user.user-details :as user-details]
+            [ring.middleware.session]))
 
 (defn home-page
   []

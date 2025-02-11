@@ -20,7 +20,7 @@
                     {:name (:main-menu-5 menu-id ) :href "#"}]} 
     :profile {:menu [{:name (:sec-menu-1 menu-id ) :href "#"} 
                      {:name (:sec-menu-2 menu-id ) :href "#"} 
-                     {:name (:sec-menu-3 menu-id ) :href "/sign-in"}]}})
+                     {:name (:sec-menu-3 menu-id ) :href "/sign-out"}]}})
 
 (defn- load-profile-menu
   "Renders the user profile menus.\n
