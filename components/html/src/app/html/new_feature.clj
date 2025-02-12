@@ -68,7 +68,7 @@
             [:div
              {:class "mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"}
              [:div
-              {:class "sm:col-span-4"}
+              {:class "sm:col-span-6"}
               [:label
                {:for "ft-name", :class "block text-sm/6 font-medium text-gray-900"}
                "Name"]
@@ -84,7 +84,7 @@
                   :name "ft-name",
                   :id "ft-name",
                   :class
-                  "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6",
+                  "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ml-2",
                   :placeholder "new feature"}]]]]]
              [:div#response "Response goes here"]]
              [:button#btn-submit {:type "submit" :class "hidden"} "Submit"]]]]
