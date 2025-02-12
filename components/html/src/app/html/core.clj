@@ -118,6 +118,7 @@
    :enter (fn [context]
             (let [session (-> context :request :session)]
               (assoc context :response (respond-with-params tenants/content (:tenants session) "Mieter(innen) Liste"))))})
+
 (def clients-handler
   {:name ::get
     :enter (fn [context]
