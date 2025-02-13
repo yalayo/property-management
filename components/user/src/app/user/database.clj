@@ -39,6 +39,15 @@
        (sql/format))
    {:builder-fn rs/as-unqualified-kebab-maps}))
 
+(defn change-password [email new-password]
+  (jdbc/execute-one!
+   ds
+   (-> {:update :accounts
+        :set {:password (bh/derive new-password)}
+        :where [:= :email email]}
+       (sql/format))
+   {:builder-fn rs/as-unqualified-kebab-maps}))
+
 (defn migrate-db []
   (.migrate
    (.. (Flyway/configure)
