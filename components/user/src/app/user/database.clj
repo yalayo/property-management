@@ -61,3 +61,16 @@
                           (locations (into-array String ["classpath:database/migrations"]))
                           (table "schema_version")
                           (load)))))))
+
+(defn get-accounts []
+  (jdbc/execute! ds
+                 (-> {:select [:email :veryfied]
+                      :from [:accounts]}
+                     (sql/format))
+                 {:builder-fn rs/as-unqualified-kebab-maps}))
+
+(defn transform-accounts-to-users [accounts]
+  (map (fn [account]
+         {:email (:email account)
+          :veryfied (:veryfied account)})
+       accounts))

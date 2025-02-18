@@ -1,11 +1,12 @@
 (ns app.html.new-feature)
 
 (defn get-new-feature-form []
-  [:div#add-feature
+  [:form#add-feature
    {:class "relative z-10 pointer-events-none",
     :aria-labelledby "slide-over-title",
     :role "dialog",
-    :aria-modal "true"}
+    :aria-modal "true"
+    :hx-post "/new-flag"}
    (comment
      "Background backdrop, show/hide based on slide-over state.
       Entering: \"ease-in-out duration-500\"\n      From: \"opacity-0\"\n      To: \"opacity-100\"\n    Leaving: \"ease-in-out duration-500\"\n      From: \"opacity-100\"\n      To: \"opacity-0\"")
@@ -84,16 +85,15 @@
                   :name "ft-name",
                   :id "ft-name",
                   :class
-                  "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ml-2",
-                  :placeholder "new feature"}]]]]]
-             [:div#response "Response goes here"]]
-             [:button#btn-submit {:type "submit" :class "hidden"} "Submit"]]]]
+                  "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6",
+                  :placeholder "new feature"}]]]]]]]]]
         [:div {:class "border-t border-gray-200 px-4 py-6 sm:px-6"}
          [:div
           {:class "mt-6"}
           [:a
            {:href "#",
+            :type "submit",
             :class
-            "flex items-center justify-center rounded-md border border-transparent bg-gray-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-gray-700",
-            :_ "on click call #btn-submit.click()"}
+            "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700",
+            :_"on click trigger click on #close-panel then trigger submit on #form-new-ft"}
            "Add new feature"]]]]]]]]])
