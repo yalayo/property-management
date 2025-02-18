@@ -58,14 +58,18 @@
                :d "M6 18 18 6M6 6l12 12"}]]]]]
          [:div
           {:class "mt-8"}
-          [:form#form-new-ft {:action "#", :method "POST"}
+          [:form#form-new-ft {:hx-post "/new-feature",  ;; Endpoint to which the form will be sent
+                              :hx-target "#response",   ;; Element where the response will be displayed
+                              :hx-swap "innerHTML",     ;; How the answer will be inserted
+                              :hx-trigger "submit",     ;; Trigger request on form submission
+                              :_ "on submit trigger click on #close-panel"} ;; Close the panel after submitting the form    
           [:div
            {:class "flow-root"}
            (comment "Formulary content") 
             [:div
              {:class "mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"}
              [:div
-              {:class "sm:col-span-4"}
+              {:class "sm:col-span-6"}
               [:label
                {:for "ft-name", :class "block text-sm/6 font-medium text-gray-900"}
                "Name"]

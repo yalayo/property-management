@@ -5,7 +5,7 @@
            [io.pedestal.http.ring-middlewares :as ring-mw]
            [ring.util.response :as response]
            [app.html.index :as index]
-           [app.html.dashboard :as dashboard]
+           [app.html.layout :as layout]
            [app.html.upload-details :as upload-details]
            [app.html.tenants-list :as tenants]
            [app.excel.interface :as excel]
@@ -60,8 +60,8 @@
   {:name ::get
    :enter (fn [context]
             (let [session (-> context :requet :session)
-                  dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 dashboard/menu-id)}]
-              (assoc context :response (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))})
+                  dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 layout/menu-id)}]
+              (assoc context :response (respond-with-params layout/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))})
 
 (def upload-details-handler
   {:name ::get
@@ -118,6 +118,7 @@
    :enter (fn [context]
             (let [session (-> context :request :session)]
               (assoc context :response (respond-with-params tenants/content (:tenants session) "Mieter(innen) Liste"))))})
+
 (def clients-handler
   {:name ::get
     :enter (fn [context]
@@ -200,53 +201,65 @@
 
 #_(defn user-buildings-handler [context] 
   (let [session (-> context :request :session) 
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 dashboard/menu-id)}]
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 layout/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
-        (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
+        (respond-with-params layout/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
 
 #_(defn building-apartments-post-handler [context]
     (let [session (-> context :request :session)
           params (-> context :request :form-params)
-          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 dashboard/menu-id)}]
+          content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 layout/menu-id)}]
       (if (empty? session)
         (response/redirect "/sign-in")
-        (respond-with-params dashboard/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
+        (respond-with-params layout/content {:email (:email session) :created-at (:created-at session) :content content} (:title content)))))
 
 #_(defn post-apartment-datails-handler [context]
   (let [session (-> context :request :session)
         params (-> context :request :form-params)
-        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 dashboard/menu-id)}
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 layout/menu-id)}
         dashboard-content {:email (:email session) :created-at (:created-at session) :content content}]
     (if (empty? session)
       (response/redirect "/sign-in")
-      (respond-with-params dashboard/content dashboard-content (:title content)))))
+      (respond-with-params layout/content dashboard-content (:title content)))))
 
 (defn user-buildings-handler [context];;Test function to ignore session data (http://localhost:8080/user-buildings)
   (let [session (-> context :session)
-        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 dashboard/menu-id)}
+        content {:title "Buildings" :content (user-buildings/get-buildings) :menu-id (:main-menu-2 layout/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
-      (respond-with-params dashboard/content dashboard-content (:title content))
+      (respond-with-params layout/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
 (defn building-apartments-post-handler [context];;Test function to ignore session data (it's called inside /user-buildings)
   (let [session (-> context :session)
         params (-> context :form-params)
-        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 dashboard/menu-id)}
+        content {:title "Building apartments" :content (building-apartments/get-building-apartments params) :menu-id (:main-menu-2 layout/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
-      (respond-with-params dashboard/content dashboard-content (:title content))
+      (respond-with-params layout/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
 
 (defn post-apartment-datails-handler [context];;Test function to ignore session data (it's called inside /building-apartments)
   (let [session (-> context :session)
         params (-> context :form-params)
-        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 dashboard/menu-id)}
+        content {:title "Apartment details" :content (apartment-datails/get-apartment-details params) :menu-id (:main-menu-2 layout/menu-id)}
         dashboard-content {:email "prop@example.com" :created-at "2025-01-29" :content content}]
     (if (empty? session)
-      (respond-with-params dashboard/content dashboard-content (:title content))
+      (respond-with-params layout/content dashboard-content (:title content))
       (response/redirect "/sign-in"))))
+
+(defn get-body-response [params]
+  ;;(str "<div><p>New feature params: " params "</p></div>")
+  (let [result [:div "New feature params: " [:ul (for [[key value] params] [:li key " -> " value])]]] 
+  (str (h/html result))))
+
+(defn post-new-feature-handler [context];;Test function
+  (let [session (-> context :session)
+        params (-> context :form-params)]
+    {:status 200
+     :headers {"Content-Type" "text/html"}
+     :body (get-body-response params)}))
 
 (def routes
   #{["/"
@@ -296,4 +309,7 @@
      :route-name ::building-apartments-post]
     ["/apartment-datails"
      :post [(body-params/body-params) post-apartment-datails-handler];TODO include auth-required
-     :route-name ::post-apartment-datails]})
+     :route-name ::post-apartment-datails]
+    ["/new-feature"
+     :post [(body-params/body-params) post-new-feature-handler];TODO include auth-required
+     :route-name ::post-new-feature]})

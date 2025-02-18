@@ -1,4 +1,4 @@
-(ns app.html.dashboard 
+(ns app.html.layout 
   (:require
    [app.html.new-feature :as new-feature]))
 
