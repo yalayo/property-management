@@ -5,7 +5,7 @@
             [ring.util.response :as response]
             [buddy.hashers :as bh]
             [app.user.database :as db]
-            [app.html.dashboard :as layout]
+            [app.html.layout :as layout]
             [app.user.user-details :as user-details]))
 
 (defn home-page
