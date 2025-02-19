@@ -1,21 +1,22 @@
 (ns app.html.core
-	(:require [hiccup2.core :as h] 
-           [io.pedestal.http.params :as params]
-           [io.pedestal.http.body-params :as body-params]
-           [io.pedestal.http.ring-middlewares :as ring-mw]
-           [ring.util.response :as response]
-           [app.html.index :as index]
-           [app.html.layout :as layout]
-           [app.html.upload-details :as upload-details]
-           [app.html.tenants-list :as tenants]
-           [app.excel.interface :as excel]
-           [io.pedestal.interceptor :refer [interceptor]]
-           [app.letter.interface :as letter]
-           [cheshire.core :as json]
-           [clj-http.client :as client]
-           [app.html.user-buildings :as user-buildings]
-           [app.html.building-apartments :as building-apartments]
-           [app.html.apartment-details :as apartment-datails])
+	(:require [hiccup2.core :as h]
+            [clojure.java.io :as io]
+            [io.pedestal.http.params :as params]
+            [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.ring-middlewares :as ring-mw]
+            [ring.util.response :as response]
+            [app.html.index :as index]
+            [app.html.layout :as layout]
+            [app.html.upload-details :as upload-details]
+            [app.html.tenants-list :as tenants]
+            [app.excel.interface :as excel]
+            [io.pedestal.interceptor :refer [interceptor]]
+            [app.letter.interface :as letter]
+            [cheshire.core :as json]
+            [clj-http.client :as client]
+            [app.html.user-buildings :as user-buildings]
+            [app.html.building-apartments :as building-apartments]
+            [app.html.apartment-details :as apartment-datails])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -79,13 +80,14 @@
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
-              (if (some? file-input-stream) 
-                (let [result (flatten (excel/process file-input-stream))]
-                  (if (some #(:error %) result)
-                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
-                    (assoc context :response {:status 200
-                                              :headers {"HX-Redirect" "/tenants"}
-                                              :session {:tenants result}})))
+              (if (some? file-input-stream)
+                (with-open [input-stream (io/input-stream file-input-stream)]
+                  (let [result (excel/list-tenants input-stream)]
+                    (if (some #(:error %) result)
+                      (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
+                      (assoc context :response {:status 200
+                                                :headers {"HX-Redirect" "/tenants"}
+                                                :session {:tenants (:tenants result)}})))) 
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
 (def post-upload-clients-handler
