@@ -87,7 +87,7 @@
                       (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
                       (assoc context :response {:status 200
                                                 :headers {"HX-Redirect" "/tenants"}
-                                                :session {:tenants (:tenants result)}})))) 
+                                                :session {:tenants (:tenants result)} :excel input-stream})))) 
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
 (def post-upload-clients-handler
