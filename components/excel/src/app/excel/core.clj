@@ -142,6 +142,13 @@
      (if (some #(:error %) client-result)
        (into [] (concat content-errors (filter :error client-result)))
        (get-tenant-data client-result headers content))))
+
+(defn list-tenants [input-stream]
+  (let [workbook (docj/load-workbook-from-stream input-stream)
+        sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
+        tenants (map (fn [sheet-name] {:id (str (java.util.UUID/randomUUID)) :last-name (subs (.getSheetName sheet-name) 3)}) sheets)]
+    (println "Tenants: " tenants)
+    {:tenants tenants}))
   
 (defn process [input-stream]
   (let [workbook (docj/load-workbook-from-stream input-stream)
