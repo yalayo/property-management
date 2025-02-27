@@ -14,8 +14,8 @@
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
-             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes)))
-                      :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes)))}})
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (properties/get-routes)))
+                      :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes) (properties/get-internal-routes)))}})
 
 (defn init-logging []
   (let [prod (System/getenv "ENVIRONMENT")
