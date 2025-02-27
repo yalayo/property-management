@@ -6,10 +6,11 @@
     :aria-labelledby "slide-over-title",
     :role "dialog",
     :aria-modal "true"
-    :hx-post "/new-property"}
-   (comment
-     "Background backdrop, show/hide based on slide-over state.
-      Entering: \"ease-in-out duration-500\"\n      From: \"opacity-0\"\n      To: \"opacity-100\"\n    Leaving: \"ease-in-out duration-500\"\n      From: \"opacity-100\"\n      To: \"opacity-0\"")
+    :hx-post "/new-property",  ;; Endpoint to which the form will be sent
+    :hx-target "this",   ;; Element where the response will be displayed
+    :hx-swap "innerHTML",     ;; How the answer will be inserted
+    :hx-trigger "submit",     ;; Trigger request on form submission
+    :_ "on submit trigger click on #close-panel"}
    [:div#new-property
     {:class "fixed inset-0 bg-gray-500/75 transition-opacity ease-in-out duration-500 opacity-0",
      :aria-hidden "true"}]
@@ -34,7 +35,7 @@
           [:h2
            {:class "text-lg font-medium text-gray-900",
             :id "slide-over-title"}
-           "Here you can add a new feature!"]
+           "Neu Wohngebäude hinzufügen!"]
           [:div
            {:class "ml-3 flex h-7 items-center"}
            [:button#close-panel
@@ -58,35 +59,27 @@
                :d "M6 18 18 6M6 6l12 12"}]]]]]
          [:div
           {:class "mt-8"}
-          [:form#form-new-ft {:hx-post "/new-feature",  ;; Endpoint to which the form will be sent
-                              :hx-target "#response",   ;; Element where the response will be displayed
-                              :hx-swap "innerHTML",     ;; How the answer will be inserted
-                              :hx-trigger "submit",     ;; Trigger request on form submission
-                              :_ "on submit trigger click on #close-panel"} ;; Close the panel after submitting the form    
+          [:div#form-new-ft  
           [:div
            {:class "flow-root"}
-           (comment "Formulary content") 
             [:div
              {:class "mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"}
              [:div
               {:class "sm:col-span-6"}
-              [:label
-               {:for "ft-name", :class "block text-sm/6 font-medium text-gray-900"}
-               "Name"]
               [:div {:class "mt-2"}
                [:div
                 {:class
                  "flex items-center rounded-md bg-white pl-3 border border-gray-300 focus-within:border-2 focus-within:border-indigo-600"}
                 [:div
                  {:class "shrink-0 text-base text-gray-500 select-none sm:text-sm/6"}
-                 "Feature:"]
+                 "Name: "]
                 [:input
                  {:type "text",
-                  :name "ft-name",
-                  :id "ft-name",
+                  :name "name",
+                  :id "name",
                   :class
                   "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6",
-                  :placeholder "new feature"}]]]]]]]]]
+                  :placeholder ""}]]]]]]]]]
         [:div {:class "border-t border-gray-200 px-4 py-6 sm:px-6"}
          [:div
           {:class "mt-6"}
@@ -96,4 +89,4 @@
             :class
             "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700",
             :_"on click trigger click on #close-panel then trigger submit on #form-new-ft"}
-           "Add new feature"]]]]]]]]])
+           "Hinzufügen"]]]]]]]]])
