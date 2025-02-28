@@ -5,12 +5,10 @@
    {:class "relative z-10 pointer-events-none",
     :aria-labelledby "slide-over-title",
     :role "dialog",
-    :aria-modal "true"
-    :hx-post "/new-property",  ;; Endpoint to which the form will be sent
-    :hx-target "this",   ;; Element where the response will be displayed
-    :hx-swap "innerHTML",     ;; How the answer will be inserted
-    :hx-trigger "submit",     ;; Trigger request on form submission
-    :_ "on submit trigger click on #close-panel"}
+    :aria-modal "true",
+    :hx-post "/new-property",
+    :hx-target "this",
+    :hx-swap "innerHTML"}
    [:div#new-property
     {:class "fixed inset-0 bg-gray-500/75 transition-opacity ease-in-out duration-500 opacity-0",
      :aria-hidden "true"}]
@@ -39,10 +37,7 @@
           [:div
            {:class "ml-3 flex h-7 items-center"}
            [:button#close-panel
-            {:type "button",
-             :class
-             "relative -m-2 p-2 text-gray-400 hover:text-gray-500",
-             :_"on click add .translate-x-full to #slide-over-new-property then add .opacity-0 to #new-property"}
+            {:class "relative -m-2 p-2 text-gray-400 hover:text-gray-500"}
             [:span {:class "absolute -inset-0.5"}]
             [:span {:class "sr-only"} "Close panel"]
             [:svg
@@ -83,10 +78,5 @@
         [:div {:class "border-t border-gray-200 px-4 py-6 sm:px-6"}
          [:div
           {:class "mt-6"}
-          [:a
-           {:href "#",
-            :type "submit",
-            :class
-            "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700",
-            :_"on click trigger click on #close-panel then trigger submit on #form-new-ft"}
+          [:button {:class "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700"}
            "Hinzufügen"]]]]]]]]])
