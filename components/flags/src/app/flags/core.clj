@@ -5,7 +5,7 @@
             [app.html.layout :as layout]
             [app.flags.list :as flags]
             [app.flags.new-flag :as new-flag]
-            [app.property.persistance :as persistance]))
+            [app.flags.persistance :as persistance]))
 
 (def flags-handler
   {:name ::get
@@ -19,6 +19,7 @@
             (println "Params: " (-> context :request :params))
             (let [params (-> context :request :params)
                   flag-name (:name params)]
+              (persistance/create-feature-flag flag-name)
               (assoc context :response (html/respond new-flag/get-new-flag-form "New flag"))))})
 
 (def routes
