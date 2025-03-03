@@ -22,5 +22,10 @@
 (comment
   "Store the schema, for the moment let's do it manually"
   (storage/transact schema "properties")
+
+  )
+
+(comment
+  "Check that add properties works ok"
   (list-properties)
   )
