@@ -14,21 +14,24 @@
            :table dabase-name
            :dbname "property-management"}})
 
-(defn get-connection [config]
-  (try
-    (when-not (d/database-exists? config)
-      (d/create-database config))
-    (d/connect config)
-    (catch ExceptionInfo e
-      (mu/log :log-exception :exception e))))
+(defonce db-connections (atom {}))
+
+(defn get-connection [database-name]
+  (let [config (get-config database-name)]
+    (if-let [existing-conn (@db-connections database-name)]
+      existing-conn
+      (try
+        (when-not (d/database-exists? config)
+          (d/create-database config))
+        (let [conn (d/connect config)]
+          (swap! db-connections assoc database-name conn)
+          conn)
+        (catch ExceptionInfo e
+          (mu/log :log-exception :exception e))))))
 
 (defn transact [data database-name]
-  (let [config (get-config database-name)
-        connection (get-connection config)]
-    (d/transact connection data)))
+  (d/transact (get-connection database-name) data))
 
 (defn query [query database-name]
-  (let [config (get-config database-name)
-        connection (get-connection config)]
-    (d/q {:query query}
-         connection)))
+  (d/q {:query query}
+       (get-connection database-name)))
