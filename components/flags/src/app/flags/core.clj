@@ -16,7 +16,6 @@
 (def new-flag-handler
   {:name ::post
    :enter (fn [context]
-            (println "Params: " (-> context :request :params))
             (let [params (-> context :request :params)
                   flag-name (:name params)]
               (persistance/create-feature-flag flag-name)
