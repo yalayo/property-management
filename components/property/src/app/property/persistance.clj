@@ -11,13 +11,16 @@
               :db/cardinality :db.cardinality/one}])
 
 (defn create-property [name]
-  (storage/transact [{:id (java.util.UUID/randomUUID) :name name :enabled false}] "properties"))
+  (storage/transact [{:id (str (java.util.UUID/randomUUID)) :name name}] "properties"))
 
 (defn list-properties []
-  (storage/query
-   "[:find ?id ?name :where [?e :id ?id] [?e :name ?name]]" "properties"))
+  (let [data (storage/query "[:find ?id ?name :where [?e :id ?id] [?e :name ?name]]" "properties")]
+    (map (fn [[id name]]
+           {:id id :name name})
+         data)))
 
 (comment
   "Store the schema, for the moment let's do it manually"
   (storage/transact schema "properties")
+  (list-properties)
   )

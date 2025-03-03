@@ -19,7 +19,7 @@
             (let [params (-> context :request :params)
                   {:keys [name]} params]
               (println "Property name: " name)
-              #_(persistance/create-property property-name)
+              (persistance/create-property name)
               #_(assoc context :response (properties/property-info {:name name}))))})
 
 (def routes
