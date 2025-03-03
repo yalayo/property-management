@@ -34,4 +34,4 @@
 
 (defn query [query database-name]
   (d/q {:query query}
-       (get-connection database-name)))
+       (d/db (get-connection database-name))))
