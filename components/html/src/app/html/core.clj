@@ -55,7 +55,7 @@
 (def index-page-handler
   {:name ::index
    :enter (fn [context]
-            (assoc context :response {:status 302 :headers {"Location" "/sign-in"}}))})
+            (assoc context :response (respond index/index-page "Hallo Welt")))})
 
 (def dashboard-handler
   {:name ::get
