@@ -10,7 +10,7 @@
 (def flags-handler
   {:name ::get
    :enter (fn [context]
-            (let [content {:title "Feature flags" :content (flags/content [])}]
+            (let [content {:title "Feature flags" :content (flags/content (persistance/list-feature-flags))}]
               (assoc context :response (html/respond-with-params layout/content {:content content} "Feature flags"))))})
 
 (def new-flag-handler
