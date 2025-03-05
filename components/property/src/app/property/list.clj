@@ -4,22 +4,22 @@
 (defn any-missing-value? [m]
   (some nil? (vals m)))
 
-(defn property-info [flag]
+(defn property-info [property]
   [:div {:class "lg:flex lg:items-center lg:justify-between gap-x-6 py-5 bg-white hover:bg-gray-100 p-4"}
    [:div
     {:class "min-w-0 flex-1"}
     [:h2
      {:class
       "text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"}
-     (:last-name flag)]
+     (:name property)]
     [:div
      {:class
       "mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6"}
      [:div
       {:class "mt-2 flex items-center text-sm text-gray-500"} 
-      (:street flag)]]]
+      (:street property)]]]
    [:div {:class "mt-5 flex lg:ml-4 lg:mt-0"}
-    (if (any-missing-value? flag)
+    (if (any-missing-value? property)
       [:div
        {:class "px-4 pb-4 pt-5 sm:p-6 sm:pb-4"}
        [:div
@@ -46,7 +46,7 @@
       [:button
        {:type "button",
         :class "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        :onclick (str "window.open('/flags/" (:flag-id flag) "', '_blank');")}
+        :onclick (str "window.open('/flags/" (:flag-id property) "', '_blank');")}
        [:svg
         {:class "-ml-0.5 mr-1.5 h-5 w-5",
          :viewBox "0 0 20 20",

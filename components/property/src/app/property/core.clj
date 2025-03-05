@@ -4,12 +4,13 @@
             [app.html.interface :as html]
             [app.html.layout :as layout]
             [app.property.list :as properties]
-            [app.property.persistance :as persistance]))
+            [app.property.persistance :as persistance]
+            [app.property.new-property :as new-property]))
 
 (def properties-handler
   {:name ::get
    :enter (fn [context]
-            (let [content {:title "Properties" :content (properties/content [])}]
+            (let [content {:title "Properties" :content (properties/content (persistance/list-properties))}]
               (assoc context :response (html/respond-with-params layout/content {:content content} "Properties"))))})
 
 (def new-property-handler
@@ -19,8 +20,8 @@
             (let [params (-> context :request :params)
                   {:keys [name]} params]
               (println "Property name: " name)
-              #_(persistance/create-property property-name)
-              #_(assoc context :response (properties/property-info {:name name}))))})
+              (persistance/create-property name)
+              (assoc context :response (html/respond new-property/get-new-property-form "New property"))))})
 
 (def routes
   #{["/properties"
