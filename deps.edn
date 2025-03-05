@@ -26,6 +26,7 @@
                               org.clojure/data.xml {:mvn/version "0.0.8"}
                               pdfboxing/pdfboxing {:mvn/version "0.1.14"}
                               clj-pdf/clj-pdf {:mvn/version "2.6.8"}
+                              org.apache.pdfbox/pdfbox {:mvn/version "3.0.0"}
                               net.sekao/odoyle-rules {:mvn/version "1.1.0"}
                               io.replikativ/datahike {:mvn/version "0.6.1571"}
                               io.replikativ/datahike-jdbc {:mvn/version "0.3.48"}
