@@ -12,12 +12,7 @@
       {:class "flex lg:flex-1"}
       [:a
        {:href "#", :class "-m-1.5 p-1.5"}
-       [:span {:class "sr-only"} "Your Company"]
-       [:img
-        {:class "h-8 w-auto",
-         :src
-         "https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600",
-         :alt ""}]]]
+       [:span {:class "sr-only"} "Immo"]]]
      [:div
       {:class "flex lg:hidden"}
       [:button
@@ -70,12 +65,7 @@
        {:class "flex items-center justify-between"}
        [:a
         {:href "#", :class "-m-1.5 p-1.5"}
-        [:span {:class "sr-only"} "Your Company"]
-        [:img
-         {:class "h-8 w-auto",
-          :src
-          "https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600",
-          :alt ""}]]
+        [:span {:class "sr-only"} "Immo"]]
        [:button
         {:type "button", :class "-m-2.5 rounded-md p-2.5 text-gray-700"}
         [:span {:class "sr-only"} "Close menu"]
@@ -138,17 +128,6 @@
     [:div
      {:class "mx-auto max-w-2xl py-32 sm:py-48 lg:py-56"}
      [:div
-      {:class "hidden sm:mb-8 sm:flex sm:justify-center"}
-      [:div
-       {:class
-        "relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"}
-       "Announcing our next round of funding."
-       [:a
-        {:href "#", :class "font-semibold text-indigo-600"}
-        [:span {:class "absolute inset-0", :aria-hidden "true"}]
-        "Read more"
-        [:span {:aria-hidden "true"} "→"]]]]
-     [:div
       {:class "text-center"}
       [:h1
        {:class
@@ -157,18 +136,25 @@
       [:p
        {:class
         "mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8"}
-       "Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat."]
+       "Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat."] 
       [:div
        {:class "mt-10 flex items-center justify-center gap-x-6"}
+       [:div {:class "mt-2"}
+        [:div
+         {:class
+          "flex items-center rounded-md bg-white pl-3 border border-gray-300 focus-within:border-2 focus-within:border-indigo-600"}
+         [:input
+          {:type "text",
+           :name "name",
+           :id "name",
+           :class
+           "w-full py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6",
+           :placeholder ""}]]]
        [:a
         {:href "#",
          :class
          "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
-        "Get started"]
-       [:a
-        {:href "#", :class "text-sm/6 font-semibold text-gray-900"}
-        "Learn more"
-        [:span {:aria-hidden "true"} "→"]]]]]
+        "Get started"]]]]
     [:div
      {:class
       "absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]",
