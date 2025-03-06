@@ -1,5 +1,6 @@
 (ns app.letter.core
-  (:require [clj-pdf.core :as pdf])
+  (:require [clj-pdf.core :as pdf]
+            [clojure.string :as str])
   (:import [java.io ByteArrayOutputStream]
            [java.time LocalDate]
            [java.time.format DateTimeFormatter]
@@ -67,7 +68,8 @@
         scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [25 15] (repeatedly (- (count headers) 2) #(/ 60 (- (count headers) 2))))]
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
-        table (into first-part (map create-last-three-rows last-rows))]
+        table (into first-part (map create-last-three-rows last-rows))
+        year (if (str/blank? (:year tenant)) "2023" (:year tenant))]
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"
@@ -100,12 +102,12 @@
 
       [:paragraph {:size 10 :align :left :spacing-before 15 :spacing-after 5} (str "Sehr geehrte " (:last-name tenant) ",")]
 
-      [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr 2023."] 
+      [:paragraph {:size 10 :align :left :spacing-after 10} "mit diesem Schreiben erhalten Sie gemäß §556 BGB Abs. 3 die Abrechnung der Betriebskosten für das Jahr " year "."] 
 
       table
 
       (if (:refund tenant)
-        [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den 2023 i. H. von " [:phrase {:style :bold} (str (.format formatter (:total tenant)) " €")]]
+        [:paragraph {:size 10 :align :left :spacing-before 10} "Sie schließt mit einer Gutschrift für den " year " i. H. von " [:phrase {:style :bold} (str (.format formatter (:total tenant)) " €")]]
         (payment-information (:total tenant) (:iban tenant) (:bank-name tenant)))
 
       [:paragraph {:size 10 :align :left :spacing-before 20 :spacing-after 30} "Mit freundlichen Grüßen"]
