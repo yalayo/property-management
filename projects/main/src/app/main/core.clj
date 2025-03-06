@@ -5,6 +5,7 @@
             [app.route.interface :as route]
             [app.server.core :as server]
             [app.flags.interface :as flags]
+            [app.property.interface :as properties]
             [app.html.interface :as html]
             [app.user.interface :as user]))
 
