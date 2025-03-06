@@ -90,6 +90,7 @@
                  {:name "iban" :cell "L2"}
                  {:name "bank-name" :cell "L3"}
                  {:name "refund" :cell "I6"}
+                 {:name "year" :cell "M11"}
                  {:name "property-name" :cell "L5" :required true}
                  {:name "property-address" :cell "M5" :required true}
                  {:name "property-apartment" :cell "M6" :required true}
@@ -120,16 +121,14 @@
         with-id (into with-content {:tenant-id (str (java.util.UUID/randomUUID))})]
     (into with-id general)))
 
-(defn process-sheet [sheet]
-  (let [workbook (.getWorkbook sheet) 
-        headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+(defn process-sheet [sheet workbook]
+  (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
         content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
         data (map #(assoc % :sheet sheet) attributes)
-        result (eduction (map get-attribute-value data))
-        result-errors (filter :error result)
+        result (map get-attribute-value data)
         content-errors (filter contains-error? content)]
-    (if (seq result-errors)
-      (lazy-cat content-errors result-errors)
+    (if (some #(:error %) result)
+      (into [] (concat content-errors (filter :error result)))
       (get-tenant-data result headers content))))
 
 (defn extract-client-data [sheet workbook]
@@ -151,34 +150,26 @@
     {:tenants tenants}))
   
 (defn process [input-stream]
-  (let [workbook (docj/load-workbook-from-stream input-stream)
+  (let [workbook (docj/load-workbook input-stream)
         sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
-        cpu-cores (.. Runtime getRuntime availableProcessors)
-        pool-size (max 1 (min cpu-cores 10)) ;; Dynamically adjust threads
-        pool (Executors/newFixedThreadPool pool-size)
-        result-chan (chan 20)]
-          ;; Process all sheets in parallel
+        pool (Executors/newFixedThreadPool 30)
+        result-chan (chan 10)]
+    ;; Process all sheets in parallel
     (doseq [sheet sheets]
-      (let [result (process-sheet sheet)]
-        (println "Sheet result: " result)
-        (async/>!! result-chan result)
-        (System/gc)
-        nil)
-      #_(.submit pool
+      (.submit pool
                (reify Callable
                  (call [_]
-                   (let [result (process-sheet sheet)]
+                   (let [result (process-sheet sheet workbook)]
                      (async/>!! result-chan result)
-                     (System/gc)
                      nil)))))
-  
-          ;; Close the channel after all threads are spawned
+
+    ;; Close the channel after all threads are spawned
     (go
-      #_(.shutdown pool) ;; Shutdown the thread pool
-      #_(.awaitTermination pool 5 java.util.concurrent.TimeUnit/SECONDS) ;; Wait for all tasks to complete
+      (.shutdown pool) ;; Shutdown the thread pool
+      (.awaitTermination pool 5 java.util.concurrent.TimeUnit/SECONDS) ;; Wait for all tasks to complete
       (close! result-chan))
-  
-          ;; Collect results
+
+    ;; Collect results
     (<!! (async/into [] result-chan))))
 
 (defn extract [input-stream]
