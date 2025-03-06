@@ -81,13 +81,12 @@
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
               (if (some? file-input-stream)
-                (with-open [input-stream (io/input-stream file-input-stream)]
-                  (let [result (excel/list-tenants input-stream)]
-                    (if (some #(:error %) result)
-                      (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
-                      (assoc context :response {:status 200
-                                                :headers {"HX-Redirect" "/tenants"}
-                                                :session {:tenants (:tenants result)} :excel input-stream})))) 
+                (let [result (flatten (excel/process file-input-stream))]
+                  (if (some #(:error %) result)
+                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
+                    (assoc context :response {:status 200
+                                              :headers {"HX-Redirect" "/tenants"}
+                                              :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
 (def post-upload-clients-handler
