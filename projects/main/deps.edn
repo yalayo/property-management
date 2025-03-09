@@ -35,7 +35,8 @@
         poly/excel {:local/root "../../components/excel"}
         poly/letter {:local/root "../../components/letter"}
         poly/storage {:local/root "../../components/storage"}
-        poly/route {:local/root "../../components/route"}}
+        poly/route {:local/root "../../components/route"}
+        poly/bank {:local/root "../../components/bank"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}
            :jib {:deps {io.github.atomisthq/jibbit {:git/url "https://github.com/yalayo/jibbit.git"
