@@ -10,8 +10,8 @@
 (def properties-handler
   {:name ::get
    :enter (fn [context]
-            (let [content {:title "Properties" :content (properties/content (persistance/list-properties))}]
-              (assoc context :response (html/respond-with-params layout/content {:content content} "Properties"))))})
+            (let [content {:title "Properties" :content (properties/content (persistance/list-properties)) :menu-id (:main-menu-3 layout/menu-id)}]
+              (assoc context :response (html/respond-with-params layout/content {:content content} (content :title)))))})
 
 (def new-property-handler
   {:name ::post
