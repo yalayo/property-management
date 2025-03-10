@@ -10,7 +10,7 @@
             [app.user.interface :as user]))
 
 (def config {:db-spec {:dbtype "postgres"
-                       :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
+                       :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "192.168.0.101")
                        :dbname "property-management"
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
