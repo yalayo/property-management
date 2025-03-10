@@ -43,7 +43,7 @@
                                 "components/logs/test"
                                 "components/flags/test"
                                 "components/property/test"
-                                "components/bank/src"
+                                "components/bank/test"
                                 "components/html/test"
                                 "components/web/test"
                                 "components/user/test"
