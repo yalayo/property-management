@@ -119,3 +119,40 @@
 
 (let [result (partition 2 (partition-by #(re-matches #"^\d{2}\.\d{2}\.\d{4} \d{2}\.\d{2}\.\d{4} SEPA-.*" %) raw-data))]
   (map parse-transaction result))
+
+;; Apotheke Bank
+(defn pdf-data []
+  (with-open [pd (Loader/loadPDF (new File "example-2.pdf"))]
+    (let [stripper (PDFTextStripper.)]
+      (.getText stripper pd))))
+
+(println (pdf-data))
+
+
+(defn parse-amount-apotheke [amount]
+  (-> amount
+      (str/replace "." "")  ; Remove thousand separator
+      (str/replace "," ".")  ; Convert decimal separator
+      Double/parseDouble))   ; Convert to number
+
+(defn parse-line [line]
+  (when-some [[_ date name text amount] (re-matches #"(\d{1,2}\. \w{3}\. \d{4}) (.+?) (.+?); ([\d\.,]+)" line)]
+    {:date date
+     :name name
+     :text text
+     :amount (parse-amount-apotheke amount)}))
+
+(defn clean-data [data]
+  (-> data
+      (str/replace #"\u00A0" " ")  ; Replace non-breaking spaces with normal spaces
+      (str/trim)))
+
+(defn extract-transactions-apotheke [data]
+  (->> (str/split-lines data)
+       (map clean-data)
+       (remove str/blank?)
+       (map parse-line)
+       (remove nil?)))
+
+;; Run extraction
+(count (extract-transactions-apotheke (pdf-data)))
