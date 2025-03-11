@@ -9,3 +9,6 @@
 
 (defn extract-client-data [input-stream]
   (core/extract input-stream))
+
+(defn property-bank-data [input-stream]
+  (core/extract input-stream))
