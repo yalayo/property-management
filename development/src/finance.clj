@@ -4,7 +4,10 @@
            [org.apache.pdfbox.text PDFTextStripper]
            [java.net URL]
            [java.io File]
-           [java.lang Character]))
+           [java.lang Character]
+           [java.time LocalDate]
+           [java.time.format DateTimeFormatter]
+           [java.util Locale]))
 
 (defn text-of-pdf []
   (with-open [pd (Loader/loadPDF (new File "example.pdf"))]
@@ -156,3 +159,51 @@
 
 ;; Run extraction
 (count (extract-transactions-apotheke (pdf-data)))
+
+;; Another aproach
+(defn clean-str [s]
+  (-> s
+      (str/replace #"\u00A0" " ")  ; Handle non-breaking spaces
+      (str/replace #"\s+" " ")      ; Normalize multiple spaces
+      (str/trim)))
+
+(defn starts-with-date? [line]
+  (re-matches #"^\d{1,2}\. \w{3}\. \d{4} .*" (clean-str line)))
+
+(defn merge-multi-line-transactions [lines]
+  (loop [remaining lines
+         current []
+         grouped []]
+    (if (empty? remaining)
+      (conj grouped (str/join " " current))  ; Add last transaction
+      (let [line (first remaining)
+            rest-lines (rest remaining)]
+        (if (starts-with-date? line)
+          (recur rest-lines [line] (if (empty? current) grouped (conj grouped (str/join " " current))))
+          (recur rest-lines (conj current line) grouped))))))
+
+(defn parse-line-2 [line]
+  (let [[_ date text amount]
+        (re-matches #"(\d{1,2}\. \w{3}\. \d{4}) (.+?) ([\d\.,]+)" (clean-str line))]
+    (when (and date text amount)
+      {:date date
+       :text text
+       :amount (parse-amount-apotheke amount)})))
+
+(defn extract-transactions-apotheke-2 [data]
+  (->> (str/split-lines data)
+       (map clean-str)
+       (remove str/blank?)
+       (merge-multi-line-transactions)
+       (println)
+       (map parse-line-2)
+       (remove nil?)))
+
+(extract-transactions-apotheke-2 (pdf-data))
+(count (extract-transactions-apotheke-2 (pdf-data)))
+
+(def example "1. Dez. 2023 NATASA GACESA Germany Überweisungsgutschrift; NATASA GACESA\r\n
+                            Germany; MITTE;\r\n
+                            935,00")
+(parse-line-2 "1. Dez. 2023 NATASA GACESA Germany Überweisungsgutschrift; NATASA GACESA Germany; MITTE; 935,00")
+(extract-transactions-apotheke-2 example)
