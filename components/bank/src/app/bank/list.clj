@@ -1,24 +1,41 @@
 (ns app.bank.list)
 
-(defn any-missing-value? [m]
-  (some nil? (vals m)))
-
-(defn bank-info [account]
-  [:div {:class "lg:flex lg:items-center lg:justify-between gap-x-6 py-5 bg-white hover:bg-gray-100 p-4"}
+(defn account-item [account]
+  [:div {:class "flex items-center p-2 border rounded-lg shadow"}
+   [:svg
+    {:class "h-7 w-7 mr-3"
+     :viewBox "0 0 100 100"}
+    [:circle {:cx "50", :cy "50", :r "45", :fill "#505050"}]
+    [:path
+     {:d
+      "M 30 40 L 70 40 L 70 70 L 30 70 Z M 35 45 L 65 45 M 35 50 L 65 50 M 35 55 L 65 55 M 40 30 A 5 5 0 1 1 40 31 Z M 50 30 A 5 5 0 1 1 50 31 Z M 60 30 A 5 5 0 1 1 60 31 Z",
+      :fill "none",
+      :stroke "#FFFFFF",
+      :stroke-width "2"}]]
    [:div
-    {:class "min-w-0 flex-1"}
-    [:h2
-     {:class
-      "text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"}
-     (:name account)]]])
+    {:class "flex-grow"}
+    [:p
+     {:class "text-md font-semibold"}
+     (account :description)]]
+   [:a
+    {:href "#",
+     :class "text-gray-500 hover:text-gray-700 focus:outline-none"}
+    [:svg
+     {:class "h-6 w-6",
+      :fill "none",
+      :viewBox "0 0 24 24",
+      :stroke "currentColor"}
+     [:path
+      {:stroke-linecap "round",
+       :stroke-linejoin "round",
+       :stroke-width "2",
+       :d
+       "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"}]]]
+   ])
 
 (defn content [accounts]
-  [:main
-
-   [:button {:class "inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white"
-             :_ "on click remove .translate-x-full from #slide-over-new-property then remove .opacity-0 from #new-property"} "Hinzufügen"]
-   [:div {:id "table" :class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 divide-y divide-gray-100"}
-    (map bank-info accounts)]])
+  [:div {:class "space-y-4"}
+    (map account-item accounts)])
 
 
 

@@ -9,8 +9,8 @@
 (def bank-handler
   {:name ::get
    :enter (fn [context]
-            (let [content {:title "Bank" :content (list/content (persistance/list-accounts))}]
-              (assoc context :response (html/respond-with-params layout/content {:content content} "Bank"))))})
+            (let [content {:title "Bank accounts" :content (list/content (persistance/list-accounts)) :menu-id (:main-menu-4 layout/menu-id)}]
+              (assoc context :response (html/respond-with-params layout/content {:content content} (:title content)))))})
 
 
 (def routes

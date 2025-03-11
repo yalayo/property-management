@@ -4,8 +4,8 @@
 
 (def menu-id {:main-menu-1 "Dashboard" 
               :main-menu-2 "Buildings" 
-              :main-menu-3 "Projects"
-              :main-menu-4 "Calendar"
+              :main-menu-3 "Properties"
+              :main-menu-4 "Bank accounts"
               :main-menu-5 "Reports" 
               :sec-menu-1 "Your Profile"
               :sec-menu-2 "Settings"
@@ -15,8 +15,8 @@
   "Configuration for the navigation bar and user profile menus."
    {:navbar {:menu [{:name (:main-menu-1 menu-id ) :href "#"} 
                     {:name (:main-menu-2 menu-id ) :href "/user-buildings"} 
-                    {:name (:main-menu-3 menu-id ) :href "#"} 
-                    {:name (:main-menu-4 menu-id ) :href "#"} 
+                    {:name (:main-menu-3 menu-id ) :href "/properties"} 
+                    {:name (:main-menu-4 menu-id ) :href "/bank"} 
                     {:name (:main-menu-5 menu-id ) :href "#"}]} 
     :profile {:menu [{:name (:sec-menu-1 menu-id ) :href "#"} 
                      {:name (:sec-menu-2 menu-id ) :href "#"} 

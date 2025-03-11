@@ -4,7 +4,10 @@
            [org.apache.pdfbox.text PDFTextStripper]
            [java.net URL]
            [java.io File]
-           [java.lang Character]))
+           [java.lang Character]
+           [java.time LocalDate]
+           [java.time.format DateTimeFormatter]
+           [java.util Locale]))
 
 (defn text-of-pdf []
   (with-open [pd (Loader/loadPDF (new File "example.pdf"))]
@@ -119,3 +122,100 @@
 
 (let [result (partition 2 (partition-by #(re-matches #"^\d{2}\.\d{2}\.\d{4} \d{2}\.\d{2}\.\d{4} SEPA-.*" %) raw-data))]
   (map parse-transaction result))
+
+;; Apotheke Bank
+(defn pdf-data []
+  (with-open [pd (Loader/loadPDF (new File "example-2.pdf"))]
+    (let [stripper (PDFTextStripper.)]
+      (.getText stripper pd))))
+
+(println (pdf-data))
+
+
+(defn parse-amount-apotheke [amount]
+  (-> amount
+      (str/replace "." "")  ; Remove thousand separator
+      (str/replace "," ".")  ; Convert decimal separator
+      Double/parseDouble))   ; Convert to number
+
+(defn parse-line [line]
+  (when-some [[_ date name text amount] (re-matches #"(\d{1,2}\. \w{3}\. \d{4}) (.+?) (.+?); ([\d\.,]+)" line)]
+    {:date date
+     :name name
+     :text text
+     :amount (parse-amount-apotheke amount)}))
+
+(defn clean-data [data]
+  (-> data
+      (str/replace #"\u00A0" " ")  ; Replace non-breaking spaces with normal spaces
+      (str/trim)))
+
+(defn extract-transactions-apotheke [data]
+  (->> (str/split-lines data)
+       (map clean-data)
+       (remove str/blank?)
+       (map parse-line)
+       (remove nil?)))
+
+;; Run extraction
+(count (extract-transactions-apotheke (pdf-data)))
+
+;; Another aproach
+(defn clean-str [s]
+  (-> s
+      (str/replace #"\u00A0" " ")  ; Handle non-breaking spaces
+      (str/replace #"\s+" " ")      ; Normalize multiple spaces
+      (str/trim)))
+
+(defn starts-with-date? [line]
+  (re-matches #"^\d{1,2}\. \w{3}\. \d{4} .*" (clean-str line)))
+
+(defn merge-multi-line-transactions [lines]
+  (loop [remaining lines
+         current []
+         grouped []]
+    (if (empty? remaining)
+      (if (empty? current) grouped (conj grouped (str/join " " current)))  ; Ensure last transaction is added
+      (let [line (first remaining)
+            rest-lines (rest remaining)]
+        (if (starts-with-date? line)
+          (recur rest-lines [line] (if (empty? current) grouped (conj grouped (str/join " " current))))
+          (recur rest-lines (conj current line) grouped))))))
+
+;; Processing dates
+(def german-months
+  {"Jan" "01", "Feb" "02", "März" "03", "Apr" "04", "Mai" "05", "Juni" "06"
+   "Juli" "07", "Aug" "08", "Sep" "09", "Okt" "10", "Nov" "11", "Dez" "12"})
+
+(defn parse-german-date [date-str]
+  (let [[_ day month year] (re-matches #"(\d{1,2})\. (\w+)\. (\d{4})" date-str)
+        month-num (get german-months month)]
+    (if month-num
+      (LocalDate/parse (str year "-" month-num "-" (format "%02d" (Integer/parseInt day)))
+                       (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
+      (throw (Exception. (str "Invalid month: " month))))))
+
+(defn parse-line-2 [line]
+  (let [[_ date text amount _]
+        (re-matches #"(\d{1,2}\. [A-ZÄÖÜa-zäöüß]+\. \d{4}) (.*?) (\d{1,3}(\.\d{3})*,\d{2})(.*)" (clean-str line))]
+    (when (and date text amount)
+      {:date (parse-german-date date)
+       :text text
+       :amount (parse-amount-apotheke amount)})))
+
+(defn extract-transactions-apotheke-2 [data]
+  (->> (str/split-lines data)
+       (map clean-str)
+       (remove str/blank?)
+       (merge-multi-line-transactions)
+       (map parse-line-2)
+       (remove nil?)))
+
+(extract-transactions-apotheke-2 (pdf-data))
+(count (extract-transactions-apotheke-2 (pdf-data)))
+
+(def example "1. Dez. 2023 NATASA GACESA Germany Überweisungsgutschrift; NATASA GACESA\r\n
+                            Germany; MITTE;\r\n
+                            935,00")
+(parse-line-2 "1. Dez. 2023 NATASA GACESA Germany Überweisungsgutschrift; NATASA GACESA Germany; MITTE; 935,00")
+(extract-transactions-apotheke-2 example)
