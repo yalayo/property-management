@@ -16,8 +16,12 @@
      {:class "text-md font-semibold"}
      (account :description)]]
    [:a
-    {:href "#",
-     :class "text-gray-500 hover:text-gray-700 focus:outline-none"}
+    {:href "Account details",
+     :class "text-gray-500 hover:text-gray-700 focus:outline-none",
+     :hx-get "/account-detail",  ;; Endpoint to which the form will be sent 
+     :hx-target "#dashboard-dyn-ctn", ;; Element where the response will be displayed
+     :hx-swap "innerHTML", ;; How the answer will be inserted
+     :hx-trigger "click"}
     [:svg {:class "h-6 w-6",
       :fill "none",
       :viewBox "0 0 24 24",
