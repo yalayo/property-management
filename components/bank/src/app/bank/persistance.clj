@@ -10,16 +10,15 @@
               :db/unique :db.unique/identity
               :db/cardinality :db.cardinality/one}])
 
-(defn create-account [name]
-  (storage/transact [{:id (str (java.util.UUID/randomUUID)) :name name}] "bank"))
-
 #_(defn list-accounts []
   (let [data (storage/query "[:find ?id ?name :where [?e :id ?id] [?e :name ?name]]" "bank")]
     (map (fn [[id name]]
            {:id id :name name})
          data)))
 
-(defn list-accounts []
+(defn list-accounts 
+  "Temporal listing of the accounts until we have the real data from database"
+  []
   [{:id 1 :description "Bank account 1"}
    {:id 2 :description "Bank account 2"}
    {:id 3 :description "Bank account 3"}

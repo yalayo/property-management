@@ -2,8 +2,7 @@
 
 (defn account-item [account]
   [:div {:class "flex items-center p-2 border rounded-lg shadow"}
-   [:svg
-    {:class "h-7 w-7 mr-3"
+   [:svg {:class "h-7 w-7 mr-3"
      :viewBox "0 0 100 100"}
     [:circle {:cx "50", :cy "50", :r "45", :fill "#505050"}]
     [:path
@@ -12,16 +11,14 @@
       :fill "none",
       :stroke "#FFFFFF",
       :stroke-width "2"}]]
-   [:div
-    {:class "flex-grow"}
+   [:div {:class "flex-grow"}
     [:p
      {:class "text-md font-semibold"}
      (account :description)]]
    [:a
     {:href "#",
      :class "text-gray-500 hover:text-gray-700 focus:outline-none"}
-    [:svg
-     {:class "h-6 w-6",
+    [:svg {:class "h-6 w-6",
       :fill "none",
       :viewBox "0 0 24 24",
       :stroke "currentColor"}
@@ -34,7 +31,7 @@
    ])
 
 (defn content [accounts]
-  [:div {:class "space-y-4"}
+  [:div {:class "space-y-3"}
     (map account-item accounts)])
 
 
