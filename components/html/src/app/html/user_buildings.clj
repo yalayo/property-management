@@ -1,9 +1,9 @@
 (ns app.html.user-buildings)
 
 (def ^{:private true} data  {:cur-user "Current user"
-            :buildings [{:id "0001" :name "Building 1" :address "Address 1" :pic "def-building.jpg"}
-                        {:id "0002" :name "Building 2" :address "Address 2" :pic "def-building.jpg"}
-                        {:id "0003" :name "Building 3" :address "Address 3" :pic "def-building.jpg"}]})
+            :buildings [{:id "0001" :name "Building 1" :address "Address 1" :pic "def-building.svg"}
+                        {:id "0002" :name "Building 2" :address "Address 2" :pic "def-building.svg"}
+                        {:id "0003" :name "Building 3" :address "Address 3" :pic "def-building.svg"}]})
 
 (defn get-buildings []
   [:div.container.mx-auto
