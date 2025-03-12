@@ -15,6 +15,22 @@
     [:p
      {:class "text-md font-semibold"}
      (account :description)]]
+   [:div {:id (:id account) :class "mt-4 flex items-center justify-center gap-x-6"}
+    [:form
+     {:hx-encoding "multipart/form-data"
+      :hx-post "/upload-clients-details"
+      :hx-target "this"
+      :hx-swap "outerHTML"}
+     [:input {:type "file"
+              :name "file"
+              :id (:id account)
+              :class "hidden"
+              :hx-on "change: this.form.requestSubmit();"}]
+     [:label {:for (:id account)
+              :id (str "upload-label-" (:id account))
+              :class "cursor-pointer inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white"}
+      "Hochladen"]]]
+
    [:a
     {:href "#",
      :class "text-gray-500 hover:text-gray-700 focus:outline-none"}
