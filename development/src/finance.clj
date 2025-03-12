@@ -106,7 +106,7 @@
     {:date1 date1
      :date2 date2
      :details details-str
-     :amount amount}))
+     :amount (parse-amount amount)}))
 
 (defn extract-transactions [lines]
   (let [transaction-start #"^\d{2}\.\d{2}\.\d{4} \d{2}\.\d{2}\.\d{4} SEPA-.*"
