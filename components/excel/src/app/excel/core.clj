@@ -105,6 +105,9 @@
 (def apartment-data [{:name "last-name" :cell "B3"}
                      {:name "property-id" :cell "C3"}])
 
+(def property-bank-data [{:name "IBAN" :cell "L2"}
+                         {:name "BANK" :cell "L3"}])
+
 (defn get-attribute-value [data]
   (let [sheet (:sheet data)
         name (keyword (:name data))
@@ -130,6 +133,17 @@
     (if (some #(:error %) result)
       (into [] (concat content-errors (filter :error result)))
       (get-tenant-data result headers content))))
+
+(defn extract-property-bank-data [sheet workbook]
+  (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
+        content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
+        bank-data (map #(assoc % :sheet sheet) property-bank-data)
+        property-bank-data-result (map get-attribute-value bank-data)
+        content-errors (filter contains-error? content)]
+    (println "Property bank data: " property-bank-data-result)
+    (if (some #(:error %) property-bank-data-result)
+      (into [] (concat content-errors (filter :error property-bank-data-result)))
+      (get-tenant-data property-bank-data-result headers content))))
 
 (defn extract-client-data [sheet workbook]
     (let [headers (get-headers-content (docj/select-name workbook (str "h" (.getSheetName sheet))))
@@ -183,6 +197,29 @@
                (reify Callable
                  (call [_]
                    (let [result (extract-client-data sheet workbook)]
+                     (async/>!! result-chan result)
+                     nil)))))
+
+    ;; Close the channel after all threads are spawned
+    (go
+      (.shutdown pool) ;; Shutdown the thread pool
+      (.awaitTermination pool 5 java.util.concurrent.TimeUnit/SECONDS) ;; Wait for all tasks to complete
+      (close! result-chan))
+
+    ;; Collect results
+    (<!! (async/into [] result-chan))))
+
+(defn extract-bank [input-stream]
+  (let [workbook (docj/load-workbook input-stream)
+        sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
+        pool (Executors/newFixedThreadPool 30)
+        result-chan (chan 10)]
+    ;; Process all sheets in parallel
+    (doseq [sheet sheets]
+      (.submit pool
+               (reify Callable
+                 (call [_]
+                   (let [result (extract-property-bank-data sheet workbook)]
                      (async/>!! result-chan result)
                      nil)))))
 
