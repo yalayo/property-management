@@ -74,4 +74,4 @@
 
 
 (defn process [input-stream]
-  (println (extract-transactions-apotheke (pdf-data input-stream))))
+  (extract-transactions-apotheke (pdf-data input-stream)))
