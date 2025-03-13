@@ -32,15 +32,16 @@
     :enter (fn [context]
              (let [session (-> context :request :session)
                    name (-> context :request :path-params :name)]
-               (println "Recarga la pagina del handler que envia el form")
-               (assoc context :response (html/respond-with-params properties/get-property-details name"Property"))))})
+               (println "Show the form to upload property")
+               (assoc context :response (html/respond-with-params properties/get-property-details name "Property"))))})
 
-(def post-upload-clients-handler
+(def post-upload-property-handler
   {:name ::post
    :enter (fn [context]
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
                   file-input-stream (:tempfile file)]
+              (println "Enter to the handler to proccess the propertie's bank data")
               (if (some? file-input-stream)
                 (let [result (flatten (excel/property-bank-data file-input-stream))]
                     (assoc context :response {:status 200
@@ -56,12 +57,12 @@
   #{["/properties"
      :get properties-handler
      :route-name ::properties]
-    ["/propertie/:name"
+    ["/property/:name"
      :get [(body-params/body-params) params/keyword-params propertie-handler]
      :route-name ::propertie]
     ["/upload-property-details"
-     :post [(ring-mw/multipart-params) post-upload-clients-handler]
-     :route-name ::upload-clients-details]
+     :post [(ring-mw/multipart-params) post-upload-property-handler]
+     :route-name ::upload-property-details]
     ["/new-property"
      :post [(body-params/body-params) params/keyword-params new-property-handler]
      :route-name ::new-property]})
