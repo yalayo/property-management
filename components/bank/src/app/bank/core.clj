@@ -6,6 +6,7 @@
             [app.html.interface :as html]
             [app.html.layout :as layout]
             [app.bank.list :as list]
+            [app.bank.list-transactions :as transactions]
             [app.bank.persistance :as persistance]
             [app.bank.statement :as statement]))
 
@@ -20,16 +21,9 @@
    :enter (fn [context]
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
-                  file-input-stream (:tempfile file)]
-              (statement/process file-input-stream)
-              #_(if (some? file-input-stream)
-                (let [result (flatten (excel/process file-input-stream))]
-                  (if (some #(:error %) result)
-                    (assoc context :response (html/respond-with-params upload-details/wrong-file-selected result "Hochladen"))
-                    (assoc context :response {:status 200
-                                              :headers {"HX-Redirect" "/tenants"}
-                                              :session {:tenants result}})))
-                (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
+                  file-input-stream (:tempfile file)
+                  result (statement/process file-input-stream)]
+              (assoc context :response (html/respond-with-params transactions/content result "Bank accounts"))))})
 
 (def routes
   #{["/bank"
