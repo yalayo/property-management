@@ -3,10 +3,12 @@
             ;;[io.pedestal.http.body-params :as body-params]
             ;;[io.pedestal.http.params :as params]
             [app.html.core :refer [auth-required]]
+            [hiccup2.core :as h]
             [app.html.interface :as html]
             [app.html.layout :as layout]
             [app.bank.list :as list]
             [app.bank.list-transactions :as transactions]
+            [app.bank.account-details :as account]
             [app.bank.persistance :as persistance]
             [app.bank.statement :as statement]))
 
@@ -25,13 +27,28 @@
                   result (statement/process file-input-stream)]
               (assoc context :response (html/respond-with-params transactions/content result "Bank accounts"))))})
 
+(defn get-acc-detail [context] 
+  (let [params ((context :request) :params)
+        id (get params :acc)]
+  (str (h/html (account/content id)))))
+
+(def account-detail-handler
+  {:name ::get
+   :enter (fn [context] 
+            (assoc context :response {:status 200 
+                                     :headers {"Content-Type" "text/html"} 
+                                     :body (get-acc-detail context)}))})
+
 (def routes
   #{["/bank"
      :get bank-handler
      :route-name ::bank]
     ["/upload-transactions"
      :post [(ring-mw/multipart-params) auth-required post-upload-transactions-handler]
-     :route-name ::post-upload-transactions]})
+     :route-name ::post-upload-transactions]
+    ["/account-detail"
+     :get account-detail-handler
+     :route-name ::account-detail]})
 
 (def internal-routes
   #{["/bank"

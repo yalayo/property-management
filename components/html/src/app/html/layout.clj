@@ -127,7 +127,7 @@
            [:span {:class "sr-only"} "Open user menu"]
            [:img
             {:class "h-8 w-8 rounded-full",
-             :src "def-building.jpg",
+             :src "def-building.svg",
              :alt ""}]]]
          (comment
            "Dropdown menu, show/hide based on menu state.\n\n Entering: \"transition ease-out duration-100\"\n From: \"transform opacity-0 scale-95\"\n                  To: \"transform opacity-100 scale-100\"\n                Leaving: \"transition ease-in duration-75\"\n                  From: \"transform opacity-100 scale-100\"\n                  To: \"transform opacity-0 scale-95\"")
@@ -198,7 +198,7 @@
         {:class "flex-shrink-0"}
         [:img
          {:class "h-10 w-10 rounded-full",
-          :src "def-building.jpg",
+          :src "def-building.svg",
           :alt ""}]]
        [:div
         {:class "ml-3"}
@@ -239,4 +239,4 @@
 [:main
  [:div
   {:class "mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"}
-     (:content content)]]])
+     [:div#dashboard-dyn-ctn (:content content)]]]])
