@@ -19,10 +19,6 @@
         id (get params :acc)]
   (str (h/html (account/content id)))))
 
-(comment
-  (println (get-acc-detail "3"))
-  )
-
 (def account-detail-handler
   {:name ::get
    :enter (fn [context] 
