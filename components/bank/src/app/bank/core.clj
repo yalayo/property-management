@@ -5,6 +5,7 @@
    [app.html.interface :as html]
    [app.html.layout :as layout]
    [app.bank.list :as list]
+   [app.bank.account-details :as account]
    [app.bank.persistance :as persistance]))
 
 (def bank-handler
@@ -13,32 +14,21 @@
             (let [content {:title "Bank accounts" :content (list/content (persistance/list-accounts)) :menu-id (:main-menu-4 layout/menu-id)}]
               (assoc context :response (html/respond-with-params layout/content {:content content} (:title content)))))})
 
-#_(defn get-body-response [params]
-  ;;(str "<div><p>New feature params: " params "</p></div>")
-  (let [result [:div "New feature params: " [:ul (for [[key value] params] [:li key " -> " value])]]]
-    (str (h/html result))))
-
-#_(defn post-new-feature-handler [context];;Test function
-  (let [session (-> context :session)
-        params (-> context :form-params)]
-    {:status 200
-     :headers {"Content-Type" "text/html"}
-     :body (get-body-response params)}))
-
-(defn get-acc-detail []
-  (let [result [:div "Load content from database:" [:p "Account details"]]]
-    (str (h/html result))))
+(defn get-acc-detail [context] 
+  (let [params ((context :request) :params)
+        id (get params :acc)]
+  (str (h/html (account/content id)))))
 
 (comment
-  (println (get-acc-detail))
+  (println (get-acc-detail "3"))
   )
 
 (def account-detail-handler
   {:name ::get
-   :enter (fn [context]
-           (assoc context :response {:status 200 
+   :enter (fn [context] 
+            (assoc context :response {:status 200 
                                      :headers {"Content-Type" "text/html"} 
-                                     :body (get-acc-detail)}))})
+                                     :body (get-acc-detail context)}))})
 
 (def routes
   #{["/bank"
