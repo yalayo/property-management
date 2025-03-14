@@ -6,8 +6,8 @@
    [:div {:id "file-upload-container"}
     [:input#upload_pdf {:type "file",
              :accept "application/pdf",
-             :class "opacity-0 absolute"}];FIXME "hidden" Revisar esto
-    [:button {:_ "on click trigger click on #upload_pdf",
+             :class "opacity-0 absolute"}];FIXME "hidden"
+    [:button {:_ "on click trigger click on #upload_pdf",;TODO Revisar esto
              :class "bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded shadow-md focus:outline-none mb-4"}
      "Upload PDF"]]
    [:a {

@@ -5,9 +5,9 @@
         input-id (str "file-upload-" account-id)
         content-id (str "content-" account-id)]
     [:div
-     [:div {:class "flex flex-col p-4 border rounded-lg shadow"}
+     [:div {:class "flex flex-col"}
      ;; Account Header Section (Icon + Description)
-     [:div {:class "flex items-center p-2border-b"}
+     [:div {:class "flex items-center border-b"}
       [:svg {:class "h-7 w-7 mr-3"
              :viewBox "0 0 100 100"}
        [:circle {:cx "50", :cy "50", :r "45", :fill "#505050"}]
@@ -20,7 +20,7 @@
       [:div {:class "flex-grow"}
        [:p {:class "text-md font-semibold"} (account :description)]]
       ;; Upload & More Options Section
-     [:div {:id (:id account) :class "mt-4 flex items-center justify-center gap-x-6"}
+     [:div {:id (:id account) :class "flex items-center space-x-2"}
       [:form
        {:hx-encoding "multipart/form-data"
         :hx-post "/upload-transactions"
@@ -30,11 +30,12 @@
         [:input {:type "file"
                  :name "file"
                  :id input-id
+                 :accept "application/pdf",
                  :class "hidden"
                  :hx-on "change: this.form.requestSubmit();"}]
         [:label {:for input-id
                  :id (str "upload-label-" account-id)
-                 :class "cursor-pointer inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500 dark:hover:bg-blue-700 dark:hover:text-white"}
+                 :class "cursor-pointer inline-block shrink-0 rounded-md border border-gray-600 bg-gray-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-transparent hover:text-gray-600 focus:outline-none focus:ring active:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white"}
          "Hochladen"]]]]
       ;; More Options Button
       [:a
@@ -52,7 +53,7 @@
           "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"}]]]]]
 
      ;; Content Section (Now Appears Below)
-     [:div {:id content-id :class "mt-4"}]]))
+     [:div {:id content-id :class "mt-2"}]]))
 
 (defn content [accounts]
   [:div {:class "space-y-3"}
