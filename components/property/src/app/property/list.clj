@@ -43,7 +43,27 @@
         [:div {:class "mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left"}
          [:div {:class "mt-2"}
           [:p {:class "text-sm text-gray-500"} "Fehlende Informationen. Bitte überprüfen Sie Ihre Excel-Datei."]]]]]
-      [:a
+      (let [property-id (:id property)
+            input-id (str "file-upload-" property-id)
+            content-id (str "content-" property-id)]
+        [:div {:id (:id property) :class "flex items-center space-x-2"}
+         [:form
+          {:hx-encoding "multipart/form-data"
+           :hx-post "/upload-property-details"
+           :hx-target (str "#" content-id)
+           :hx-swap "innerHTML"}
+          [:div
+           [:input {:type "file"
+                    :name "file"
+                    :id input-id
+                    :accept ".xls,.xlsx"
+                    :class "hidden"
+                    :hx-on "change: this.form.requestSubmit();"}]
+           [:label {:for input-id
+                    :id (str "upload-label-" property-id)
+                    :class "cursor-pointer inline-block shrink-0 rounded-md border border-gray-600 bg-gray-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-transparent hover:text-gray-600 focus:outline-none focus:ring active:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white"}
+            "Hochladen"]]]]) 
+      #_[:a
        {:class "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         :href (str "/property/" (:name property))} 
        [:svg
