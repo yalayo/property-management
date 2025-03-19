@@ -14,6 +14,7 @@
             [app.letter.interface :as letter]
             [cheshire.core :as json]
             [clj-http.client :as client]
+            [app.html.dashboard :as dashboard]
             [app.html.user-buildings :as user-buildings]
             [app.html.building-apartments :as building-apartments]
             [app.html.apartment-details :as apartment-datails])
@@ -62,7 +63,7 @@
    :enter (fn [context]
             (let [session (-> context :requet :session)
                   dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 layout/menu-id)}]
-              (assoc context :response (respond-with-params layout/content {:email (:email session) :created-at (:created-at session) :content dashboard-content} "Dashboard"))))})
+              (assoc context :response (respond dashboard/content "Dashboard"))))})
 
 (def upload-details-handler
   {:name ::get
