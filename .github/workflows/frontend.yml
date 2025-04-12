@@ -78,5 +78,4 @@ jobs:
         run: |
           cd ./projects/cloudflare/terraform
           terraform init
-          terraform apply -target=cloudflare_pages_domain.custom_domain -auto-approve
           terraform apply -target=cloudflare_dns_record.dns_record -auto-approve

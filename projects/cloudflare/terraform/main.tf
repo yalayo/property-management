@@ -35,4 +35,8 @@ provider "cloudflare" {
 resource "cloudflare_pages_project" "pages_project" {
   account_id = var.cloudflare_account_id
   name       = "pmanagement-frontend"
+
+  depends_on = [
+    cloudflare_pages_domain.custom_domain
+  ]
 }
