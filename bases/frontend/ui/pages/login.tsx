@@ -4,19 +4,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useAuth } from "../hooks/use-auth";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { Redirect, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
-const loginSchema = z.object({
-  username: z.string().min(3, { message: "Username must be at least 3 characters" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-});
+const loginSchema = "";
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = null;
 
 export default function Login(props) {
   const user = props.user;
@@ -31,13 +26,7 @@ export default function Login(props) {
     return <Redirect to="/dashboard" />;
   }
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
+  const form = null;
 
   const onSubmit = (data: LoginFormValues) => {
     //loginMutation.mutate(data);
