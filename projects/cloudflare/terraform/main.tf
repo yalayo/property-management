@@ -31,6 +31,7 @@ provider "cloudflare" {
 resource "cloudflare_pages_project" "pages_project" {
   account_id = var.cloudflare_account_id
   name       = "pmanagement-frontend"
+  production_branch = "main"
   build_config = {
     build_command = "npm run release"
     destination_dir = "build"
