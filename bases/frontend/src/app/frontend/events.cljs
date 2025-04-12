@@ -36,7 +36,7 @@
  (fn-traced [{:keys [local-store-db]} _]
             (if (empty? local-store-db)
               {:http-xhrio {:method          :get
-                            :uri             config/api-url
+                            :uri             (str config/api-url "/api/questions")
                             :timeout         8000
                             :response-format (edn-response-format)
                             :on-success      [::set-initial-db]
