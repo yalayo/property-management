@@ -68,4 +68,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           wranglerVersion: "4.7.0"
           workingDirectory: "./projects/cloudflare"
-          command: pages deploy ./out/public --project-name pmanagement-frontend
+          command: pages deploy ./public --project-name pmanagement-frontend
