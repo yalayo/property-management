@@ -34,6 +34,7 @@
         poly/user {:local/root "../../components/user"}
         poly/excel {:local/root "../../components/excel"}
         poly/letter {:local/root "../../components/letter"}
+        poly/survey {:local/root "../../components/survey"}
         poly/storage {:local/root "../../components/storage"}
         poly/route {:local/root "../../components/route"}
         poly/bank {:local/root "../../components/bank"}}
