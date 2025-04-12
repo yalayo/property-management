@@ -13,4 +13,4 @@
            :release {:compiler-options {:optimizations :simple}
                      :output-dir "out/public/js"}
            :optimizations :none}}
- :dev-http {8080 "public"}}
+ :dev-http {9000 "public"}}
