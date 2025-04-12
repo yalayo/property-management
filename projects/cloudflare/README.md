@@ -1,6 +1,6 @@
-# As alternative use the each command onw its own
-npx shadow-cljs server watch
+# Run the frontend
 npx shadow-cljs watch app
+npm run dev
 
 ## Tailwind css
 Create tailwind.css, use this command to watch that file and generate the index.css: 
