@@ -4,9 +4,8 @@ on:
     push:
       branches: [ main ]
       paths:
-        - '.github/workflows/**'
-        - 'bases/**'
-        - 'components/**'
+        - '.github/workflows/frontend.yml'
+        - 'bases/frontend/**'
         - 'projects/cloudflare/**'
 jobs:
   build:
