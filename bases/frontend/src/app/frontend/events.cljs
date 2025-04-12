@@ -49,7 +49,6 @@
 (re-frame/reg-event-db
  ::set-initial-db
  (fn-traced [_ [_ response]]
-            (js/console.log "Response:" response)
             (-> db/default-db
                 (assoc-in [:survey :questions] response)
                 (assoc-in [:survey :current-question-index] 0)
