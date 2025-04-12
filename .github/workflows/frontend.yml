@@ -4,6 +4,7 @@ on:
     push:
       branches: [ main ]
       paths:
+        - '.github/workflows/**'
         - 'bases/**'
         - 'components/**'
         - 'projects/cloudflare/**'
@@ -24,7 +25,7 @@ jobs:
         run: |
             cd ./projects/cloudflare/
             npm install
-            npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules" --watch
+            npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
             npm run release
             cp -R public/ out/
       - name: Setup Terraform
