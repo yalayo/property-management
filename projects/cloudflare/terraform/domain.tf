@@ -8,7 +8,7 @@ resource "cloudflare_pages_domain" "custom_domain" {
   ]
 }
 
-resource "cloudflare_dns_record" "example_dns_record" {
+resource "cloudflare_dns_record" "dns_record" {
   zone_id = var.domain_zone_id
   content = "${cloudflare_pages_project.pages_project.name}.pages.dev"
   name = "immo"
