@@ -67,15 +67,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           wranglerVersion: "4.7.0"
-          workingDirectory: "./projects/cloudflare"
+          workingDirectory: "./"
           command: pages deploy ./public --project-name pmanagement-frontend
-      - name: Add custom domain and dns record
-        env:
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_domain_zone_id: ${{ secrets.ZONE_ID }}
-
-        run: |
-          cd ./projects/cloudflare/terraform
-          terraform init
-          terraform apply -target=cloudflare_dns_record.dns_record -auto-approve
