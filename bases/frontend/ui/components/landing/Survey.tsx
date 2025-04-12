@@ -125,7 +125,8 @@ export default function Survey(props) {
                     Final Step
                   </span>
                 )}
-                <span className="text-sm font-medium text-slate-600">{progressPercentage}%</span>
+
+                {!showEmailForm && (<span className="text-sm font-medium text-slate-600">{progressPercentage}%</span>)}
               </div>
               <Progress value={progressPercentage} className="h-2.5" />
             </div>
