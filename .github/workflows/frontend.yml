@@ -20,11 +20,18 @@ jobs:
         uses: DeLaGuardo/setup-clojure@11.0
         with:
           cli: 1.11.1.1347
+      - name: Build the application
+        run: |
+            cd ./projects/cloudflare/
+            npm install
+            npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules" --watch
+            npm run release
+            cp -R public/ out/
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - name: Deploy with Terraform
+      - name: Create Cloudflare Pages project with Terraform
         env:
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -33,3 +40,11 @@ jobs:
             cd ./projects/cloudflare/terraform
             terraform init
             terraform apply -auto-approve
+      # Deploy to Cloudflare Pages
+      - name: Deploy frontend
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4.7.0"
+          workingDirectory: "./projects/cloudflare"
+          command: pages deploy ./out/public --project-name pmanagement-frontend
