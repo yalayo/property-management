@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame :refer [after]]
             [cljs.reader]
             [app.frontend.db :as db]
+            [app.frontend.config :as config]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [day8.re-frame.http-fx]
             [ajax.core :as ajax]))
@@ -14,7 +15,7 @@
 
 (defn edn-response-format []
   {:read (fn [^goog.net.XhrIo xhrio]
-           (let [raw (.getResponseText xhrio)] 
+           (let [raw (.getResponseText xhrio)]
              (cljs.reader/read-string raw)))
    :description  "EDN"
    :content-type ["application/edn"]})
@@ -35,7 +36,7 @@
  (fn-traced [{:keys [local-store-db]} _]
             (if (empty? local-store-db)
               {:http-xhrio {:method          :get
-                            :uri             "/api/questions" ; <- replace with your actual endpoint
+                            :uri             config/api-url
                             :timeout         8000
                             :response-format (edn-response-format)
                             :on-success      [::set-initial-db]
@@ -48,8 +49,9 @@
 (re-frame/reg-event-db
  ::set-initial-db
  (fn-traced [_ [_ response]]
+            (js/console.log "Response:" response)
             (-> db/default-db
-                (assoc-in [:survey :questions] (:result response))
+                (assoc-in [:survey :questions] response)
                 (assoc-in [:survey :current-question-index] 0)
                 (assoc-in [:survey :show-email-form] false)
                 (assoc-in [:survey :responses] (initialize-responses)))))
