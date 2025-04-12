@@ -1,0 +1,35 @@
+name: Frontend
+
+on:
+    push:
+      branches: [ main ]
+      paths:
+        - 'bases/**'
+        - 'components/**'
+        - 'projects/cloudflare/**'
+jobs:
+  build:
+    name: Build with shadow-cljs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Deploy with Terraform
+        env:
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+        run: |
+            cd ./projects/cloudflare/terraform
+            terraform init
+            terraform apply -auto-approve
