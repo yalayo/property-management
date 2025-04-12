@@ -93,7 +93,7 @@ export default function Survey(props) {
 
   // Calculate progress
   const progressPercentage = questions 
-    ? Math.round(((currentQuestionIndex + (showEmailForm ? 1 : 0)) / questions.length) * 100) 
+    ? Math.round(((currentQuestionIndex + (showEmailForm ? 2 : 1)) / questions.length) * 100) 
     : 0;
 
   return (
