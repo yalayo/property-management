@@ -1,7 +1,7 @@
 resource "cloudflare_pages_domain" "custom_domain" {
   account_id   = var.cloudflare_account_id
   project_name = cloudflare_pages_project.pages_project.name
-  domain       = "immo.busqandote.com"
+  name         = "immo.busqandote.com"
 }
 
 resource "cloudflare_dns_record" "example_dns_record" {
