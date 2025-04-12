@@ -1,12 +1,13 @@
 name: CICD
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Environment to deploy"
-        required: false
-        default: "production"
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'bases/**'
+      - 'components/**'
+      - 'projects/main/**'
 
 jobs:
   infrastructure:
