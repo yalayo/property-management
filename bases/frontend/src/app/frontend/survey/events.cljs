@@ -15,8 +15,9 @@
 (re-frame/reg-event-db
  ::next-question
  (fn [db]
-   (let [index (get-in db [:survey :current-question-index])]
-     (if (>= index 19)
+   (let [index (get-in db [:survey :current-question-index])
+         total (count (get-in db [:survey :questions]))]
+     (if (>= index (dec total))
        (-> db
            (assoc-in [:survey :show-email-form] true)
            (assoc-in [:survey :current-question-index] (inc index)))
