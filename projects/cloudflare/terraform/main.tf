@@ -24,6 +24,10 @@ variable "cloudflare_account_id" {
   default = ""
 }
 
+variable "domain_zone_id" {
+  default = ""
+}
+
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
@@ -32,9 +36,4 @@ resource "cloudflare_pages_project" "pages_project" {
   account_id = var.cloudflare_account_id
   name       = "pmanagement-frontend"
   production_branch = "main"
-  build_config = {
-    build_command = "npm run release"
-    destination_dir = "build"
-    root_dir = "../"
-  }
 }
