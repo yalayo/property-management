@@ -11,4 +11,8 @@ resource "cloudflare_dns_record" "example_dns_record" {
   proxied = true
   ttl = 1
   type = "CNAME"
+
+  depends_on = [
+    cloudflare_pages_domain.custom_domain
+  ]
 }
