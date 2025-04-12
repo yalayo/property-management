@@ -12,6 +12,7 @@
                                "components/excel/src"
                                "components/excel/resources"
                                "components/letter/src"
+                               "components/survey/src"
                                "components/storage/src"
                                "components/storage/resources"
                                "components/route/src"]
@@ -49,6 +50,7 @@
                                 "components/user/test"
                                 "components/excel/test"
                                 "components/letter/test"
+                                "components/survey/test"
                                 "components/storage/test"
                                 "components/route/test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
