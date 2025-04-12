@@ -28,6 +28,20 @@ jobs:
             npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
             npm run release
             cp -R public/ out/
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: compilation
+            path: out/
+
+  deploy:
+    name: Deploy the app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -42,6 +56,10 @@ jobs:
             cd ./projects/cloudflare/terraform
             terraform init
             terraform apply -auto-approve
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: compilation
       # Deploy to Cloudflare Pages
       - name: Deploy frontend
         uses: cloudflare/wrangler-action@v3
