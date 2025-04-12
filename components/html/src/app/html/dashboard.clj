@@ -1,6 +1,6 @@
 (ns app.html.dashboard)
 
-(defn content []
+(defn content [accounts]
   [:div
    {:class "bg-white py-24 sm:py-32"}
    [:div
@@ -12,11 +12,11 @@
       {:class "mx-auto flex max-w-xs flex-col gap-y-4"}
       [:dt
        {:class "text-base/7 text-gray-600"}
-       "Transactions every 24 hours"]
+       "Bankkonten"]
       [:dd
        {:class
         "order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl"}
-       "44 million"]]
+       (str accounts)]]
      [:div
       {:class "mx-auto flex max-w-xs flex-col gap-y-4"}
       [:dt {:class "text-base/7 text-gray-600"} "Assets under holding"]

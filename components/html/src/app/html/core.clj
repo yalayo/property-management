@@ -12,6 +12,7 @@
             [app.excel.interface :as excel]
             [io.pedestal.interceptor :refer [interceptor]]
             [app.letter.interface :as letter]
+            #_[app.bank.interface :as bank]
             [cheshire.core :as json]
             [clj-http.client :as client]
             [app.html.dashboard :as dashboard]
@@ -63,7 +64,7 @@
    :enter (fn [context]
             (let [session (-> context :requet :session)
                   dashboard-content {:title "Dashboard" :content "Insert here your page content!" :menu-id (:main-menu-1 layout/menu-id)}]
-              (assoc context :response (respond dashboard/content "Dashboard"))))})
+              #_(assoc context :response (respond-with-params dashboard/content (count (bank/list-accounts)) "Dashboard"))))})
 
 (def upload-details-handler
   {:name ::get
