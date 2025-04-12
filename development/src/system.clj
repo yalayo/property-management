@@ -8,7 +8,8 @@
             [app.property.interface :as properties]
             [app.bank.interface :as bank]
             [app.html.interface :as html]
-            [app.user.interface :as user]))
+            [app.user.interface :as user]
+            [app.survey.interface :as survey]))
 
 ;; Atom to hold the system state
 (def state (atom nil))
@@ -19,7 +20,7 @@
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
-             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (properties/get-routes) (bank/get-routes)))
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (properties/get-routes) (bank/get-routes) (survey/get-routes)))
                       :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes) (properties/get-internal-routes) 
                                                   (bank/get-internal-routes)))}})
 
@@ -37,6 +38,9 @@
                  (assoc data :publishers publishers))]
     (mu/start-publisher! config)))
 
+;; TODO
+;; Create a component for the business rules
+;; Load all necessary data when the system is being created
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
