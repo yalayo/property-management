@@ -33,6 +33,9 @@
              {:db/ident :response/answer
               :db/valueType :db.type/boolean
               :db/cardinality :db.cardinality/one}
+             {:db/ident :response/survey
+              :db/valueType :db.type/ref
+              :db/cardinality :db.cardinality/one}
              {:db/ident :response/question
               :db/valueType :db.type/ref
               :db/cardinality :db.cardinality/one}])
@@ -45,6 +48,21 @@
     (map (fn [[id text order]]
            {:id id :text text :order order})
          data)))
+
+(defn store-survey-responses [data]
+  (println "Responses: " data)
+  #_(let [survey-id (str (java.util.UUID/randomUUID)) 
+        survey-data [{:survey/id survey-id 
+                      :survey/email (:email data)
+                      :survey/submitted-at (java.util.Date.)}]
+        responses-data (mapv (fn [[order answer]]
+                               {:response/id (str (java.util.UUID/randomUUID))
+                                :response/survey [:survey/id survey-id]
+                                :response/question [:question/order (Integer/parseInt (name order))]  ;; lookup ref by order number
+                                :response/answer answer})
+                             (:responses data))]
+    (storage/transact survey-data "surveys")
+    (storage/transact responses-data "surveys")))
 
 (comment
   "Test listing the questions"
