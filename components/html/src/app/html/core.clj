@@ -265,10 +265,7 @@
      :body (get-body-response params)}))
 
 (def routes
-  #{["/"
-     :get [index-page-handler]
-     :route-name ::index]
-    ["/upload-excel"
+  #{["/upload-excel"
      :get [(body-params/body-params) auth-required upload-details-handler]
      :route-name ::upload-excel]
     ["/upload-details"
