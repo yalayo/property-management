@@ -1,6 +1,7 @@
 {:aliases {:dev {:extra-paths ["development/src"
                                "bases/server/src"
                                "bases/server/resources"
+                               "bases/frontend/resources"
                                "components/logs/src"
                                "components/flags/src"
                                "components/property/src"
