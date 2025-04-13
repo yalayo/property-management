@@ -1,7 +1,7 @@
 {:deps true
  :builds {:app
           {:target :browser
-           :output-dir "reources/public/js"
+           :output-dir "resources/public/js"
            :asset-path "/js"
            :modules {:app {:init-fn app.frontend.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload] 
@@ -12,5 +12,4 @@
                                                       "day8.re_frame.tracing.trace_enabled_QMARK_"  true}}}
            :release {:compiler-options {:optimizations :simple}
                      :output-dir "out/public/js"}
-           :optimizations :none}}
- :dev-http {9000 "public"}}
+           :optimizations :none}}}
