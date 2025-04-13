@@ -6,7 +6,6 @@ on:
       paths:
         - '.github/workflows/frontend.yml'
         - 'bases/frontend/**'
-        - 'projects/cloudflare/**'
 jobs:
   build:
     name: Build with shadow-cljs
@@ -22,16 +21,16 @@ jobs:
           cli: 1.11.1.1347
       - name: Build the application
         run: |
-            cd ./projects/cloudflare/
+            cd ./bases/frontend/
             npm install
-            npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
+            npx babel ./ui --out-dir ./js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
             npm run release
-            cp -R public/ out/
+            cp -R resources/public/ out/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
             name: compilation
-            path: ./projects/cloudflare/out/
+            path: ./bases/frontend/out/
 
   deploy:
     name: Deploy the app
