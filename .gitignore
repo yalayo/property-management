@@ -35,3 +35,4 @@ pom.xml.asc
 docker/postgresql/*
 .vscode/*
 .env
+*.pdf
