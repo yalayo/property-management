@@ -5,9 +5,5 @@ out
 .nrepl-port
 
 # Frontend code
-public/js/cljs-runtime/
-public/js/manifest.edn
-public/js/app.js
-public/css/
-
+resources/public/js/
 js/
