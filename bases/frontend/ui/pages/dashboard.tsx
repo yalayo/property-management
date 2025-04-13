@@ -11,8 +11,12 @@ import UserAnalytics from "../components/dashboard/UserAnalytics";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 
-export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
+export default function Dashboard(props) {
+  const listProperties = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'properties'
+  );
+
+  const activeTab = props.activeTab;
   const logoutMutation = null;// { logoutMutation } = useAuth();
   const isPending = true;
   const [_, navigate] = useLocation();
@@ -113,7 +117,7 @@ export default function Dashboard() {
               )}
 
               {activeTab === "properties" && (
-                <PropertyList />
+                listProperties
               )}
 
               {activeTab === "tenants" && (

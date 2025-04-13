@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -36,6 +37,7 @@ export default function PropertyList(props) {
 
   const isLoading = props.isLoading;
   const properties = props.properties;
+  const error = "";
 
   // Form setup
   const form = useForm<PropertyFormValues>({
@@ -75,7 +77,7 @@ export default function PropertyList(props) {
   const addPropertyMutation = null;
 
   const onSubmit = (data: PropertyFormValues) => {
-    addPropertyMutation.mutate(data);
+    //addPropertyMutation.mutate(data);
   };
 
   if (isLoading) {
@@ -230,9 +232,9 @@ export default function PropertyList(props) {
                   </Button>
                   <Button 
                     type="submit"
-                    disabled={addPropertyMutation.isPending}
+                    disabled={false}
                   >
-                    {addPropertyMutation.isPending ? 'Saving...' : 'Save Property'}
+                    {false ? 'Saving...' : 'Save Property'}
                   </Button>
                 </div>
               </form>
