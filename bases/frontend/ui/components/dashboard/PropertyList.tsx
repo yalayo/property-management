@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { apiRequest } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
@@ -26,19 +24,22 @@ const propertyFormSchema = z.object({
 
 type PropertyFormValues = z.infer<typeof propertyFormSchema>;
 
-export default function PropertyList() {
+export default function PropertyList(props) {
   const { toast } = useToast();
   const [isAddPropertyDialogOpen, setIsAddPropertyDialogOpen] = useState(false);
 
-  // Fetch properties
+  /* Fetch properties
   const { data: properties, isLoading, error, refetch } = useQuery({
     queryKey: ['/api/properties'],
     queryFn: () => fetch('/api/properties').then(res => res.json())
-  });
+  });*/
+
+  const isLoading = props.isLoading;
+  const properties = props.properties;
 
   // Form setup
   const form = useForm<PropertyFormValues>({
-    resolver: zodResolver(propertyFormSchema),
+    resolver: null, //zodResolver(propertyFormSchema),
     defaultValues: {
       name: "",
       address: "",
@@ -50,7 +51,7 @@ export default function PropertyList() {
     },
   });
 
-  // Add property mutation
+  /* Add property mutation
   const addPropertyMutation = useMutation({
     mutationFn: (data: PropertyFormValues) => 
       apiRequest('POST', '/api/properties', data),
@@ -70,7 +71,8 @@ export default function PropertyList() {
         variant: "destructive",
       });
     }
-  });
+  });*/
+  const addPropertyMutation = null;
 
   const onSubmit = (data: PropertyFormValues) => {
     addPropertyMutation.mutate(data);
