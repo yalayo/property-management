@@ -1,5 +1,7 @@
 (ns app.survey.routes
-  (:require [app.survey.persistance :as persistance]))
+  (:require [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.params :as params]
+            [app.survey.persistance :as persistance]))
 
 (def get-questions-handler
   {:name ::get
@@ -9,7 +11,17 @@
                                         :body content
                                         :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*"}})))})
 
+(def post-survey-handler
+  {:name ::post
+   :enter (fn [context]
+            (persistance/store-survey-responses (-> context :request :edn-params))
+            (assoc context :response {:status 200
+                                      :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*"}}))})
+
 (def external
   #{["/api/questions"
      :get get-questions-handler
-     :route-name ::get-questions]})
+     :route-name ::get-questions]
+    ["/api/survey"
+     :post [(body-params/body-params) params/keyword-params post-survey-handler]
+     :route-name ::post-survey]})
