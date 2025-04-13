@@ -43,7 +43,7 @@
 
 (re-frame/reg-event-fx
  ::save-survey
- (fn [db]
+ (fn [{:keys [db]} _]
    (let [survey-data {:responses (get-in db [:survey :responses])
                       :email (get-in db [:survey :form :email])}]
      {:http-xhrio {:method          :post
