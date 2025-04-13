@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { format } from 'date-fns';
 import { ArrowLeft, Download, Calendar, Filter, FileText, BarChart, PieChart, TrendingUp, Clock } from 'lucide-react';

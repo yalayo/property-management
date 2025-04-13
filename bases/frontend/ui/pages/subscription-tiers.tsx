@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { TierSelection } from "../payment/TierSelection";
 import DashboardLayout from "../layouts/DashboardLayout";

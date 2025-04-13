@@ -1,11 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
-import {
-  useQuery,
-  useMutation,
-  UseMutationResult,
-} from "@tanstack/react-query";
-import { useToast } from "../../hooks/use-toast";
-import { queryClient, apiRequest } from "../../lib/queryClient";
+import { useToast } from "./use-toast";
+import { queryClient, apiRequest } from "../lib/queryClient";
 
 // Define types based on the user structure from the backend
 type User = {
@@ -46,7 +41,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+/*export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   
   // Query to get the current user
@@ -125,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   // Logout mutation
-  const logoutMutation = useMutation({
+  const logoutMutation = null; /*useMutation({
     mutationFn: async () => {
       const res = await apiRequest('POST', '/api/logout');
       if (!res.ok) {
@@ -146,9 +141,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
     },
-  });
+  });*/
 
-  return (
+  /*return (
     <AuthContext.Provider
       value={{
         user: user || null,
@@ -162,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
+}*/
 
 export function useAuth() {
   const context = useContext(AuthContext);

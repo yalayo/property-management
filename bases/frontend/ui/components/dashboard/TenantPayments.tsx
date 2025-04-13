@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { AlertCircle, CheckCircle, Loader2, Mail, UserPlus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
@@ -18,8 +18,8 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { apiRequest } from "../../lib/queryClient";
 
-export default function TenantPayments() {
-  const queryClient = useQueryClient();
+export default function TenantPayments(props) {
+  const queryClient = null;
   const { toast } = useToast();
   const [_, navigate] = useLocation();
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
@@ -27,13 +27,16 @@ export default function TenantPayments() {
   const [additionalMessage, setAdditionalMessage] = useState("");
   
   // Fetch late payments
-  const { data: latePayments, isLoading, error } = useQuery({
+  const latePayments = props.latePayments;
+  const isLoading = props.isLoading;
+  const error = props.error;
+  /*const { data: latePayments, isLoading, error } = useQuery({
     queryKey: ['/api/late-payments'],
     queryFn: () => fetch('/api/late-payments').then(res => res.json())
-  });
+  });*/
   
   // Mutation for sending individual reminders
-  const sendReminderMutation = useMutation({
+  /*const sendReminderMutation = useMutation({
     mutationFn: async ({ tenantId, message }: { tenantId: number, message?: string }) => {
       const response = await apiRequest(
         "POST", 
@@ -65,10 +68,12 @@ export default function TenantPayments() {
         variant: "destructive",
       });
     }
-  });
+  });*/
+
+  const sendReminderMutation = props.sendReminderMutation;
   
   // Mutation for generating monthly report
-  const generateReportMutation = useMutation({
+  /*const generateReportMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest(
         "POST", 
@@ -98,7 +103,9 @@ export default function TenantPayments() {
         variant: "destructive",
       });
     }
-  });
+  });*/
+
+  const generateReportMutation = props.generateReportMutation;
   
   const handleSendReminder = (tenant: any) => {
     if (!tenant.email) {
@@ -114,12 +121,12 @@ export default function TenantPayments() {
   };
   
   const confirmSendReminder = () => {
-    if (selectedTenant) {
+    /*if (selectedTenant) {
       sendReminderMutation.mutate({ 
         tenantId: selectedTenant.id,
         message: additionalMessage 
       });
-    }
+    }*/
   };
   
   const handleGenerateReport = () => {
@@ -127,7 +134,7 @@ export default function TenantPayments() {
   };
   
   const confirmGenerateReport = () => {
-    generateReportMutation.mutate();
+    //generateReportMutation.mutate();
   };
 
   if (isLoading) {
@@ -180,9 +187,9 @@ export default function TenantPayments() {
                 size="sm" 
                 variant="outline" 
                 onClick={handleGenerateReport}
-                disabled={generateReportMutation.isPending}
+                disabled={false}
               >
-                {generateReportMutation.isPending ? (
+                {false ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <Mail className="h-4 w-4 mr-2" />
@@ -249,9 +256,9 @@ export default function TenantPayments() {
                             size="sm" 
                             variant="outline"
                             onClick={() => handleSendReminder(tenant)}
-                            disabled={sendReminderMutation.isPending && selectedTenant?.id === tenant.id}
+                            disabled={false && selectedTenant?.id === tenant.id}
                           >
-                            {sendReminderMutation.isPending && selectedTenant?.id === tenant.id ? (
+                            {false && selectedTenant?.id === tenant.id ? (
                               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                             ) : (
                               <Mail className="h-4 w-4 mr-2" />
@@ -310,9 +317,9 @@ export default function TenantPayments() {
             </Button>
             <Button
               onClick={confirmSendReminder}
-              disabled={sendReminderMutation.isPending}
+              disabled={false}
             >
-              {sendReminderMutation.isPending ? (
+              {false ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Sending...
@@ -351,9 +358,9 @@ export default function TenantPayments() {
             </Button>
             <Button
               onClick={confirmGenerateReport}
-              disabled={generateReportMutation.isPending}
+              disabled={false}
             >
-              {generateReportMutation.isPending ? (
+              {false ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Generating...

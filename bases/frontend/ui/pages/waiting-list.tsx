@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { useToast } from "../../hooks/use-toast";
 import { Button } from "../ui/button";
 import { Home, ArrowRight, CreditCard } from "lucide-react";

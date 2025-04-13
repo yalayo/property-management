@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Progress } from "../ui/progress";
 import {
@@ -10,9 +10,9 @@ import {
   TrendingUp
 } from "lucide-react";
 
-export default function DashboardSummary() {
+export default function DashboardSummary(props) {
   // Fetch properties
-  const { data: properties, isLoading: propertiesLoading } = useQuery({
+  /*const { data: properties, isLoading: propertiesLoading } = useQuery({
     queryKey: ['/api/properties'],
     queryFn: () => fetch('/api/properties').then(res => res.json())
   });
@@ -27,7 +27,14 @@ export default function DashboardSummary() {
   const { data: latePayments, isLoading: paymentsLoading } = useQuery({
     queryKey: ['/api/late-payments'],
     queryFn: () => fetch('/api/late-payments').then(res => res.json())
-  });
+  });*/
+
+  const properties = props.properties;
+  const tenants = props.tenants;
+  const latePayments = props.latePayments;
+  const propertiesLoading = props.propertiesLoading;
+  const tenantsLoading = props.tenantsLoading;
+  const paymentsLoading = props.paymentsLoading;
 
   const isLoading = propertiesLoading || tenantsLoading || paymentsLoading;
 

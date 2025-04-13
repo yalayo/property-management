@@ -1,5 +1,5 @@
+import React from "react";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useToast } from "../../hooks/use-toast";
 import { useLocation } from "wouter";
 
@@ -9,14 +9,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../components/ui/card";
 import {
   Tabs,
   TabsContent,
-  TabsList,
+  TabsList,QueryClient
   TabsTrigger,
-} from "../ui/tabs";
-import { Button } from "../ui/button";
+} from "../../components/ui/tabs";
+import { Button } from "../../components/ui/button";
 import {
   BarChart3,
   Database,

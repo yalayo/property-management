@@ -1,5 +1,3 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
-
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -41,7 +39,7 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
-export const queryClient = new QueryClient({
+export const queryClient = null;/*new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
@@ -54,4 +52,4 @@ export const queryClient = new QueryClient({
       retry: false,
     },
   },
-});
+});*/

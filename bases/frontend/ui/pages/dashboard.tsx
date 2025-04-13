@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Home, Users, FileText, BarChart2, Upload, LogOut } from "lucide-react";
@@ -9,11 +10,11 @@ import FileUpload from "../components/dashboard/FileUpload";
 import UserAnalytics from "../components/dashboard/UserAnalytics";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardSummary from "../components/dashboard/DashboardSummary";
-import { useAuth } from "../hooks/use-auth";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
-  const { logoutMutation } = useAuth();
+  const logoutMutation = null;// { logoutMutation } = useAuth();
+  const isPending = true;
   const [_, navigate] = useLocation();
 
   return (
@@ -80,21 +81,17 @@ export default function Dashboard() {
             <Button 
               variant="outline" 
               className="w-full"
-              disabled={logoutMutation.isPending}
+              disabled={isPending}
               onClick={() => {
-                logoutMutation.mutate(undefined, {
-                  onSuccess: () => {
-                    navigate('/login');
-                  }
-                });
+                return true;
               }}
             >
-              {logoutMutation.isPending ? (
+              {isPending ? (
                 <div className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               ) : (
                 <LogOut className="mr-3 h-5 w-5" />
               )}
-              {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
+              {isPending ? 'Logging out...' : 'Logout'}
             </Button>
           </div>
         </div>
