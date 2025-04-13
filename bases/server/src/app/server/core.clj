@@ -4,7 +4,15 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.ring-middlewares :as middlewares]
+            [io.pedestal.interceptor :refer [interceptor]]
             [jdbc-ring-session.core :as jdbc-ring-session]))
+
+(def csp-interceptor
+  (interceptor
+   {:name ::content-security-policy
+    :leave (fn [context]
+             (assoc-in context [:response :headers "Content-Security-Policy"]
+                       "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self';"))}))
 
 (defrecord ServerComponent [config datasource routes]
   component/Lifecycle
@@ -16,9 +24,10 @@
                            ::http/resource-path "/public"
                            ::http/type :immutant
                            ::http/host "0.0.0.0"
-                           ::http/port (:port config)}
+                           ::http/port (:port config)
+                           ::http/secure-headers nil}
                           (http/default-interceptors)
-                          (update ::http/interceptors concat [session-interceptor])
+                          (update ::http/interceptors concat [session-interceptor csp-interceptor])
                           (http/create-server)
                           (http/start))]
            (mu/log :server-started :message (str "Starting server with " (name (:active-route config)) " routes!"))
