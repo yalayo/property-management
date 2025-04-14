@@ -44,6 +44,7 @@
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
+   :survey (survey/survey-component config)
    :property (property/property-component config)
    :routes (route/route-component {:config (:routes config)})
    :server (component/using

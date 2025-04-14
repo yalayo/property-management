@@ -40,8 +40,40 @@
               :db/valueType :db.type/ref
               :db/cardinality :db.cardinality/one}])
 
-(defn create-questions [questions]
-  (storage/transact questions "surveys"))
+(def questions
+  [["Besitzen Sie mehrere Mietobjekte?" 1 1]
+   ["Haben Sie Schwierigkeiten, Mietzahlungen nachzuverfolgen?" 2 1]
+   ["Verwenden Sie derzeit Excel zur Verwaltung Ihrer Immobilien?" 3 1]
+   ["Ist das Beantworten von Mieteranfragen zeitaufwändig?" 4 1]
+   ["Fällt es Ihnen schwer, den Überblick über Wartungsarbeiten zu behalten?" 5 1]
+   ["Machen Sie sich Sorgen über die Einhaltung deutscher Mietgesetze?" 6 1]
+   ["Verwalten Sie Ihre Mietobjekte aus der Ferne?" 7 1]
+   ["Haben Sie Probleme mit regelmäßigen Finanzberichten?" 8 1]
+   ["Möchten Sie die Kommunikation mit Mietern automatisieren?" 9 1]
+   ["Haben Sie Schwierigkeiten bei der Verwaltung von Nebenkostenabrechnungen?" 10 1]
+   ["Erstellen Sie Mietverträge manuell?" 11 1]
+   ["Haben Sie ein System zur Mieterauswahl?" 12 1]
+   ["Haben Sie mit Leerstandsquoten Ihrer Immobilien zu kämpfen?" 13 1]
+   ["Fällt Ihnen die Steuerdokumentation für Ihre Immobilien schwer?" 14 1]
+   ["Würden Sie von automatischen Zahlungserinnerungen profitieren?" 15 1]
+   ["Haben Sie ein System zur Bearbeitung von Wartungsanfragen?" 16 1]
+   ["Interessieren Sie sich für die Analyse der Leistung Ihrer Immobilien?" 17 1]
+   ["Empfinden Sie den Abgleich von Kontoauszügen als mühsam?" 18 1]
+   ["Möchten Sie den Verwaltungsaufwand bei der Immobilienverwaltung reduzieren?" 19 1]
+   ["Suchen Sie nach besseren Möglichkeiten zur Verwaltung von Immobiliendokumenten?" 20 1]])
+
+
+(defn transact-schema []
+  (storage/transact-schema schema "surveys"))
+
+(defn create-questions []
+  (let [tx-data (mapv (fn [[text order active]]
+                {:question/id (str (java.util.UUID/randomUUID))
+                 :question/text text
+                 :question/order order
+                 :question/active (pos? active)}) ;; 1 -> true, 0 -> false
+              questions)]
+    (storage/transact tx-data "surveys")))
 
 (defn list-questions []
   (let [data (storage/query "[:find ?id ?text ?order :where [?e :question/id ?id] [?e :question/text ?text] [?e :question/order ?order]]" "surveys")]
@@ -71,40 +103,4 @@
 (comment
   "Store the schema, for the moment let's do it manually"
   (storage/transact schema "surveys")
-  )
-
-(comment
-  "Create the questions for now manually"
-
-  (def questions
-    [["Besitzen Sie mehrere Mietobjekte?" 1 1]
-     ["Haben Sie Schwierigkeiten, Mietzahlungen nachzuverfolgen?" 2 1]
-     ["Verwenden Sie derzeit Excel zur Verwaltung Ihrer Immobilien?" 3 1]
-     ["Ist das Beantworten von Mieteranfragen zeitaufwändig?" 4 1]
-     ["Fällt es Ihnen schwer, den Überblick über Wartungsarbeiten zu behalten?" 5 1]
-     ["Machen Sie sich Sorgen über die Einhaltung deutscher Mietgesetze?" 6 1]
-     ["Verwalten Sie Ihre Mietobjekte aus der Ferne?" 7 1]
-     ["Haben Sie Probleme mit regelmäßigen Finanzberichten?" 8 1]
-     ["Möchten Sie die Kommunikation mit Mietern automatisieren?" 9 1]
-     ["Haben Sie Schwierigkeiten bei der Verwaltung von Nebenkostenabrechnungen?" 10 1]
-     ["Erstellen Sie Mietverträge manuell?" 11 1]
-     ["Haben Sie ein System zur Mieterauswahl?" 12 1]
-     ["Haben Sie mit Leerstandsquoten Ihrer Immobilien zu kämpfen?" 13 1]
-     ["Fällt Ihnen die Steuerdokumentation für Ihre Immobilien schwer?" 14 1]
-     ["Würden Sie von automatischen Zahlungserinnerungen profitieren?" 15 1]
-     ["Haben Sie ein System zur Bearbeitung von Wartungsanfragen?" 16 1]
-     ["Interessieren Sie sich für die Analyse der Leistung Ihrer Immobilien?" 17 1]
-     ["Empfinden Sie den Abgleich von Kontoauszügen als mühsam?" 18 1]
-     ["Möchten Sie den Verwaltungsaufwand bei der Immobilienverwaltung reduzieren?" 19 1]
-     ["Suchen Sie nach besseren Möglichkeiten zur Verwaltung von Immobiliendokumenten?" 20 1]])
-  
-  (def tx-data
-    (mapv (fn [[text order active]]
-            {:question/id (str (java.util.UUID/randomUUID))
-             :question/text text
-             :question/order order
-             :question/active (pos? active)}) ;; 1 -> true, 0 -> false
-          questions))
-
-  (create-questions tx-data)
   )
