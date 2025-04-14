@@ -45,10 +45,7 @@
     (storage/transact property-data "properties")))
 
 (defn list-properties []
-  (let [data (storage/query "[:find ?id ?name :where [?e :id ?id] [?e :name ?name]]" "properties")]
-    (map (fn [[id name]]
-           {:id id :name name})
-         data)))
+  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "properties"))
 
 (defn get-property-by-name [name]
   (let [query (str "[:find ?id ?name :where [?e :id ?id] [?e :name ?name] [(= ?name \"" name "\")]]")
