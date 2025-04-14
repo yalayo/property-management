@@ -149,7 +149,9 @@ export default function PropertyList(props) {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Street address" {...field} />
+                        <Input placeholder="Street address"
+                               value={props.propertyAddress} 
+                               onChange={props.onChangePropertyAddress} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -163,7 +165,9 @@ export default function PropertyList(props) {
                       <FormItem>
                         <FormLabel>City</FormLabel>
                         <FormControl>
-                          <Input placeholder="City" {...field} />
+                          <Input placeholder="City"
+                                 value={props.propertyCity} 
+                                 onChange={props.onChangePropertyCity} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -176,7 +180,9 @@ export default function PropertyList(props) {
                       <FormItem>
                         <FormLabel>Postal Code</FormLabel>
                         <FormControl>
-                          <Input placeholder="Postal code" {...field} />
+                          <Input placeholder="Postal code"
+                                 value={props.propertyPostalCode} 
+                                 onChange={props.onChangePropertyPostalCode} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -190,7 +196,9 @@ export default function PropertyList(props) {
                     <FormItem>
                       <FormLabel>Number of Units</FormLabel>
                       <FormControl>
-                        <Input type="number" min="1" {...field} />
+                        <Input type="number" min="1"
+                               value={props.propertyUnits} 
+                               onChange={props.onChangePropertyUnits} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -204,7 +212,9 @@ export default function PropertyList(props) {
                       <FormItem>
                         <FormLabel>Purchase Price (€)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Optional" {...field} />
+                          <Input type="number" placeholder="Optional"
+                                 value={props.propertyPurchasePrice} 
+                                 onChange={props.onChangePropertyPurchasePrice} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -217,7 +227,9 @@ export default function PropertyList(props) {
                       <FormItem>
                         <FormLabel>Current Value (€)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Optional" {...field} />
+                          <Input type="number" placeholder="Optional"
+                                 value={props.propertyCurrentValue} 
+                                 onChange={props.onChangePropertyCurrentValue} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -232,10 +244,7 @@ export default function PropertyList(props) {
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    type="submit"
-                    disabled={false}
-                  >
+                  <Button disabled={false} onClick={props.submitProperty}>
                     {false ? 'Saving...' : 'Save Property'}
                   </Button>
                 </div>
