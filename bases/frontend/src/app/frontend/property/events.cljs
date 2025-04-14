@@ -13,16 +13,14 @@
 (re-frame/reg-event-fx
  ::save-property
  (fn [{:keys [db]} _]
-   (let [survey-data {:responses (get-in db [:survey :responses])
-                      :email (get-in db [:survey :form :email])}]
-     {:http-xhrio {:method          :post
-                   :uri             (str config/api-url "/api/survey")
-                   :params          survey-data
-                   :format          (ajax-edn/edn-request-format)
-                   :response-format (ajax-edn/edn-response-format)
-                   :timeout         8000
-                   :on-success      [::property-submitted]
-                   :on-failure      [::property-creation-error]}})))
+   {:http-xhrio {:method          :post
+                 :uri             (str config/api-url "/new-property")
+                 :params          (get-in db [:property :form])
+                 :format          (ajax-edn/edn-request-format)
+                 :response-format (ajax-edn/edn-response-format)
+                 :timeout         8000
+                 :on-success      [::property-submitted]
+                 :on-failure      [::property-creation-error]}}))
 
 (re-frame/reg-event-db
  ::property-submitted
