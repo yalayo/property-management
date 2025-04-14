@@ -23,8 +23,9 @@
 (def properties-handler
   {:name ::get
    :enter (fn [context]
-            (let [content {:title "Properties" :content (properties/content (persistance/list-properties)) :menu-id (:main-menu-3 layout/menu-id)}]
-              (assoc context :response (html/respond-with-params layout/content {:content content} (content :title)))))})
+            (assoc context :response {:status 200
+                                      :body (persistance/list-properties)
+                                      :headers {"Content-Type" "text/edn"}}))})
 
 (def new-property-handler
   {:name ::post
