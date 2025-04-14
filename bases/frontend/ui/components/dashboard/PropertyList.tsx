@@ -74,11 +74,6 @@ export default function PropertyList(props) {
       });
     }
   });*/
-  const addPropertyMutation = null;
-
-  const onSubmit = (data: PropertyFormValues) => {
-    //addPropertyMutation.mutate(data);
-  };
 
   if (isLoading) {
     return (
@@ -126,9 +121,8 @@ export default function PropertyList(props) {
               <DialogTitle>Add New Property</DialogTitle>
             </DialogHeader>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-4">
                 <FormField
-                  control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
@@ -143,7 +137,6 @@ export default function PropertyList(props) {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="address"
                   render={({ field }) => (
                     <FormItem>
@@ -159,7 +152,6 @@ export default function PropertyList(props) {
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
-                    control={form.control}
                     name="city"
                     render={({ field }) => (
                       <FormItem>
@@ -174,7 +166,6 @@ export default function PropertyList(props) {
                     )}
                   />
                   <FormField
-                    control={form.control}
                     name="postalCode"
                     render={({ field }) => (
                       <FormItem>
@@ -190,7 +181,6 @@ export default function PropertyList(props) {
                   />
                 </div>
                 <FormField
-                  control={form.control}
                   name="units"
                   render={({ field }) => (
                     <FormItem>
@@ -206,7 +196,6 @@ export default function PropertyList(props) {
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
-                    control={form.control}
                     name="purchasePrice"
                     render={({ field }) => (
                       <FormItem>
@@ -221,7 +210,6 @@ export default function PropertyList(props) {
                     )}
                   />
                   <FormField
-                    control={form.control}
                     name="currentValue"
                     render={({ field }) => (
                       <FormItem>
@@ -248,7 +236,7 @@ export default function PropertyList(props) {
                     {false ? 'Saving...' : 'Save Property'}
                   </Button>
                 </div>
-              </form>
+              </div>
             </Form>
           </DialogContent>
         </Dialog>
