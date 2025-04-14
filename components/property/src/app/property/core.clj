@@ -1,15 +1,24 @@
 (ns app.property.core
-  (:require [io.pedestal.http.body-params :as body-params]
-            [hiccup2.core :as h]
+  (:require [com.stuartsierra.component :as component]
+            [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.params :as params]
             [app.html.interface :as html]
             [app.excel.interface :as excel]
-            [app.html.upload-details :as upload-details]
             [io.pedestal.http.ring-middlewares :as ring-mw]
             [app.html.layout :as layout]
             [app.property.list :as properties]
-            [app.property.persistance :as persistance]
-            [app.property.new-property :as new-property]))
+            [app.property.persistance :as persistance]))
+
+(defrecord ProperyComponent [config]
+  component/Lifecycle
+
+  (start [component]
+    (persistance/transact-schema))
+
+  (stop [component]))
+
+(defn property-component [config]
+  (map->ProperyComponent config))
 
 (def properties-handler
   {:name ::get
