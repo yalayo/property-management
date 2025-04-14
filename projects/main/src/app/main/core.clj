@@ -5,7 +5,7 @@
             [app.route.interface :as route]
             [app.server.core :as server]
             [app.flags.interface :as flags]
-            [app.property.interface :as properties]
+            [app.property.interface :as property]
             [app.bank.interface :as bank]
             [app.html.interface :as html]
             [app.user.interface :as user]
@@ -17,8 +17,8 @@
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
-             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (properties/get-routes) (bank/get-routes) (survey/get-routes)))
-                      :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes) (properties/get-internal-routes) 
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (property/get-routes) (bank/get-routes) (survey/get-routes)))
+                      :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes) (property/get-internal-routes) 
                                                   (bank/get-internal-routes)))}})
 
 (defn init-logging []
@@ -38,6 +38,8 @@
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
+   :survey (survey/survey-component config)
+   :property (property/property-component config)
    :routes (route/route-component {:config (:routes config)})
    :server (component/using
             (server/server-component {:port 8080 :active-route :external})
