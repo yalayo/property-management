@@ -8,6 +8,24 @@
              {:db/ident :name
               :db/valueType :db.type/string
               :db/unique :db.unique/identity
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :address
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :city
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :postal-code
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :units
+              :db/valueType :db.type/number
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :purchase-price
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :current-value
+              :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}])
 
 (def bank-schema [{:db/ident :iban
@@ -19,8 +37,16 @@
               :db/unique :db.unique/identity
               :db/cardinality :db.cardinality/one}])
 
-(defn create-property [name]
-  (storage/transact [{:id (str (java.util.UUID/randomUUID)) :name name}] "properties"))
+(defn create-property [data]
+  (let [property-data [{:id (str (java.util.UUID/randomUUID))
+                        :name (:property-name data)
+                        :address (:property-address data)
+                        :city (:property-city data)
+                        :postal-code (:property-postal-code data)
+                        :units (:property-units data)
+                        :purchase-price (:property-purchase-price data)
+                        :current-value (:property-current-value data)}]]
+    (storage/transact property-data "properties")))
 
 (defn list-properties []
   (let [data (storage/query "[:find ?id ?name :where [?e :id ?id] [?e :name ?name]]" "properties")]
