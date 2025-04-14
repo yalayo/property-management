@@ -35,6 +35,7 @@
                                     :where [?e :db/ident ?ident]]
                                   (d/db conn))))
         schema-to-transact (filter #(not (contains? existing-idents (:db/ident %))) schema)]
+    (println "Schema to transact: " schema-to-transact)
     (when (seq schema-to-transact)
       (d/transact conn schema-to-transact))))
 
