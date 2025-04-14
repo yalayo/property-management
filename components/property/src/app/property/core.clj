@@ -20,12 +20,8 @@
 (def new-property-handler
   {:name ::post
    :enter (fn [context]
-            (println "Test")
-            (let [params (-> context :request :params)
-                  {:keys [name]} params]
-              (println "Property name: " name)
-              (persistance/create-property name)
-              (assoc context :response (html/respond new-property/get-new-property-form "New property"))))})
+            (persistance/create-property (-> context :request :edn-params))
+            (assoc context :response {:status 200}))})
 
 (def propertie-handler
     {:name ::get
@@ -51,7 +47,10 @@
 (def routes
   #{["/properties"
      :get properties-handler
-     :route-name ::properties]})
+     :route-name ::properties]
+    ["/new-property"
+     :post [(body-params/body-params) params/keyword-params new-property-handler]
+     :route-name ::new-property]})
 
 (def internal-routes
   #{["/properties"
