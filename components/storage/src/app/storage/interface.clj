@@ -5,6 +5,9 @@
 (defn datasource-component [config]
   (core/datasource-component config))
 
+(defn transact-schema [data database-name]
+  (datahike/transact-schema data database-name))
+
 (defn transact [data database-name]
   (datahike/transact data database-name))
 

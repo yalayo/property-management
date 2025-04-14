@@ -29,9 +29,46 @@
         (catch ExceptionInfo e
           (mu/log :log-exception :exception e))))))
 
+(defn transact-schema [schema database-name]
+  (let [conn (get-connection database-name)
+        existing-idents (into #{} (map first (d/q '[:find ?ident
+                                    :where [?e :db/ident ?ident]]
+                                  (d/db conn))))
+        schema-to-transact (filter #(not (contains? existing-idents (:db/ident %))) schema)]
+    (when (seq schema-to-transact)
+      (d/transact conn schema-to-transact))))
+
 (defn transact [data database-name]
   (d/transact (get-connection database-name) data))
 
 (defn query [query database-name]
   (d/q {:query query}
        (d/db (get-connection database-name))))
+
+(comment
+  "Experiment to transact only new schema"
+  (d/q '[:find ?ident
+         :where [?e :db/ident ?ident]]
+       (d/db (get-connection "properties")))
+
+  (def new-schema
+    [{:db/ident :name
+      :db/valueType :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident :user/age
+      :db/valueType :db.type/long
+      :db/cardinality :db.cardinality/one}])
+
+  (def existing-idents
+    (into #{} (map first (d/q '[:find ?ident
+                                :where [?e :db/ident ?ident]]
+                              (d/db (get-connection "properties"))))))
+
+  (def schema-to-transact
+    (filter #(not (contains? existing-idents (:db/ident %))) new-schema))
+
+  (seq schema-to-transact)
+
+  (when (seq schema-to-transact)
+    (d/transact conn schema-to-transact)))
