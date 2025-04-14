@@ -13,7 +13,7 @@ import {
 import {
   Tabs,
   TabsContent,
-  TabsList,QueryClient
+  TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
 import { Button } from "../../components/ui/button";
