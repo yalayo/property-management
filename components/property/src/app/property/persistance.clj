@@ -19,7 +19,7 @@
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
              {:db/ident :units
-              :db/valueType :db.type/number
+              :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
              {:db/ident :purchase-price
               :db/valueType :db.type/string
@@ -37,15 +37,11 @@
               :db/unique :db.unique/identity
               :db/cardinality :db.cardinality/one}])
 
+(defn transact-schema []
+  (storage/transact-schema schema "properties"))
+
 (defn create-property [data]
-  (let [property-data [{:id (str (java.util.UUID/randomUUID))
-                        :name (:property-name data)
-                        :address (:property-address data)
-                        :city (:property-city data)
-                        :postal-code (:property-postal-code data)
-                        :units (:property-units data)
-                        :purchase-price (:property-purchase-price data)
-                        :current-value (:property-current-value data)}]]
+  (let [property-data (conj [] (assoc data :id (str (java.util.UUID/randomUUID))))]
     (storage/transact property-data "properties")))
 
 (defn list-properties []
