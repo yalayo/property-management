@@ -15,16 +15,16 @@
              {:db/ident :city
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
-             {:db/ident :postal-code
+             {:db/ident :postalcode
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
              {:db/ident :units
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
-             {:db/ident :purchase-price
+             {:db/ident :purchaseprice
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}
-             {:db/ident :current-value
+             {:db/ident :currentvalue
               :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}])
 

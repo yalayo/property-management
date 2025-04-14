@@ -251,7 +251,7 @@ export default function PropertyList(props) {
                     <div>
                       <h3 className="font-semibold text-lg">{property.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{property.address}</p>
-                      <p className="text-sm text-gray-500">{property.city}, {property.postalCode}</p>
+                      <p className="text-sm text-gray-500">{property.city}, {property.postalcode}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon">
@@ -264,8 +264,8 @@ export default function PropertyList(props) {
                   </div>
                   <div className="mt-4 flex justify-between text-sm">
                     <span>Units: {property.units}</span>
-                    {property.currentValue && (
-                      <span className="font-medium">€{property.currentValue.toLocaleString()}</span>
+                    {property.currentvalue && (
+                      <span className="font-medium">€{property.currentvalue.toLocaleString()}</span>
                     )}
                   </div>
                 </div>
