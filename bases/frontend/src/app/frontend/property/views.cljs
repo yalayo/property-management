@@ -8,7 +8,7 @@
 (def property-list (r/adapt-react-class property-list-js))
 
 (defn property-list-component []
-  (re-frame/dispatch-sync [::events/get-properties]) 
+  (re-frame/dispatch [::events/get-properties]) 
 
   [property-list 
    {:id "properties"
