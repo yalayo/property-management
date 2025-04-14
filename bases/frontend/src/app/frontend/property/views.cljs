@@ -8,8 +8,11 @@
 (def property-list (r/adapt-react-class property-list-js))
 
 (defn property-list-component []
+  (re-frame/dispatch-sync [::events/get-properties]) 
+
   [property-list 
    {:id "properties"
+    :properties @(re-frame/subscribe [::subs/properties])
     :propertyName @(re-frame/subscribe [::subs/form :name])
     :propertyAddress @(re-frame/subscribe [::subs/form :address])
     :propertyCity @(re-frame/subscribe [::subs/form :city])

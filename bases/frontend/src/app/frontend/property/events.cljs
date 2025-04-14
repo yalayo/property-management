@@ -32,3 +32,24 @@
  (fn [{:keys [_]} [_ error]]
    (js/console.error "Failed to submitt property:" error)
    {}))
+
+(re-frame/reg-event-fx
+ ::get-properties
+ (fn [{:keys [db]} _]
+   {:http-xhrio {:method          :get
+                 :uri             (str config/api-url "/properties")
+                 :response-format (ajax-edn/edn-response-format)
+                 :timeout         8000
+                 :on-success      [::update-db]
+                 :on-failure      [::get-properties-error]}}))
+
+(re-frame/reg-event-db
+ ::update-db
+ (fn [db [_ response]]
+   (assoc-in db [:property :properties] response)))
+
+(re-frame/reg-event-fx
+ ::get-properties-error
+ (fn [{:keys [_]} [_ error]]
+   (js/console.error "Failed to get the list of properties:" error)
+   {}))
