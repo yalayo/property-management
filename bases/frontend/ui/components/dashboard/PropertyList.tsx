@@ -134,7 +134,9 @@ export default function PropertyList(props) {
                     <FormItem>
                       <FormLabel>Property Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="E.g., Riverside Apartment" {...field} />
+                        <Input placeholder="E.g., Riverside Apartment"
+                                value={props.propertyName} 
+                                onChange={props.onChangePropertyName} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
