@@ -47,7 +47,8 @@
                 (assoc-in [:survey :questions] questions)
                 (assoc-in [:survey :current-question-index] 0)
                 (assoc-in [:survey :show-email-form] false)
-                (assoc-in [:survey :responses] (initialize-responses questions)))))
+                (assoc-in [:survey :responses] (initialize-responses questions))
+                (assoc :current-view "waiting-list"))))
 
 (re-frame/reg-event-fx
  ::handle-init-db-error
@@ -109,11 +110,12 @@
 (re-frame/reg-event-db
  ::survey-submitted
  (fn [db [_ response]]
-   (js/console.log "Survey summited:" response)
-   (-> db
-       (assoc-in [:survey :current-question-index] 0)
-       (assoc-in [:survey :show-email-form] false)
-       (assoc :view :crowd-funding))))
+   (let [email (get-in db [:survey :form :email])]
+     (-> db
+         (assoc-in [:survey :current-question-index] 0)
+         (assoc-in [:survey :show-email-form] false)
+         (assoc-in [:waiting-list :email] email)
+         (assoc :current-view "waiting-list")))))
 
 (re-frame/reg-event-fx
  ::handle-init-db-error

@@ -1,11 +1,12 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useToast } from "../../hooks/use-toast";
-import { Button } from "../ui/button";
+import { useToast } from "../hooks/use-toast";
+import { Button } from "../components/ui/button";
 import { Home, ArrowRight, CreditCard } from "lucide-react";
-import WaitingListConfirmation from "../waiting-list/WaitingListConfirmation";
+import WaitingListConfirmation from "../components/waiting-list/WaitingListConfirmation";
 
-export default function WaitingList() {
+export default function WaitingList(props) {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const [email, setEmail] = useState<string | null>(null);
@@ -20,7 +21,7 @@ export default function WaitingList() {
   }, []);
 
   // Check waiting list position if email is available
-  const { data: waitingListPosition, isLoading } = useQuery({
+  /*const { data: waitingListPosition, isLoading } = useQuery({
     queryKey: ['/api/waiting-list/check', email],
     queryFn: () => {
       if (!email) return null;
@@ -28,7 +29,9 @@ export default function WaitingList() {
         .then(res => res.json());
     },
     enabled: !!email
-  });
+  });*/
+
+  const waitingListPosition = props.waitingListPosition;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">

@@ -10,6 +10,15 @@ export default function Home(props) {
 
   const isLoggedIn = props.isLoggedIn;
   const user = props.user;
+  const activeComponent = props.activeComponent;
+
+  const surveyComponent = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'survey'
+  );
+
+  const waitingListComponent = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'waiting-list'
+  );
   
   // This handler will be called when the survey is completed
   const onSurveyCompleted = (email: string) => {
@@ -42,7 +51,13 @@ export default function Home(props) {
           </div>
         </div>
         
-        {props.children}
+        {activeComponent === "survey" && (
+          surveyComponent
+        )}
+
+        {activeComponent === "waiting-list" && (
+          waitingListComponent
+        )}
       </main>
       
       <Footer />

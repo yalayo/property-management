@@ -36,3 +36,8 @@
  ::form
  (fn [db [_ id]]
    (get-in db [:survey :form id] "")))
+
+(re-frame/reg-sub
+ ::current-view
+ (fn [db]
+   (:current-view db)))
