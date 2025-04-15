@@ -87,10 +87,10 @@
         survey-data [{:survey/id survey-id 
                       :survey/email (:email data)
                       :survey/submitted-at (java.util.Date.)}]
-        responses-data (mapv (fn [[order answer]]
+        responses-data (mapv (fn [[id answer]]
                                {:response/id (str (java.util.UUID/randomUUID))
                                 :response/survey [:survey/id survey-id]
-                                :response/question [:question/order (Integer/parseInt (name order))]  ;; lookup ref by order number
+                                :response/question [:question/id (name id)]
                                 :response/answer answer})
                              (:responses data))]
     (storage/transact survey-data "surveys")
