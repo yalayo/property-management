@@ -83,7 +83,7 @@
 
 (defn store-survey-responses [data]
   (println "Responses: " data)
-  #_(let [survey-id (str (java.util.UUID/randomUUID)) 
+  (let [survey-id (str (java.util.UUID/randomUUID)) 
         survey-data [{:survey/id survey-id 
                       :survey/email (:email data)
                       :survey/submitted-at (java.util.Date.)}]
