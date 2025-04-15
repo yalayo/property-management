@@ -37,17 +37,17 @@
                             :on-failure      [::handle-init-db-error]}}
               {:db local-store-db})))
 
-(defn initialize-responses []
-  (into {} (map (fn [k] [(keyword (str k)) true]) (range 20))))
+(defn initialize-responses [questions]
+  (into {} (map (fn [k] [(keyword (:id k)) true]) questions)))
 
 (re-frame/reg-event-db
  ::set-initial-db
- (fn-traced [_ [_ response]]
+ (fn-traced [_ [_ questions]]
             (-> db/default-db
-                (assoc-in [:survey :questions] response)
+                (assoc-in [:survey :questions] questions)
                 (assoc-in [:survey :current-question-index] 0)
                 (assoc-in [:survey :show-email-form] false)
-                (assoc-in [:survey :responses] (initialize-responses)))))
+                (assoc-in [:survey :responses] (initialize-responses questions)))))
 
 (re-frame/reg-event-fx
  ::handle-init-db-error
@@ -59,7 +59,9 @@
  ::answer-question
  (fn [db [_ val]]
    (let [index (get-in db [:survey :current-question-index])
-         id (keyword (str index))]
+         questions (get-in db [:survey :questions])
+         current-question (nth questions index)
+         id (keyword (:id current-question))]
      (assoc-in db [:survey :responses id] val))))
 
 (re-frame/reg-event-db
@@ -70,7 +72,7 @@
      (if (>= index (dec total))
        (-> db
            (assoc-in [:survey :show-email-form] true)
-           (assoc-in [:survey :current-question-index] (inc index)))
+           #_(assoc-in [:survey :current-question-index] (inc index)))
        (assoc-in db [:survey :current-question-index] (inc index))))))
 
 (re-frame/reg-event-db
@@ -107,7 +109,11 @@
 (re-frame/reg-event-db
  ::survey-submitted
  (fn [db [_ response]]
-   (js/console.log "Survey summited:" response)))
+   (js/console.log "Survey summited:" response)
+   (-> db
+       (assoc-in [:survey :current-question-index] 0)
+       (assoc-in [:survey :show-email-form] false)
+       (assoc :view :crowd-funding))))
 
 (re-frame/reg-event-fx
  ::handle-init-db-error
