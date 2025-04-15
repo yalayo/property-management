@@ -3,8 +3,57 @@
             [cljs.reader]
             [app.frontend.config :as config]
             [app.frontend.db :as db]
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
             [day8.re-frame.http-fx]
             [ajax.edn :as ajax-edn]))
+
+;; Initializing
+;; Interceptors
+(def ->local-store (after db/db->local-store))
+
+;; Interceptor Chain
+(def interceptors [->local-store])
+
+;; To restore db from the browser's local storage
+(re-frame/reg-cofx
+ :local-store-db
+ (fn [cofx _]
+   (assoc cofx :local-store-db
+						 ;; read in todos from localstore, and process into a sorted map
+          (into (sorted-map)
+                (some->> (.getItem js/localStorage db/ls-key)
+                         (cljs.reader/read-string))))))
+
+(re-frame/reg-event-fx
+ ::initialize-db
+ [(re-frame/inject-cofx :local-store-db)]
+ (fn-traced [{:keys [local-store-db]} _]
+            (if (empty? local-store-db)
+              {:http-xhrio {:method          :get
+                            :uri             (str config/api-url "/api/questions")
+                            :timeout         8000
+                            :response-format (ajax-edn/edn-response-format)
+                            :on-success      [::set-initial-db]
+                            :on-failure      [::handle-init-db-error]}}
+              {:db local-store-db})))
+
+(defn initialize-responses []
+  (into {} (map (fn [k] [(keyword (str k)) true]) (range 20))))
+
+(re-frame/reg-event-db
+ ::set-initial-db
+ (fn-traced [_ [_ response]]
+            (-> db/default-db
+                (assoc-in [:survey :questions] response)
+                (assoc-in [:survey :current-question-index] 0)
+                (assoc-in [:survey :show-email-form] false)
+                (assoc-in [:survey :responses] (initialize-responses)))))
+
+(re-frame/reg-event-fx
+ ::handle-init-db-error
+ (fn-traced [{:keys [_]} [_ error]]
+            (js/console.error "Failed to initialize DB from API:" error)
+            {}))
 
 (re-frame/reg-event-db
  ::answer-question
