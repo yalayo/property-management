@@ -14,9 +14,12 @@
 (re-frame/reg-sub
  ::current-question-response
  (fn [db]
-   (let [index (get-in db [:survey :current-question-index])
-         id (keyword (str index))]
-     (get-in db [:survey :responses id]))))
+   (let [index (or (get-in db [:survey :current-question-index]) 0)
+         questions (get-in db [:survey :questions])
+         current-question (nth questions index)
+         id (keyword (:id current-question))]
+     (when (< index (count questions))
+       (get-in db [:survey :responses id])))))
 
 (re-frame/reg-sub
  ::show-email-form
