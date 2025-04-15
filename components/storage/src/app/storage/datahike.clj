@@ -29,6 +29,18 @@
         (catch ExceptionInfo e
           (mu/log :log-exception :exception e))))))
 
+(defn reset-connection! [database-name]
+  (when-let [existing-conn (@db-connections database-name)]
+    (try
+      ;; Close the old connection if possible
+      (d/release existing-conn)
+      (catch Exception e
+        (mu/log :log-exception :exception e :msg "Error while releasing the closed connection"))))
+  ;; Remove the old connection from the atom
+  (swap! db-connections dissoc database-name)
+  ;; Force a new connection to be created
+  (get-connection database-name))
+
 (defn transact-schema [schema database-name]
   (let [conn (get-connection database-name)
         existing-idents (into #{} (map first (d/q '[:find ?ident
@@ -40,7 +52,15 @@
       (d/transact conn schema-to-transact))))
 
 (defn transact [data database-name]
-  (d/transact (get-connection database-name) data))
+  (try
+    (d/transact (get-connection database-name) data)
+    (catch clojure.lang.ExceptionInfo e
+      (if (re-find #"has been closed\(\)" (ex-message e))
+        (do
+          (println "Connection was closed, resetting...")
+          (reset-connection! database-name)
+          (d/transact (get-connection database-name) data))
+        (throw e)))))
 
 (defn query [query database-name]
   (d/q {:query query}
