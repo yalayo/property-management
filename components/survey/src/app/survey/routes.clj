@@ -9,14 +9,14 @@
             (let [content (persistance/list-questions)]
               (assoc context :response {:status 200
                                         :body content
-                                        :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*"}})))})
+                                        :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*.busqandote.com"}})))})
 
 (def post-survey-handler
   {:name ::post
    :enter (fn [context]
             (persistance/store-survey-responses (-> context :request :edn-params))
             (assoc context :response {:status 200
-                                      :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*"}}))})
+                                      :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*.busqandote.com"}}))})
 
 (def external
   #{["/api/questions"

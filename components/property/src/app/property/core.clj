@@ -25,7 +25,7 @@
    :enter (fn [context]
             (assoc context :response {:status 200
                                       :body (persistance/list-properties)
-                                      :headers {"Content-Type" "text/edn"}}))})
+                                      :headers {"Content-Type" "text/edn" "Access-Control-Allow-Origin" "*.busqandote.com"}}))})
 
 (def new-property-handler
   {:name ::post
