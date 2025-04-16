@@ -7,6 +7,23 @@
             [io.pedestal.interceptor :refer [interceptor]]
             [jdbc-ring-session.core :as jdbc-ring-session]))
 
+(defn cors-response [origin]
+  {"Access-Control-Allow-Origin" origin
+   "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS"
+   "Access-Control-Allow-Headers" "Content-Type, Authorization"
+   "Access-Control-Allow-Credentials" "true"})
+
+(defn allowed-origin? [origin]
+  (boolean (re-matches #"https:\/\/([a-z0-9-]+\.)?busqandote\.com" origin)))
+
+(def cors-interceptor
+  {:name ::cors
+   :enter (fn [context]
+            (let [origin (get-in context [:request :headers "origin"])]
+              (if (and origin (allowed-origin? origin))
+                (update context :response #(merge % (cors-response origin)))
+                context)))})
+
 (def csp-interceptor
   (interceptor
    {:name ::content-security-policy
@@ -27,7 +44,7 @@
                            ::http/port (:port config)
                            ::http/secure-headers nil}
                           (http/default-interceptors)
-                          (update ::http/interceptors concat [session-interceptor csp-interceptor])
+                          (update ::http/interceptors concat [session-interceptor cors-interceptor csp-interceptor])
                           (http/create-server)
                           (http/start))]
            (mu/log :server-started :message (str "Starting server with " (name (:active-route config)) " routes!"))
