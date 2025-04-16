@@ -40,30 +40,25 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - name: Create Cloudflare Pages project with Terraform
-        env:
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_domain_zone_id: ${{ secrets.ZONE_ID }}
-
-        run: |
-            cd ./projects/cloudflare/terraform
-            terraform init
-            terraform apply -target=cloudflare_pages_project.pages_project -auto-approve
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
             name: compilation
-      # Deploy to Cloudflare Pages
-      - name: Deploy frontend
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          wranglerVersion: "4.7.0"
-          workingDirectory: "./"
-          command: pages deploy ./public --project-name pmanagement-frontend
+      # Deploy to Hetzner
+      - name: install ssh keys
+        # check this thread to understand why its needed:
+        # <https://stackoverflow.com/a/70447517>
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Copy frontend compiled code the VM
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} " \
+          if [ -d ~/${{ secrets.WORK_DIR }}/frontend ]; then 
+            rm -rf ~/${{ secrets.WORK_DIR }}/frontend
+          fi
+          
+          mkdir ~/${{ secrets.WORK_DIR }}/frontend
+          exit"
+          scp -o StrictHostKeyChecking=no -r ./public ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/frontend
