@@ -2,11 +2,15 @@
   (:require [re-frame.core :as re-frame :refer [after]]
             [cljs.reader]
             [app.frontend.config :as config]
+            [app.frontend.events :as main-events]
             [day8.re-frame.http-fx]
             [ajax.edn :as ajax-edn]))
 
+(def local-storage-interceptor main-events/->local-store)
+
 (re-frame/reg-event-db
  ::update-field
+ [local-storage-interceptor]
  (fn [db [_ id val]]
    (assoc-in db [:property :form id] val)))
 
@@ -45,6 +49,7 @@
 
 (re-frame/reg-event-db
  ::update-db
+ [local-storage-interceptor]
  (fn [db [_ response]]
    (assoc-in db [:property :properties] response)))
 
