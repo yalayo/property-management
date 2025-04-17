@@ -38,19 +38,6 @@ export default function Home(props) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       <main className="pt-8 pb-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-10">
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl md:text-6xl mb-6">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-500">
-                PropManager
-              </span>
-            </h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              The property management solution for German landlords
-            </p>
-          </div>
-        </div>
-        
         {activeComponent === "survey" && (
           surveyComponent
         )}
