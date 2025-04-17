@@ -55,10 +55,10 @@
                                               :session {:tenants result}})))))})
 
 (def routes
-  #{["/properties"
+  #{["/api/properties"
      :get properties-handler
      :route-name ::properties]
-    ["/new-property"
+    ["/api/new-property"
      :post [(body-params/body-params) params/keyword-params new-property-handler]
      :route-name ::new-property]})
 
