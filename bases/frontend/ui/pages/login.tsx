@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Redirect, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
+type PropertyFormValues = z.infer<typeof propertyFormSchema>;
+
 const loginSchema = "";
 
 type LoginFormValues = null;
@@ -26,7 +28,17 @@ export default function Login(props) {
     return <Redirect to="/dashboard" />;
   }
 
-  const form = null;
+  const form = useForm<PropertyFormValues>({
+      defaultValues: {
+        name: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        units: "1",
+        purchasePrice: "",
+        currentValue: "",
+      },
+    });
 
   const onSubmit = (data: LoginFormValues) => {
     //loginMutation.mutate(data);
@@ -72,7 +84,7 @@ export default function Login(props) {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
                   name="username"
@@ -113,7 +125,7 @@ export default function Login(props) {
                     "Login"
                   )}
                 </Button>
-              </form>
+              </div>
             </Form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
