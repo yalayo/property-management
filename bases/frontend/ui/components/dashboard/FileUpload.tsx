@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { queryClient } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
@@ -48,14 +49,18 @@ export default function FileUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
   
+  const data = null;
+  const files = null;
+  const isLoading = false;
+
   // Fetch previously uploaded files
-  const { data: files, isLoading } = useQuery({
+  /*const { data: files, isLoading } = useQuery({
     queryKey: ['/api/files'],
     queryFn: () => fetch('/api/files').then(res => res.json())
-  });
+  });*/
 
   // Setup file upload mutation
-  const uploadMutation = useMutation({
+  /*const uploadMutation = useMutation({
     mutationFn: (formData: FormData) => {
       return fetch('/api/upload', {
         method: 'POST',
@@ -81,7 +86,7 @@ export default function FileUpload() {
         variant: "destructive",
       });
     }
-  });
+  });*/
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -124,7 +129,6 @@ export default function FileUpload() {
 
     const formData = new FormData();
     formData.append('file', selectedFile);
-    uploadMutation.mutate(formData);
   };
 
   // Function to get file icon based on file type
@@ -400,7 +404,7 @@ export default function FileUpload() {
               type="file"
               accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.txt"
               onChange={handleFileChange}
-              disabled={uploadMutation.isPending}
+              disabled={false}
             />
             <p className="text-sm text-gray-500">
               Upload bank statements, property data, or tenant documents for AI analysis
@@ -408,10 +412,10 @@ export default function FileUpload() {
           </div>
           <Button 
             type="submit" 
-            disabled={!selectedFile || uploadMutation.isPending}
+            disabled={!selectedFile || false}
             className="flex items-center"
           >
-            {uploadMutation.isPending ? (
+            {false ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Uploading...
