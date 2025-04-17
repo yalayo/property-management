@@ -14,7 +14,7 @@
  ::save-property
  (fn [{:keys [db]} _]
    {:http-xhrio {:method          :post
-                 :uri             (str config/api-url "/new-property")
+                 :uri             (str config/api-url "/api/new-property")
                  :params          (get-in db [:property :form])
                  :format          (ajax-edn/edn-request-format)
                  :response-format (ajax-edn/edn-response-format)
@@ -37,7 +37,7 @@
  ::get-properties
  (fn [{:keys [db]} _]
    {:http-xhrio {:method          :get
-                 :uri             (str config/api-url "/properties")
+                 :uri             (str config/api-url "/api/properties")
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
                  :on-success      [::update-db]
