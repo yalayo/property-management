@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { 
   BarChart,
@@ -18,7 +19,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function UserAnalytics() {
   // Fetch analytics data for the user
-  const { data: analytics, isLoading, error } = useQuery({
+  /*const { data: analytics, isLoading, error } = useQuery({
     queryKey: ['/api/user/analytics'],
     queryFn: () => fetch('/api/user/analytics').then(res => {
       if (!res.ok) {
@@ -26,7 +27,11 @@ export default function UserAnalytics() {
       }
       return res.json();
     })
-  });
+  });*/
+
+  const analytics = null;
+  const error = null;
+  const isLoading = false;
 
   if (isLoading) {
     return (
