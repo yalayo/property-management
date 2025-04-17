@@ -5,6 +5,7 @@
             [app.frontend.subs :as subs]
             [app.frontend.user.views :as user-view]
             ["/pages/home$default" :as home]
+            [app.frontend.landing.views :as landing]
             [app.frontend.survey.views :as survey]
             [app.frontend.dashboard.views :as dashboard]))
 
@@ -21,6 +22,11 @@
     (survey/survey-component)]])
 
 ;; Testing the dashboard component
-(defn app []
+#_(defn app []
   [:<>
    (dashboard/dashboard-component)])
+
+;; Testing the landing page
+(defn app []
+  [:<>
+   (landing/landing-component)])

@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "wouter";
 import { Button } from "../ui/button";
 import { ArrowRight, CheckCircle, Star, BarChart, Home, Clock, Zap } from "lucide-react";
