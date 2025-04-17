@@ -18,7 +18,7 @@
 
 (def cors-interceptor
   {:name ::cors
-   :enter (fn [context]
+   :leave (fn [context]
             (let [origin (get-in context [:request :headers "origin"])]
               (if (and origin (allowed-origin? origin))
                 (update context :response #(merge % (cors-response origin)))
@@ -44,7 +44,7 @@
                            ::http/port (:port config)
                            ::http/secure-headers nil}
                           (http/default-interceptors)
-                          (update ::http/interceptors concat [session-interceptor cors-interceptor csp-interceptor])
+                          (update ::http/interceptors concat [session-interceptor])
                           (http/create-server)
                           (http/start))]
            (mu/log :server-started :message (str "Starting server with " (name (:active-route config)) " routes!"))
