@@ -55,10 +55,10 @@ jobs:
       - name: Copy frontend compiled code the VM
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} " \
-          if [ -d ~/${{ secrets.WORK_DIR }}/frontend ]; then 
-            rm -rf ~/${{ secrets.WORK_DIR }}/frontend
+          if [ -d ~/static-content/${{ secrets.WORK_DIR }} ]; then 
+            rm -rf ~/static-content/${{ secrets.WORK_DIR }}
           fi
           
-          mkdir ~/${{ secrets.WORK_DIR }}/frontend
+          mkdir ~/static-content/${{ secrets.WORK_DIR }}
           exit"
-          scp -o StrictHostKeyChecking=no -r ./public ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/frontend
+          scp -o StrictHostKeyChecking=no -r ./public ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:static-content/${{ secrets.WORK_DIR }}
