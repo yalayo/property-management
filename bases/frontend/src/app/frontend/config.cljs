@@ -3,4 +3,4 @@
 (def api-url
   (if goog.DEBUG
     "http://localhost:8080"
-    "https://api-immo.busqandote.com"))
+    "https://immo.busqandote.com"))
