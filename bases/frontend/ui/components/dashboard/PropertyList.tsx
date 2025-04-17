@@ -27,13 +27,7 @@ type PropertyFormValues = z.infer<typeof propertyFormSchema>;
 
 export default function PropertyList(props) {
   const { toast } = useToast();
-  const [isAddPropertyDialogOpen, setIsAddPropertyDialogOpen] = useState(false);
-
-  /* Fetch properties
-  const { data: properties, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/properties'],
-    queryFn: () => fetch('/api/properties').then(res => res.json())
-  });*/
+  const isAddPropertyDialogOpen = props.isAddPropertyDialogOpen;
 
   const isLoading = props.isLoading;
   const properties = props.properties;
@@ -109,7 +103,7 @@ export default function PropertyList(props) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Properties</CardTitle>
-        <Dialog open={isAddPropertyDialogOpen} onOpenChange={setIsAddPropertyDialogOpen}>
+        <Dialog open={isAddPropertyDialogOpen} onOpenChange={props.onChangeAddPropertyDialogClose}>
           <DialogTrigger asChild>
             <Button size="sm">
               <Plus className="h-4 w-4 mr-2" />
@@ -228,7 +222,7 @@ export default function PropertyList(props) {
                   <Button 
                     type="button" 
                     variant="outline"
-                    onClick={() => setIsAddPropertyDialogOpen(false)}
+                    onClick={props.onChangeAddPropertyDialogClose}
                   >
                     Cancel
                   </Button>
@@ -277,7 +271,7 @@ export default function PropertyList(props) {
             <p className="text-gray-500">No properties found. Add your first property to get started.</p>
             <Button 
               className="mt-4"
-              onClick={() => setIsAddPropertyDialogOpen(true)}
+              onClick={props.onChangeAddPropertyDialogOpen}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Property

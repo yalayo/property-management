@@ -29,7 +29,10 @@
 (re-frame/reg-event-db
  ::property-submitted
  (fn [db [_ response]]
-   (js/console.log "Property summited:" response)))
+   (js/console.log "Property saved:" response)
+   (-> db
+       (assoc-in [:property :form] nil)
+       (assoc-in [:property ::add-propery-dialog-open] false))))
 
 (re-frame/reg-event-fx
  ::property-creation-error
@@ -58,3 +61,15 @@
  (fn [{:keys [_]} [_ error]]
    (js/console.error "Failed to get the list of properties:" error)
    {}))
+
+(re-frame/reg-event-db
+ ::show-add-property-dialog
+ [local-storage-interceptor]
+ (fn [db]
+   (assoc-in db [:property :add-propery-dialog-open] true)))
+
+(re-frame/reg-event-db
+ ::close-add-property-dialog
+ [local-storage-interceptor]
+ (fn [db]
+   (assoc-in db [:property :add-propery-dialog-open] false)))

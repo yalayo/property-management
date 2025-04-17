@@ -13,6 +13,7 @@
   [property-list 
    {:id "properties"
     :properties @(re-frame/subscribe [::subs/properties])
+    :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-propery-dialog-open])
     :propertyName @(re-frame/subscribe [::subs/form :name])
     :propertyAddress @(re-frame/subscribe [::subs/form :address])
     :propertyCity @(re-frame/subscribe [::subs/form :city])
@@ -20,6 +21,8 @@
     :propertyUnits @(re-frame/subscribe [::subs/form :units])
     :propertyPurchasePrice @(re-frame/subscribe [::subs/form :purchaseprice])
     :propertyCurrentValue @(re-frame/subscribe [::subs/form :currentvalue])
+    :onChangeAddPropertyDialogOpen #(re-frame/dispatch [::events/show-add-property-dialog])
+    :onChangeAddPropertyDialogClose #(re-frame/dispatch [::events/close-add-property-dialog])
     :onChangePropertyName #(re-frame/dispatch [::events/update-field :name (-> % .-target .-value)])
     :onChangePropertyAddress #(re-frame/dispatch [::events/update-field :address (-> % .-target .-value)])
     :onChangePropertyCity #(re-frame/dispatch [::events/update-field :city (-> % .-target .-value)])
