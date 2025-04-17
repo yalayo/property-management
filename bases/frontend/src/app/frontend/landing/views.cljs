@@ -16,7 +16,7 @@
 (defn landing-component []
   [:<>
    [header]
-   [hero]
+   #_[hero]
    [features]
    [pricing]
    [footer]])
