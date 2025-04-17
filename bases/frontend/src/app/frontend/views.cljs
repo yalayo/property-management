@@ -9,12 +9,13 @@
             [app.frontend.survey.views :as survey]
             [app.frontend.dashboard.views :as dashboard]))
 
-;; Testing the login component
-#_(defn app []
-  [:<>
-   [user-view/login-component]])
-
 (def home-component (r/adapt-react-class home))
+
+;; Testing the login component
+(defn app []
+  [:<>
+   [user-view/login-component]
+   [user-view/register-component]])
 
 #_(defn app []
   [:<>
@@ -27,6 +28,6 @@
    (dashboard/dashboard-component)])
 
 ;; Testing the landing page
-(defn app []
+#_(defn app []
   [:<>
    (landing/landing-component)])
