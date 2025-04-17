@@ -1,12 +1,11 @@
-import { Button } from "../ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { useAuth } from "../../hooks/use-auth";
+import React from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 import { Redirect, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
@@ -20,15 +19,13 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  const { user, registerMutation } = useAuth();
   
   // Redirect to dashboard if already logged in
-  if (user) {
+  /*if (user) {
     return <Redirect to="/dashboard" />;
-  }
+  }*/
 
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -38,7 +35,7 @@ export default function Register() {
   });
 
   const onSubmit = (data: RegisterFormValues) => {
-    registerMutation.mutate(data);
+    //registerMutation.mutate(data);
   };
 
   return (
@@ -137,9 +134,9 @@ export default function Register() {
                 <Button 
                   type="submit" 
                   className="w-full"
-                  disabled={registerMutation.isPending}
+                  disabled={false}
                 >
-                  {registerMutation.isPending ? (
+                  {false ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Creating account...
