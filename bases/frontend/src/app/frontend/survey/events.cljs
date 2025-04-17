@@ -42,13 +42,14 @@
 
 (re-frame/reg-event-db
  ::set-initial-db
- (fn-traced [_ [_ questions]]
-            (-> db/default-db
+ [->local-store]
+ (fn-traced [db [_ questions]]
+            (-> db
                 (assoc-in [:survey :questions] questions)
                 (assoc-in [:survey :current-question-index] 0)
                 (assoc-in [:survey :show-email-form] false)
                 (assoc-in [:survey :responses] (initialize-responses questions))
-                (assoc :current-view "waiting-list"))))
+                (assoc :current-view "survey"))))
 
 (re-frame/reg-event-fx
  ::handle-init-db-error
@@ -58,6 +59,7 @@
 
 (re-frame/reg-event-db
  ::answer-question
+ [->local-store]
  (fn [db [_ val]]
    (let [index (get-in db [:survey :current-question-index])
          questions (get-in db [:survey :questions])
@@ -67,6 +69,7 @@
 
 (re-frame/reg-event-db
  ::next-question
+ [->local-store]
  (fn [db]
    (let [index (get-in db [:survey :current-question-index])
          total (count (get-in db [:survey :questions]))]
@@ -78,6 +81,7 @@
 
 (re-frame/reg-event-db
  ::previous-question
+ [->local-store]
  (fn [db]
    (let [index (get-in db [:survey :current-question-index])
          show-email-form? (get-in db [:survey :show-email-form])]
@@ -90,6 +94,7 @@
 
 (re-frame/reg-event-db
  ::update-email-form
+ [->local-store]
  (fn [db [_ id val]]
    (assoc-in db [:survey :form id] val)))
 
@@ -109,6 +114,7 @@
 
 (re-frame/reg-event-db
  ::survey-submitted
+ [->local-store]
  (fn [db [_ response]]
    (let [email (get-in db [:survey :form :email])]
      (-> db
