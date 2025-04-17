@@ -12,6 +12,10 @@ import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 
 export default function Dashboard(props) {
+  const overviewComponent = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'overview'
+  );
+
   const listProperties = React.Children.toArray(props.children).find(
     child => child.props['id'] === 'properties'
   );
@@ -40,9 +44,10 @@ export default function Dashboard(props) {
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <nav className="mt-5 flex-1 px-2 space-y-1">
               <Button
+                id="overview"
                 variant={activeTab === "overview" ? "default" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => setActiveTab("overview")}
+                onClick={() => props.onChangeActiveTab("overview")}
               >
                 <Home className="mr-3 h-5 w-5" />
                 Overview
@@ -50,7 +55,7 @@ export default function Dashboard(props) {
               <Button
                 variant={activeTab === "properties" ? "default" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => setActiveTab("properties")}
+                onClick={() => props.onChangeActiveTab("properties")}
               >
                 <Home className="mr-3 h-5 w-5" />
                 Properties
@@ -58,7 +63,7 @@ export default function Dashboard(props) {
               <Button
                 variant={activeTab === "tenants" ? "default" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => setActiveTab("tenants")}
+                onClick={() => props.onChangeActiveTab("tenants")}
               >
                 <Users className="mr-3 h-5 w-5" />
                 Tenants
@@ -66,7 +71,7 @@ export default function Dashboard(props) {
               <Button
                 variant={activeTab === "documents" ? "default" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => setActiveTab("documents")}
+                onClick={() => props.onChangeActiveTab("documents")}
               >
                 <FileText className="mr-3 h-5 w-5" />
                 Documents
@@ -74,7 +79,7 @@ export default function Dashboard(props) {
               <Button
                 variant={activeTab === "analytics" ? "default" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => setActiveTab("analytics")}
+                onClick={() => props.onChangeActiveTab("analytics")}
               >
                 <BarChart2 className="mr-3 h-5 w-5" />
                 Analytics
