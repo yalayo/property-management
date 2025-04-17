@@ -74,7 +74,7 @@ jobs:
           scp -o StrictHostKeyChecking=no ./projects/main/app.tar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/docker
       - name: Load Docker image on VM
         run: |
-          scp -r ./projects/main/docker/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/docker
+          scp -r ./projects/main/docker/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/docker/
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             docker load -i ~/${{ secrets.WORK_DIR }}/docker/app.tar
             docker tag app.tar:latest ${{ secrets.APP_NAME }}-app:latest
