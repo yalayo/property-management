@@ -13,13 +13,6 @@
 ;; Interceptor Chain
 (def interceptors [->local-store])
 
-(defn edn-response-format []
-  {:read (fn [^goog.net.XhrIo xhrio]
-           (let [raw (.getResponseText xhrio)]
-             (cljs.reader/read-string raw)))
-   :description  "EDN"
-   :content-type ["application/edn"]})
-
 ;; To restore db from the browser's local storage
 (re-frame/reg-cofx
  :local-store-db
@@ -35,57 +28,3 @@
  [(re-frame/inject-cofx :local-store-db)]
  (fn-traced [{:keys [local-store-db]} _]
             {:db local-store-db}))
-
-(defn initialize-responses []
-  (into {} (map (fn [k] [(keyword (str k)) true]) (range 20))))
-
-(re-frame/reg-event-db
- ::set-initial-db
- (fn-traced [_ [_ response]]
-            (-> db/default-db
-                (assoc-in [:survey :questions] response)
-                (assoc-in [:survey :current-question-index] 0)
-                (assoc-in [:survey :show-email-form] false)
-                (assoc-in [:survey :responses] (initialize-responses)))))
-
-(re-frame/reg-event-fx
- ::handle-init-db-error
- (fn-traced [{:keys [_]} [_ error]]
-            (js/console.error "Failed to initialize DB from API:" error)
-            {})) ;; you could also dispatch a notification or fallback logic here
-
-(re-frame/reg-event-db
- ::signin
- (fn [db]
-   (assoc db :user-loged-in? true)))
-
-(re-frame/reg-event-db
- ::signout
- (fn [db]
-   (assoc db :user-loged-in? false)))
-
-(re-frame/reg-event-db
- ::update-register-address-form
- (fn [db [_ id val]]
-   (assoc-in db [:form id] val)))
-
-(re-frame/reg-event-db
- ::save-register-address-form
- interceptors
- (fn [db]
-   (let [form-data (:form db)
-         addresses (get db :addresses [])
-         updated-addresses (conj addresses form-data)]
-     (-> db
-         (assoc :addresses updated-addresses)
-         (dissoc :form)))))
-
-(re-frame/reg-event-db
- ::show-register-address-form
- (fn [db]
-   (assoc db :show-form true)))
-
-(re-frame/reg-event-db
- ::cancel-register-address-form
- (fn [db]
-   (assoc db :show-form false)))
