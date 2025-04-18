@@ -43,7 +43,7 @@
   #{["/bank"
      :get bank-handler
      :route-name ::bank]
-    ["/upload-transactions"
+    ["/api/upload-transactions"
      :post [(ring-mw/multipart-params) auth-required post-upload-transactions-handler]
      :route-name ::post-upload-transactions]
     ["/account-detail"
