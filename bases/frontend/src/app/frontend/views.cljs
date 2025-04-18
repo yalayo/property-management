@@ -12,7 +12,7 @@
 (def home-component (r/adapt-react-class home))
 
 ;; Testing the login component
-(defn app []
+#_(defn app []
   [:<>
    [user-view/login-component]])
 
@@ -30,3 +30,10 @@
 #_(defn app []
   [:<>
    (landing/landing-component)])
+
+(defn app []
+  (let [user-loged-in? @(re-frame/subscribe [::subs/logged-in])]
+    [:<>
+     (if user-loged-in?
+       (dashboard/dashboard-component)
+       (user-view/login-component))]))
