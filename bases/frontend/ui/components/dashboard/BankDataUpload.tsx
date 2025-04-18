@@ -52,7 +52,8 @@ export default function BankDataUpload(props) {
   
   const data = null;
   const files = null;
-  const isLoading = false;
+  const isLoading = props.isLoading;
+  const transactions = props.transactions;
 
   const fileInputRef = useRef(null);
 
@@ -447,32 +448,24 @@ export default function BankDataUpload(props) {
             <div className="flex justify-center p-4">
               <Loader2 className="h-6 w-6 animate-spin text-primary-600" />
             </div>
-          ) : files && files.length > 0 ? (
+          ) : transactions && transactions.length > 0 ? (
             <div className="space-y-3">
-              {files.map((file: FileData) => (
-                <div key={file.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
+              {transactions.map((element) => (
+                <div key={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
                   <div className="flex items-center">
-                    {getFileIcon(file.fileType)}
                     <div className="flex-1">
-                      <p className="font-medium">{file.filename}</p>
+                      <p className="font-medium">{element.filename}</p>
                       <p className="text-xs text-gray-500">
-                        Uploaded {new Date(file.uploadDate).toLocaleDateString()} at {new Date(file.uploadDate).toLocaleTimeString()}
+                        Date {new Date(element.date).toLocaleDateString()} at {new Date(element.date).toLocaleTimeString()}
                       </p>
                     </div>
-                    <Badge variant={file.processed ? (file.extractedData?.processingFailed ? "destructive" : "default") : "outline"} className="mr-2">
-                      {file.processed 
-                        ? (file.extractedData?.processingFailed 
-                            ? "Failed" 
-                            : "Processed") 
-                        : "Processing..."}
-                    </Badge>
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button 
                           variant="outline" 
                           size="sm" 
                           className="ml-2"
-                          onClick={() => setSelectedFileData(file)}
+                          onClick={() => setSelectedFileData(element.id)}
                         >
                           <Eye className="h-4 w-4 mr-1" /> View
                         </Button>
@@ -480,26 +473,12 @@ export default function BankDataUpload(props) {
                       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                         <DialogHeader>
                           <DialogTitle className="flex items-center">
-                            {getFileIcon(file.fileType)}
-                            {file.filename}
+                            {element.name}
                           </DialogTitle>
                           <DialogDescription>
-                            Uploaded on {new Date(file.uploadDate).toLocaleDateString()} at {new Date(file.uploadDate).toLocaleTimeString()}
+                            Uploaded on {new Date(element.date).toLocaleDateString()} at {new Date(element.date).toLocaleTimeString()}
                           </DialogDescription>
                         </DialogHeader>
-                        
-                        {file.processed ? (
-                          renderExtractedData(file)
-                        ) : (
-                          <div className="flex flex-col items-center justify-center py-8">
-                            <Clock className="h-12 w-12 text-amber-500 mb-3 animate-pulse" />
-                            <h3 className="font-medium text-lg">Processing in progress</h3>
-                            <p className="text-gray-500 text-center mt-2">
-                              Google Gemini AI is currently extracting data from your document.
-                              <br />This may take a minute. Check back soon!
-                            </p>
-                          </div>
-                        )}
                       </DialogContent>
                     </Dialog>
                   </div>

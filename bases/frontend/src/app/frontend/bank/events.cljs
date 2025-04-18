@@ -16,8 +16,9 @@
 
 (re-frame/reg-event-fx
  ::upload-data
- (fn [_ [_ file]]
-   {:http-xhrio {:method          :post
+ (fn [db [_ file]] 
+   {:db (assoc-in db [:bank :transactions :is-loading] true)
+    :http-xhrio {:method          :post
                  :uri             (str config/api-url "/api/upload-transactions")
                  :bod             (let [form-data (js/FormData.)]
                                     (.append form-data "file" file)
@@ -31,10 +32,10 @@
 (re-frame/reg-event-db
  ::upload-success
  (fn [db [_ response]]
-   (js/console.log "File uploaded:" response)
+   (js/console.log "Transactions:" response)
    (-> db
-       (assoc-in [:property :form] nil)
-       (assoc-in [:property ::add-propery-dialog-open] false))))
+       (assoc-in [:bank :transactions] response)
+       (assoc-in [:bank :transactions :is-loading] false))))
 
 (re-frame/reg-event-fx
  ::upload-failure

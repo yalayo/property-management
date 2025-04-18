@@ -2,16 +2,11 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- ::properties
+ ::is-loading
  (fn [db]
-   (get-in db [:property :properties])))
+   (get-in db [:bank :transactions :is-loading])))
 
 (re-frame/reg-sub
- ::form
- (fn [db [_ id]]
-   (get-in db [:property :form id] "")))
-
-(re-frame/reg-sub
- ::add-propery-dialog-open
+ ::transactions
  (fn [db]
-   (get-in db [:property :add-propery-dialog-open] false)))
+   (get-in db [:bank :transactions])))
