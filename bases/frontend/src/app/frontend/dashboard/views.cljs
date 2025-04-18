@@ -11,5 +11,6 @@
 (defn dashboard-component []
   [dashboard 
    {:activeTab @(re-frame/subscribe [::subs/active-tab])
-    :onChangeActiveTab #(re-frame/dispatch [::events/change-active-tab %])}
+    :onChangeActiveTab #(re-frame/dispatch [::events/change-active-tab %])
+    :submitLogout #(re-frame/dispatch [::events/log-out %])}
    (property/property-list-component)])

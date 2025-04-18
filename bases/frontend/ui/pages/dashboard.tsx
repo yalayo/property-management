@@ -22,7 +22,7 @@ export default function Dashboard(props) {
 
   const activeTab = props.activeTab;
   const logoutMutation = null;// { logoutMutation } = useAuth();
-  const isPending = true;
+  const isPending = false;
   const [_, navigate] = useLocation();
 
   return (
@@ -91,9 +91,7 @@ export default function Dashboard(props) {
               variant="outline" 
               className="w-full"
               disabled={isPending}
-              onClick={() => {
-                return true;
-              }}
+              onClick={props.submitLogout}
             >
               {isPending ? (
                 <div className="mr-3 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
