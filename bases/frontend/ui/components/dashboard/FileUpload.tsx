@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef } from 'react';
 import { useState } from "react";
 import { queryClient } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
@@ -52,6 +53,13 @@ export default function FileUpload() {
   const data = null;
   const files = null;
   const isLoading = false;
+
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = (e) => {
+    e.preventDefault(); // prevent form submission if button is in a form
+    fileInputRef.current?.click();
+  };
 
   // Fetch previously uploaded files
   /*const { data: files, isLoading } = useQuery({
@@ -402,31 +410,33 @@ export default function FileUpload() {
             <Input
               id="file-upload"
               type="file"
+              className="hidden"
               accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.txt"
               onChange={handleFileChange}
+              ref={fileInputRef}
               disabled={false}
             />
             <p className="text-sm text-gray-500">
               Upload bank statements, property data, or tenant documents for AI analysis
             </p>
+            <Button 
+              type="button" 
+              onClick={handleButtonClick}
+              className="flex items-center"
+            >
+              {false ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <UploadCloud className="mr-2 h-4 w-4" />
+                  Upload Document
+                </>
+              )}
+            </Button>
           </div>
-          <Button 
-            type="submit" 
-            disabled={!selectedFile || false}
-            className="flex items-center"
-          >
-            {false ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <UploadCloud className="mr-2 h-4 w-4" />
-                Upload Document
-              </>
-            )}
-          </Button>
         </form>
 
         {/* Recent uploads */}
