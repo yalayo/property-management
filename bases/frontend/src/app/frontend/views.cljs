@@ -14,8 +14,7 @@
 ;; Testing the login component
 (defn app []
   [:<>
-   [user-view/login-component]
-   [user-view/register-component]])
+   [user-view/login-component]])
 
 #_(defn app []
   [:<>
