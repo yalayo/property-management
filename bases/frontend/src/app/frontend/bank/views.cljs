@@ -3,15 +3,15 @@
             [re-frame.core :as re-frame]
             [app.frontend.property.subs :as subs]
             [app.frontend.property.events :as events]
-            ["/components/dashboard/PropertyList$default" :as property-list-js]))
+            ["/components/dashboard/BankDataUpload$default" :as upload-js]))
 
-(def property-list (r/adapt-react-class property-list-js))
+(def bank-data-upload (r/adapt-react-class upload-js))
 
 (defn property-list-component []
   (re-frame/dispatch [::events/get-properties]) 
 
-  [property-list 
-   {:id "properties"
+  [bank-data-upload 
+   {:id "bank-data-upload"
     :properties @(re-frame/subscribe [::subs/properties])
     :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-propery-dialog-open])
     :propertyName @(re-frame/subscribe [::subs/form :name])
