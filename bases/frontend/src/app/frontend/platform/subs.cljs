@@ -4,4 +4,4 @@
 (re-frame/reg-sub
  ::logged-in
  (fn [db [_ _]]
-   (:user-loged-in? db)))
+   (get-in db [:user :user-loged-in?])))

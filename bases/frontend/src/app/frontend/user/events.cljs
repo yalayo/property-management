@@ -30,7 +30,10 @@
  ::signed-in
  [local-storage-interceptor]
  (fn [db [_ response]]
-   (assoc-in db [:user :token] response)))
+   (-> db
+       (assoc-in [:user :token] response)
+       (assoc-in [:user :user-loged-in?] true)
+       (assoc-in [:user :sign-in :form] nil))))
 
 (re-frame/reg-event-fx
  ::sign-in-error
