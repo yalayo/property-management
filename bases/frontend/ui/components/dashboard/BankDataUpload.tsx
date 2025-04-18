@@ -391,23 +391,18 @@ export default function BankDataUpload(props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI Document Processor</CardTitle>
-        <CardDescription>
-          Upload documents for AI-powered data extraction using Google Gemini
-        </CardDescription>
+        <CardTitle>Bank Statement Processor</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
           <h4 className="font-medium text-blue-800">New Feature: Bank Statement Processing</h4>
           <p className="text-sm text-blue-700 mt-1">
-            Upload your bank statements in Excel or CSV format to have them automatically processed and imported into your accounting system. 
-            Our AI will extract transaction data, attempt to categorize expenses and income, and create the entries for you.
+            Upload your bank statements in PDF format to have them automatically processed and later imported into the system.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="file-upload">Upload Documents</Label>
             <Input
               id="file-upload"
               type="file"
@@ -417,13 +412,12 @@ export default function BankDataUpload(props) {
               ref={fileInputRef}
               disabled={false}
             />
-            <p className="text-sm text-gray-500">
-              Upload bank statements, property data, or tenant documents for AI analysis
-            </p>
+            
             <Button 
               type="button" 
               onClick={handleButtonClick}
-              className="flex items-center"
+              variant="outline" 
+              size="sm"
             >
               {false ? (
                 <>
@@ -442,7 +436,7 @@ export default function BankDataUpload(props) {
 
         {/* Recent uploads */}
         <div className="mt-8">
-          <h3 className="text-lg font-medium mb-4">Processed Documents</h3>
+          <h3 className="text-lg font-medium mb-4">Detected transactions</h3>
           
           {isLoading ? (
             <div className="flex justify-center p-4">
@@ -454,9 +448,10 @@ export default function BankDataUpload(props) {
                 <div key={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="font-medium">{element.filename}</p>
+                      <p className="font-medium">{element.amount.toFixed(2)} €</p>
+                      <p className="font-medium">{element.text}</p>
                       <p className="text-xs text-gray-500">
-                        Date {new Date(element.date).toLocaleDateString()} at {new Date(element.date).toLocaleTimeString()}
+                        Date {new Date(element.date).toLocaleDateString()}
                       </p>
                     </div>
                     <Dialog>
