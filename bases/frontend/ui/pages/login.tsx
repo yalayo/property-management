@@ -16,18 +16,6 @@ const loginSchema = "";
 type LoginFormValues = null;
 
 export default function Login(props) {
-  const user = props.user;
-  
-  // Handle redirects for logged in users
-  if (user) {
-    // If password change is required, redirect to change password page
-    if (user.passwordChangeRequired) {
-      return <Redirect to="/change-password" />;
-    }
-    // Otherwise redirect to dashboard
-    return <Redirect to="/dashboard" />;
-  }
-
   const form = useForm<PropertyFormValues>({
       defaultValues: {
         name: "",
@@ -92,7 +80,7 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your username" {...field} />
+                        <Input placeholder="Enter your username" value={props.user} onChange={props.onChangeUser} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,16 +93,15 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
+                        <Input type="password" placeholder="••••••••" value={props.password} onChange={props.onChangePassword} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button 
-                  type="submit" 
+                <Button
                   className="w-full"
-                  disabled={true}
+                  onClick={props.submitLogin}
                 >
                   {false ? (
                     <>
