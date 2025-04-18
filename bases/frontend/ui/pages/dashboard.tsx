@@ -20,6 +20,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'properties'
   );
 
+  const uploadBankData = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'documents'
+  );
+
   const activeTab = props.activeTab;
   const logoutMutation = null;// { logoutMutation } = useAuth();
   const isPending = false;
@@ -128,7 +132,7 @@ export default function Dashboard(props) {
               )}
 
               {activeTab === "documents" && (
-                <FileUpload />
+                uploadBankData
               )}
 
               {activeTab === "analytics" && (

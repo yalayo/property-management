@@ -45,7 +45,7 @@ type FileData = {
   extractedData: any;
 };
 
-export default function BankDataUpload() {
+export default function BankDataUpload(props) {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
@@ -412,7 +412,7 @@ export default function BankDataUpload() {
               type="file"
               className="hidden"
               accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.txt"
-              onChange={handleFileChange}
+              onChange={props.onUploadData}
               ref={fileInputRef}
               disabled={false}
             />

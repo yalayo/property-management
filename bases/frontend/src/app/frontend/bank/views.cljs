@@ -9,17 +9,8 @@
 
 (defn bank-data-upload-component []
   [bank-data-upload 
-   {:id "bank-data-upload"
-    :properties @(re-frame/subscribe [::subs/properties])
-    :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-propery-dialog-open])
-    :propertyName @(re-frame/subscribe [::subs/form :name])
-    :propertyAddress @(re-frame/subscribe [::subs/form :address])
-    :propertyCity @(re-frame/subscribe [::subs/form :city])
-    :propertyPostalCode @(re-frame/subscribe [::subs/form :postalcode])
-    :propertyUnits @(re-frame/subscribe [::subs/form :units])
-    :propertyPurchasePrice @(re-frame/subscribe [::subs/form :purchaseprice])
-    :propertyCurrentValue @(re-frame/subscribe [::subs/form :currentvalue])
-    :onChangeAddPropertyDialogOpen #(re-frame/dispatch [::events/show-add-property-dialog])
+   {:id "documents"
+    :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])
     :onChangeAddPropertyDialogClose #(re-frame/dispatch [::events/close-add-property-dialog])
     :onChangePropertyName #(re-frame/dispatch [::events/update-field :name (-> % .-target .-value)])
     :onChangePropertyAddress #(re-frame/dispatch [::events/update-field :address (-> % .-target .-value)])
