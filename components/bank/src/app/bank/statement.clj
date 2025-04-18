@@ -12,6 +12,7 @@
 
 ;; Apotheke Bank
 (defn pdf-data [input-stream]
+  (println input-stream)
   (with-open [pd (Loader/loadPDF input-stream)]
     (let [stripper (PDFTextStripper.)]
       (.getText stripper pd))))

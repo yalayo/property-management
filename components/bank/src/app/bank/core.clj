@@ -2,7 +2,7 @@
   (:require [io.pedestal.http.ring-middlewares :as ring-mw]
             ;;[io.pedestal.http.body-params :as body-params]
             ;;[io.pedestal.http.params :as params]
-            [app.html.core :refer [auth-required]]
+            [app.user.interface :refer [wrap-jwt-auth]]
             [hiccup2.core :as h]
             [app.html.interface :as html]
             [app.html.layout :as layout]
@@ -42,7 +42,7 @@
      :get bank-handler
      :route-name ::bank]
     ["/api/upload-transactions"
-     :post [(ring-mw/multipart-params) auth-required post-upload-transactions-handler]
+     :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-upload-transactions-handler]
      :route-name ::post-upload-transactions]
     ["/account-detail"
      :get account-detail-handler

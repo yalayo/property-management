@@ -11,3 +11,6 @@
 
 (defn get-datasource []
   db/ds)
+
+(defn wrap-jwt-auth [handler]
+  (core/wrap-jwt-auth handler))

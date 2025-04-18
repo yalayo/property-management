@@ -1,6 +1,7 @@
 (ns app.user.core
   (:require [buddy.hashers :as bh]
             [buddy.sign.jwt :as jwt]
+            [clojure.string :as string]
             [app.user.database :as db]))
 
 (defn verify-password-and-email  
@@ -24,6 +25,18 @@
         (assoc result :status false :msg "Wrong email or password"))))
 
 (def secret "your-super-secret-key")  ;; Use an env var!
+
+;; New way of auth/authz
+(defn wrap-jwt-auth [handler]
+  (fn [context]
+    (let [auth-header (get-in context [:request :headers "authorization"])
+          token       (some-> auth-header (string/replace #"^Bearer " ""))]
+      (try
+        (if-let [claims (jwt/unsign token secret)]
+          (handler (assoc-in context [:request :identity] claims))
+          {:status 401 :body {:error "Invalid or missing token"}})
+        (catch Exception _
+          {:status 401 :body {:error "Invalid or missing token"}})))))
 
 (defn sign-in [context]
   (let [params (-> context :request :edn-params)
