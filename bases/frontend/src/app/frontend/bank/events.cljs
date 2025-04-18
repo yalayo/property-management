@@ -20,14 +20,15 @@
    {:db (assoc-in db [:bank :transactions :is-loading] true)
     :http-xhrio {:method          :post
                  :uri             (str config/api-url "/api/upload-transactions")
-                 :bod             (let [form-data (js/FormData.)]
-                                    (.append form-data "file" file)
-                                    form-data)
+                 :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
+                 :body             (let [form-data (js/FormData.)]
+                                     (.append form-data "file" file)
+                                     form-data)
                  :format          (ajax-edn/edn-request-format)
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
-                 :on-success      [:upload-success]
-                 :on-failure      [:upload-failure]}}))
+                 :on-success      [::upload-success]
+                 :on-failure      [::upload-failure]}}))
 
 (re-frame/reg-event-db
  ::upload-success
