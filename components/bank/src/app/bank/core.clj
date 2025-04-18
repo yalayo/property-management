@@ -7,7 +7,6 @@
             [app.html.interface :as html]
             [app.html.layout :as layout]
             [app.bank.list :as list]
-            [app.bank.list-transactions :as transactions]
             [app.bank.account-details :as account]
             [app.bank.persistance :as persistance]
             [app.bank.statement :as statement]))
@@ -23,9 +22,8 @@
    :enter (fn [context]
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
-                  file-input-stream (:tempfile file)
-                  result (statement/process file-input-stream)]
-              (assoc context :response (html/respond-with-params transactions/content result "Bank accounts"))))})
+                  file-input-stream (:tempfile file)]
+              (assoc context :response {:status 200 :body (statement/process file-input-stream) :headers {"Content-Type" "text/edn"}})))})
 
 (defn get-acc-detail [context] 
   (let [params ((context :request) :params)
