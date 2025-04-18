@@ -61,7 +61,7 @@
   (let [[_ date text amount _]
         (re-matches #"(\d{1,2}\. [A-ZÄÖÜa-zäöüß]+\. \d{4}) (.*?) (\d{1,3}(\.\d{3})*,\d{2})(.*)" (clean-str line))]
     (when (and date text amount)
-      {:date (parse-german-date date)
+      {:date (.toString (parse-german-date date))
        :text text
        :amount (parse-amount-apotheke amount)})))
 
@@ -75,4 +75,4 @@
 
 
 (defn process [input-stream]
-  (extract-transactions-apotheke (pdf-data input-stream)))
+  (into [] (extract-transactions-apotheke (pdf-data input-stream))))
