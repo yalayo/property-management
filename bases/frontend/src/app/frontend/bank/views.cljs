@@ -1,15 +1,13 @@
 (ns app.frontend.bank.views
   (:require [reagent.core  :as r]
             [re-frame.core :as re-frame]
-            [app.frontend.property.subs :as subs]
-            [app.frontend.property.events :as events]
+            [app.frontend.bank.subs :as subs]
+            [app.frontend.bank.events :as events]
             ["/components/dashboard/BankDataUpload$default" :as upload-js]))
 
 (def bank-data-upload (r/adapt-react-class upload-js))
 
-(defn property-list-component []
-  (re-frame/dispatch [::events/get-properties]) 
-
+(defn bank-data-upload-component []
   [bank-data-upload 
    {:id "bank-data-upload"
     :properties @(re-frame/subscribe [::subs/properties])
