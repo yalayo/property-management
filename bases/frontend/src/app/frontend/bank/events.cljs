@@ -17,14 +17,12 @@
 (re-frame/reg-event-fx
  ::upload-data
  (fn [db [_ file]] 
-   {:db (assoc-in db [:bank :transactions :is-loading] true)
-    :http-xhrio {:method          :post
+   {:http-xhrio {:method          :post
                  :uri             (str config/api-url "/api/upload-transactions")
                  :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
                  :body             (let [form-data (js/FormData.)]
                                      (.append form-data "file" file)
                                      form-data)
-                 :format          (ajax-edn/edn-request-format)
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
                  :on-success      [::upload-success]
@@ -36,12 +34,13 @@
    (js/console.log "Transactions:" response)
    (-> db
        (assoc-in [:bank :transactions] response)
-       (assoc-in [:bank :transactions :is-loading] false))))
+       (assoc-in [:bank :data :is-loading] false))))
 
 (re-frame/reg-event-fx
  ::upload-failure
- (fn [{:keys [_]} [_ error]]
-   (js/console.error "Failed to upload file:" error)
+ (fn [{:keys [_]} [_ {:keys [status status-text response]}]]
+   (js/console.error (str "Upload failed! HTTP status: " status " " status-text))
+   (js/console.log "Backend responded with:" (clj->js response))
    {}))
 
 (re-frame/reg-event-fx

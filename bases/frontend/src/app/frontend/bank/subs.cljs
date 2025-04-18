@@ -4,7 +4,7 @@
 (re-frame/reg-sub
  ::is-loading
  (fn [db]
-   (get-in db [:bank :transactions :is-loading])))
+   (get-in db [:bank :data :is-loading])))
 
 (re-frame/reg-sub
  ::transactions
