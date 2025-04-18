@@ -1,9 +1,10 @@
 (ns app.user.interface
   (:require [app.user.core :as core]
+            [app.user.routes :as routes]
             [app.user.database :as db]))
 
 (defn get-routes []
-  core/routes)
+  routes/routes)
 
 (defn get-internal-routes []
   core/internal-routes)

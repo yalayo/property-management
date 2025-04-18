@@ -4,6 +4,7 @@
             [io.pedestal.http.params :as params]
             [ring.util.response :as response]
             [buddy.hashers :as bh]
+            [buddy.sign.jwt :as jwt]
             [app.user.database :as db]
             [app.html.layout :as layout]
             [app.user.user-details :as user-details]))
@@ -250,7 +251,7 @@
    :enter (fn [context]
             (assoc context :response (respond sign-up-page)))})
 
-(defn verifyPassw-Email  
+(defn verify-password-and-email  
   "Verify the matching user password and new password, also check if email is registered.\n
    Args: Receive an struct like {:psw \"password\" :pswc \"new password\" :email \"email\"}\n
    Returns: an struct: {:status true :msg \"Ok\"}\n
@@ -275,7 +276,7 @@
    :enter (fn [context]
             (let [params (-> context :request :params)
                   {:keys [email password password-confirmation]} params
-                  verify (verifyPassw-Email {:psw password :pswc password-confirmation :email email})] 
+                  verify (verify-password-and-email {:psw password :pswc password-confirmation :email email})] 
               (if (= (:status verify) true)
                 (do
                   (db/create-account email password)
@@ -283,15 +284,28 @@
                                             :headers {"HX-Redirect" "/flags"}})) 
                 (assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
 
+(def secret "your-super-secret-key")  ;; Use an env var!
+
 (defn sign-in [context]
   (let [params (-> context :request :params)
         {:keys [email password]} params
         account (db/get-account email)]
     (if (and account (:valid (bh/verify password (:password account))))
-      (assoc context :response {:status 200
+      (let [claims {:email email
+                    :role  (:role account)
+                    :exp   (+ (quot (System/currentTimeMillis) 1000) 3600)}  ;; Token expires in 1 hour
+            token  (jwt/sign claims secret)]
+        (assoc context :response {:status 200
+                                  :headers {"Content-Type" "application/json"}
+                                  :body {:token token}}))
+      (assoc context :response
+             {:status 401
+              :headers {"Content-Type" "application/json"}
+              :body {:error "Invalid email or password"}})
+      #_(assoc context :response {:status 200
                                 :headers {"HX-Location" "/upload-excel"}
                                 :session (select-keys (into {} account) [:email :created-at])})
-      (assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))
+      #_(assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))
 
 (def post-sign-in-handler
   {:name ::post
