@@ -7,7 +7,7 @@
   routes/routes)
 
 (defn get-internal-routes []
-  core/internal-routes)
+  routes/internal-routes)
 
 (defn get-datasource []
   db/ds)
