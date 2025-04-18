@@ -16,12 +16,9 @@
             (let [params (-> context :request :params)
                   {:keys [email password password-confirmation]} params
                   verify (core/verify-password-and-email {:psw password :pswc password-confirmation :email email})]
-              (if (= (:status verify) true)
-                (do
-                  (db/create-account email password)
-                  (assoc context :response {:status 200
-                                            :headers {"HX-Redirect" "/flags"}}))
-                #_(assoc context :response (-> (sign-up-form {:error (:msg verify) :email email}) (ok))))))})
+              (when (= (:status verify) true)
+                (db/create-account email password)
+                (assoc context :response {:status 200}))))})
 
 (def post-change-password
   {:name ::post

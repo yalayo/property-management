@@ -26,11 +26,11 @@
 (def secret "your-super-secret-key")  ;; Use an env var!
 
 (defn sign-in [context]
-  (let [params (-> context :request :params)
-        {:keys [email password]} params
-        account (db/get-account email)]
-    (if (and account (:valid (bh/verify password (:password account))))
-      (let [claims {:email email
+  (let [params (-> context :request :edn-params)
+        {:keys [user password]} params
+        account (db/get-account user)]
+    (if (and account (bh/verify password (:password account)))
+      (let [claims {:email user
                     :role  (:role account)
                     :exp   (+ (quot (System/currentTimeMillis) 1000) 3600)}  ;; Token expires in 1 hour
             token  (jwt/sign claims secret)]
