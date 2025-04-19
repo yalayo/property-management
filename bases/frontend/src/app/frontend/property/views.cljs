@@ -30,4 +30,5 @@
     :onChangePropertyUnits #(re-frame/dispatch [::events/update-field :units (-> % .-target .-value)])
     :onChangePropertyPurchasePrice #(re-frame/dispatch [::events/update-field :purchaseprice (-> % .-target .-value)])
     :onChangePropertyCurrentValue #(re-frame/dispatch [::events/update-field :currentvalue (-> % .-target .-value)])
-    :submitProperty #(re-frame/dispatch [::events/save-property])}])
+    :submitProperty #(re-frame/dispatch [::events/save-property])
+    :addNewTenant #(re-frame/dispatch [::events/add-tenant])}])

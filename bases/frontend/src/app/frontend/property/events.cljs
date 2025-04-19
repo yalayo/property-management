@@ -73,3 +73,9 @@
  [local-storage-interceptor]
  (fn [db]
    (assoc-in db [:property :add-propery-dialog-open] false)))
+
+(re-frame/reg-event-db
+ ::add-tenant
+ [local-storage-interceptor]
+ (fn [db]
+   (assoc-in db [:dashboard :active-tab] "new-tenant")))
