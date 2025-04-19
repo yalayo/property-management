@@ -30,7 +30,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { CalendarIcon, ChevronLeft, ChevronRight, FileText, Upload, User, Check } from 'lucide-react';
-import { apiRequest } from '../../lib/queryClient';
 import { useToast } from '../../hooks/use-toast';
 import { Progress } from '../ui/progress';
 import { FileUpload } from '../files/FileUpload';
@@ -147,12 +146,9 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
   
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   
   // Setup the form for the current step
   const personalInfoForm = useForm<z.infer<typeof personalInfoSchema>>({
-    resolver: zodResolver(personalInfoSchema),
     defaultValues: formData.personalInfo || {
       firstName: '',
       lastName: '',
@@ -163,7 +159,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
 
   const employmentInfoForm = useForm<z.infer<typeof employmentInfoSchema>>({
-    resolver: zodResolver(employmentInfoSchema),
     defaultValues: formData.employmentInfo || {
       employmentStatus: 'employed',
       employer: '',
@@ -176,7 +171,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
 
   const referencesForm = useForm<z.infer<typeof referencesSchema>>({
-    resolver: zodResolver(referencesSchema),
     defaultValues: formData.references || {
       personalReferences: [{ name: '', relationship: '', phone: '', email: '' }],
       previousLandlords: [{ name: '', propertyAddress: '', phone: '', email: '', rentalPeriod: '' }],
@@ -184,7 +178,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
 
   const bankingInfoForm = useForm<z.infer<typeof bankingInfoSchema>>({
-    resolver: zodResolver(bankingInfoSchema),
     defaultValues: formData.bankingInfo || {
       accountHolder: '',
       accountNumber: '',
@@ -198,7 +191,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
 
   const leaseInfoForm = useForm<z.infer<typeof leaseInfoSchema>>({
-    resolver: zodResolver(leaseInfoSchema),
     defaultValues: formData.leaseInfo || {
       propertyId: propertyId || 0,
       unitNumber: '',
@@ -216,7 +208,7 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
   });
 
   const documentsForm = useForm<z.infer<typeof documentsSchema>>({
-    resolver: zodResolver(documentsSchema),
+    //resolver: zodResolver(documentsSchema),
     defaultValues: formData.documents || {
       backgroundCheckConsent: false,
       creditCheckConsent: false,
@@ -267,9 +259,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
         setFormData({ ...formData, documents: data });
         setStep('review');
         break;
-      case 'review':
-        submitTenantApplication();
-        break;
     }
   };
   
@@ -295,9 +284,11 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
         break;
     }
   };
+
+  const isPending = false;
   
   // Handle form submission
-  const { mutate: submitTenantApplication, isPending } = useMutation({
+  /*const { mutate: submitTenantApplication, isPending } = useMutation({
     mutationFn: async () => {
       return apiRequest('POST', '/api/tenant-application', formData);
     },
@@ -317,7 +308,7 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
         variant: 'destructive',
       });
     },
-  });
+  });*/
   
   // Handle adding new reference fields
   const addPersonalReference = () => {
@@ -1898,8 +1889,7 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
                 <ChevronLeft className="mr-2 h-4 w-4" /> Back
               </Button>
               <Button 
-                type="button" 
-                onClick={() => submitTenantApplication()}
+                type="button"
                 disabled={isPending}
               >
                 {isPending ? (
@@ -1931,7 +1921,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 variant="outline"
-                onClick={() => navigate('/')}
               >
                 Return to Dashboard
               </Button>
@@ -1940,7 +1929,6 @@ export function OnboardingWizard({ propertyId, availableProperties = [] }: Onboa
                   // Reset form and start new application
                   setFormData({});
                   setStep('personal');
-                  navigate('/tenant-onboarding');
                 }}
               >
                 Submit Another Application
