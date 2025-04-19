@@ -1,23 +1,23 @@
+import React from "react";
 import { useLocation } from 'wouter';
 import { useEffect } from 'react';
-import { useAuth } from '../../hooks/use-auth';
-import { useToast } from '../../hooks/use-toast';
-import { OnboardingWizard } from '../tenant/OnboardingWizard';
+import { useToast } from '../hooks/use-toast';
+import { OnboardingWizard } from '../components/tenant/OnboardingWizard';
 import { Loader2 } from 'lucide-react';
 
-export default function TenantOnboardingPage() {
-  const { user, isLoading: authLoading } = useAuth();
-  const { toast } = useToast();
-  const [, setLocation] = useLocation();
+export default function TenantOnboardingPage(props) {
+  const error = props.error;
+  const isLoading = false;
+  const properties = props.properties;
   
   // Fetch available properties
-  const { data: properties, isLoading: propertiesLoading, error } = useQuery({
+  /*const { data: properties, isLoading: propertiesLoading, error } = useQuery({
     queryKey: ['/api/properties/available'],
     enabled: !!user,
-  });
+  });*/
   
   // Check if user is authenticated
-  useEffect(() => {
+  /*useEffect(() => {
     if (!authLoading && !user) {
       toast({
         title: 'Authentication Required',
@@ -35,7 +35,7 @@ export default function TenantOnboardingPage() {
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
-  }
+  }*/
   
   // Show error state
   if (error) {
@@ -51,7 +51,7 @@ export default function TenantOnboardingPage() {
   
   // Extract property ID from URL if present
   const urlParams = new URLSearchParams(window.location.search);
-  const propertyId = urlParams.get('propertyId') ? parseInt(urlParams.get('propertyId')!) : undefined;
+  const propertyId = props.propertyId;
   
   return (
     <div className="container py-10">
