@@ -462,7 +462,7 @@ export default function BankDataUpload(props) {
                           className="ml-2"
                           onClick={() => setSelectedFileData(element.id)}
                         >
-                          <Eye className="h-4 w-4 mr-1" /> View
+                          <Eye className="h-4 w-4 mr-1" /> Assign
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
