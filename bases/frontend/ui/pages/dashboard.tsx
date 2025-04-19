@@ -24,6 +24,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'documents'
   );
 
+  const newTenant = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'new-tenant'
+  );
+
   const activeTab = props.activeTab;
   const logoutMutation = null;// { logoutMutation } = useAuth();
   const isPending = false;
@@ -129,6 +133,10 @@ export default function Dashboard(props) {
 
               {activeTab === "tenants" && (
                 <TenantPayments />
+              )}
+
+              {activeTab === "new-tenant" && (
+                newTenant
               )}
 
               {activeTab === "documents" && (

@@ -248,6 +248,9 @@ export default function PropertyList(props) {
                       <p className="text-sm text-gray-500">{property.city}, {property.postalcode}</p>
                     </div>
                     <div className="flex space-x-2">
+                      <Button variant="ghost" size="icon" onClick={props.addNewTenant}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon">
                         <Edit className="h-4 w-4" />
                       </Button>
