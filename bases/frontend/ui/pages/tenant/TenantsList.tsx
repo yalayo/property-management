@@ -23,7 +23,7 @@ export default function TenantsList(props) {
   const isAddTenantDialogOpen = props.isAddTenantDialogOpen;
 
   const isLoading = props.isLoading;
-  const properties = props.properties;
+  const tenants = props.tenants;
   const error = "";
 
   const addTenantComponent = React.Children.toArray(props.children).find(
@@ -97,9 +97,9 @@ export default function TenantsList(props) {
         )}
       </CardHeader>
       <CardContent>
-        {properties && properties.length > 0 ? (
+        {tenants && tenants.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((tenant: any) => (
+            {tenants.map((tenant: any) => (
               <Card key={tenant.id} className="overflow-hidden">
                 <div className="p-4">
                   <div className="flex justify-between items-start">
