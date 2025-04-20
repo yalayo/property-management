@@ -10,6 +10,8 @@
 (def add-property (r/adapt-react-class add-property-js))
 
 (defn property-list-component []
+  (re-frame/dispatch [::events/get-properties])
+  
   [property-list 
    {:id "properties"
     :properties @(re-frame/subscribe [::subs/properties])
