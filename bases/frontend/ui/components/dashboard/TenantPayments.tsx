@@ -173,15 +173,6 @@ export default function TenantPayments(props) {
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Tenant Payment Status</CardTitle>
           <div className="flex gap-2">
-            <Button 
-              size="sm" 
-              variant="default" 
-              onClick={() => navigate('/tenant-onboarding')}
-            >
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add New Tenant
-            </Button>
-            
             {latePayments && latePayments.length > 0 && (
               <Button 
                 size="sm" 
