@@ -33,6 +33,10 @@ export default function PropertyList(props) {
   const properties = props.properties;
   const error = "";
 
+  const addPropertyComponent = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'add-property'
+  );
+
   // Form setup
   const form = useForm<PropertyFormValues>({
     resolver: null, //zodResolver(propertyFormSchema),
@@ -103,137 +107,15 @@ export default function PropertyList(props) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Properties</CardTitle>
-        <Dialog open={isAddPropertyDialogOpen} onOpenChange={props.onChangeAddPropertyDialogClose}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Property
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Property</DialogTitle>
-            </DialogHeader>
-            <Form {...form}>
-              <div className="space-y-4">
-                <FormField
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Property Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="E.g., Riverside Apartment"
-                                value={props.propertyName} 
-                                onChange={props.onChangePropertyName} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Street address"
-                               value={props.propertyAddress} 
-                               onChange={props.onChangePropertyAddress} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input placeholder="City"
-                                 value={props.propertyCity} 
-                                 onChange={props.onChangePropertyCity} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name="postalCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Postal Code</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Postal code"
-                                 value={props.propertyPostalCode} 
-                                 onChange={props.onChangePropertyPostalCode} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  name="units"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Units</FormLabel>
-                      <FormControl>
-                        <Input type="number" min="1"
-                               value={props.propertyUnits} 
-                               onChange={props.onChangePropertyUnits} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    name="purchasePrice"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Purchase Price (€)</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="Optional"
-                                 value={props.propertyPurchasePrice} 
-                                 onChange={props.onChangePropertyPurchasePrice} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name="currentValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Current Value (€)</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="Optional"
-                                 value={props.propertyCurrentValue} 
-                                 onChange={props.onChangePropertyCurrentValue} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex justify-end space-x-4 pt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline"
-                    onClick={props.onChangeAddPropertyDialogClose}
-                  >
-                    Cancel
-                  </Button>
-                  <Button disabled={false} onClick={props.submitProperty}>
-                    {false ? 'Saving...' : 'Save Property'}
-                  </Button>
-                </div>
-              </div>
-            </Form>
-          </DialogContent>
-        </Dialog>
+
+        <Button size="sm" onClick={props.onChangeAddPropertyDialogOpen}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Property
+        </Button>
+
+        {isAddPropertyDialogOpen && (
+          addPropertyComponent
+        )}
       </CardHeader>
       <CardContent>
         {properties && properties.length > 0 ? (
