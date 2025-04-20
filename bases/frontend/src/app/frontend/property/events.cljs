@@ -28,11 +28,16 @@
 
 (re-frame/reg-event-db
  ::property-submitted
+ [local-storage-interceptor]
  (fn [db [_ response]]
-   (js/console.log "Property saved:" response)
-   (-> db
-       (assoc-in [:property :form] nil)
-       (assoc-in [:property ::add-propery-dialog-open] false))))
+   (let [properties (get-in db [:property :properties])
+         property (get-in db [:property :form])
+         updated (conj properties property)]
+     (js/console.log "Property saved:" response)
+     (-> db
+         (assoc-in [:property :properties] updated)
+         (assoc-in [:property :form] nil)
+         (assoc-in [:property :add-property-dialog-open] false)))))
 
 (re-frame/reg-event-fx
  ::property-creation-error

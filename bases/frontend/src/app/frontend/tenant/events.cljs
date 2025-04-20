@@ -28,11 +28,16 @@
 
 (re-frame/reg-event-db
  ::tenant-submitted
+ [local-storage-interceptor]
  (fn [db [_ response]]
-   (js/console.log "Tenant saved:" response)
-   (-> db
-       (assoc-in [:tenant :form] nil)
-       (assoc-in [:tenant :add-tenant-dialog-open] false))))
+   (let [tenants (get-in db [:tenant :tenants])
+         tenant (get-in db [:tenant :form])
+         updated (conj tenants tenant)]
+     (js/console.log "Tenant saved:" response)
+     (-> db
+         (assoc-in [:tenant :tenants] updated)
+         (assoc-in [:tenant :form] nil)
+         (assoc-in [:tenant :add-tenant-dialog-open] false)))))
 
 (re-frame/reg-event-fx
  ::tenant-creation-error

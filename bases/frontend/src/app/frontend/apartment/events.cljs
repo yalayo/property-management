@@ -28,11 +28,16 @@
 
 (re-frame/reg-event-db
  ::apartment-submitted
+ [local-storage-interceptor]
  (fn [db [_ response]]
-   (js/console.log "apartment saved:" response)
-   (-> db
-       (assoc-in [:apartment :form] nil)
-       (assoc-in [:apartment :add-apartment-dialog-open] false))))
+   (let [apartments (get-in db [:apartment :apartments])
+         apartment (get-in db [:apartment :form])
+         updated (conj apartments apartment)]
+     (js/console.log "Apartment saved:" response)
+     (-> db
+         (assoc-in [:apartment :apartments] updated)
+         (assoc-in [:apartment :form] nil)
+         (assoc-in [:apartment :add-apartment-dialog-open] false)))))
 
 (re-frame/reg-event-fx
  ::apartment-creation-error
