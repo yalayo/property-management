@@ -31,6 +31,7 @@
         poly/flags {:local/root "../../components/flags"}
         poly/property {:local/root "../../components/property"}
         poly/tenant {:local/root "../../components/tenant"}
+        poly/apartment {:local/root "../../components/apartment"}
 		poly/html {:local/root "../../components/html"}
 		poly/web {:local/root "../../components/web"}
         poly/user {:local/root "../../components/user"}
