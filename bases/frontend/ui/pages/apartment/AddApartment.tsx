@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useToast } from "../../hooks/use-toast";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../components/ui/form";
@@ -26,6 +27,8 @@ export default function AddApartment(props) {
 
   const isLoading = props.isLoading;
   const error = "";
+
+  const properties = props.properties;
 
   // Form setup
   const form = useForm<PropertyFormValues>({
@@ -63,7 +66,32 @@ export default function AddApartment(props) {
               )}
             />
 
-            
+            <FormField
+              name="propertyId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Property</FormLabel>
+                  <Select
+                    onValueChange={props.onChangeProperty}
+                    defaultValue={field.value?.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select property" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {properties.map((property) => (
+                        <SelectItem key={property.id} value={property.id.toString()}>
+                          {property.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex justify-end space-x-4 pt-4">
               <Button 
