@@ -12,6 +12,8 @@
 (def new-tenant (r/adapt-react-class new-tenant-js))
 
 (defn tenants-list-component []
+  (re-frame/dispatch [::events/get-tenants])
+
   [tenants-list
    {:id "tenants"
     :tenants @(re-frame/subscribe [::subs/tenants])
