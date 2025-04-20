@@ -80,7 +80,7 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your username" value={props.user} onChange={props.onChangeUser} />
+                        <Input placeholder="Enter your username" defaultValue={props.user} onBlur={props.onChangeUser} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -93,7 +93,7 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" value={props.password} onChange={props.onChangePassword} />
+                        <Input type="password" placeholder="••••••••" defaultValue={props.password} onBlur={props.onChangePassword} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
