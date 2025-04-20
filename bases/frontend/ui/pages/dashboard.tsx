@@ -13,7 +13,7 @@ import DashboardSummary from "../components/dashboard/DashboardSummary";
 
 export default function Dashboard(props) {
   const overviewComponent = React.Children.toArray(props.children).find(
-    child => child.props['id'] === 'overview'
+    child => child.props['id'] === 'dashboard-summary'
   );
 
   const listProperties = React.Children.toArray(props.children).find(
@@ -138,7 +138,7 @@ export default function Dashboard(props) {
             <div className="space-y-6">
               {activeTab === "overview" && (
                 <>
-                  <DashboardSummary />
+                  {overviewComponent}
                   <TenantPayments />
                 </>
               )}

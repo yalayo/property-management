@@ -51,7 +51,7 @@ export default function DashboardSummary(props) {
   let occupiedUnits = 0;
   
   if (properties && tenants) {
-    totalUnits = properties.reduce((sum: number, property: any) => sum + (property.units || 1), 0);
+    totalUnits = properties.reduce((sum: number, property: any) => sum + (parseInt(property.units, 10) || 1), 0);
     occupiedUnits = tenants.filter((tenant: any) => tenant.active).length;
   }
   
