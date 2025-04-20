@@ -32,7 +32,7 @@
    (js/console.log "Tenant saved:" response)
    (-> db
        (assoc-in [:tenant :form] nil)
-       (assoc-in [:tenant ::add-tenant-dialog-open] false))))
+       (assoc-in [:tenant :add-tenant-dialog-open] false))))
 
 (re-frame/reg-event-fx
  ::tenant-creation-error

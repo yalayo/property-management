@@ -32,7 +32,7 @@
    (js/console.log "apartment saved:" response)
    (-> db
        (assoc-in [:apartment :form] nil)
-       (assoc-in [:apartment ::add-apartment-dialog-open] false))))
+       (assoc-in [:apartment :add-apartment-dialog-open] false))))
 
 (re-frame/reg-event-fx
  ::apartment-creation-error
