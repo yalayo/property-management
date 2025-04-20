@@ -25,4 +25,4 @@
     (storage/transact apartment-data "apartments")))
 
 (defn list-apartments []
-  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "apartments"))
+  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :code _]] "apartments"))
