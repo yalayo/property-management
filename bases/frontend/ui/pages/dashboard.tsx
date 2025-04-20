@@ -24,6 +24,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'documents'
   );
 
+  const listTenants = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'tenants'
+  );
+
   const newTenant = React.Children.toArray(props.children).find(
     child => child.props['id'] === 'new-tenant'
   );
@@ -132,7 +136,10 @@ export default function Dashboard(props) {
               )}
 
               {activeTab === "tenants" && (
-                <TenantPayments />
+                <>
+                  {listTenants}
+                  <TenantPayments />
+                </>
               )}
 
               {activeTab === "new-tenant" && (
