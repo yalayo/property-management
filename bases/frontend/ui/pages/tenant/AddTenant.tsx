@@ -44,7 +44,7 @@ export default function AddTenant(props) {
     <Dialog open={true} onOpenChange={props.onChangeAddTenantDialogClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Property</DialogTitle>
+          <DialogTitle>Add New Tenant</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <div className="space-y-4">
