@@ -5,11 +5,10 @@
             [app.html.interface :as html]
             [app.excel.interface :as excel]
             [io.pedestal.http.ring-middlewares :as ring-mw]
-            [app.html.layout :as layout]
             [app.property.list :as properties]
             [app.property.persistance :as persistance]))
 
-(defrecord ProperyComponent [config]
+(defrecord PropertyComponent [config]
   component/Lifecycle
 
   (start [component]
@@ -18,7 +17,7 @@
   (stop [component]))
 
 (defn property-component [config]
-  (map->ProperyComponent config))
+  (map->PropertyComponent config))
 
 (def properties-handler
   {:name ::get
