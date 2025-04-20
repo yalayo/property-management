@@ -11,15 +11,16 @@
 
 (defn property-list-component []
   (re-frame/dispatch [::events/get-properties])
-  
+
   [property-list 
    {:id "properties"
     :properties @(re-frame/subscribe [::subs/properties])
-    :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-propery-dialog-open])
-    :onChangeAddPropertyDialogOpen #(re-frame/dispatch [::events/show-add-property-dialog])}
+    :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-property-dialog-open])
+    :onChangeAddPropertyDialogOpen #(re-frame/dispatch [::events/show-add-property-dialog])
+    :addNewTenant #(re-frame/dispatch [::events/add-tenant])}
    [add-property
     {:id "add-property"
-     :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-propery-dialog-open])
+     :isAddPropertyDialogOpen @(re-frame/subscribe [::subs/add-property-dialog-open])
      :propertyName @(re-frame/subscribe [::subs/form :name])
      :propertyAddress @(re-frame/subscribe [::subs/form :address])
      :propertyCity @(re-frame/subscribe [::subs/form :city])
@@ -35,5 +36,4 @@
      :onChangePropertyUnits #(re-frame/dispatch [::events/update-field :units (-> % .-target .-value)])
      :onChangePropertyPurchasePrice #(re-frame/dispatch [::events/update-field :purchaseprice (-> % .-target .-value)])
      :onChangePropertyCurrentValue #(re-frame/dispatch [::events/update-field :currentvalue (-> % .-target .-value)])
-     :submitProperty #(re-frame/dispatch [::events/save-property])
-     :addNewTenant #(re-frame/dispatch [::events/add-tenant])}]])
+     :submitProperty #(re-frame/dispatch [::events/save-property])}]])

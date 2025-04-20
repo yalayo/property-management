@@ -12,6 +12,6 @@
    (get-in db [:property :form id] "")))
 
 (re-frame/reg-sub
- ::add-propery-dialog-open
+ ::add-property-dialog-open
  (fn [db]
-   (get-in db [:property :add-propery-dialog-open] false)))
+   (get-in db [:property :add-property-dialog-open] false)))

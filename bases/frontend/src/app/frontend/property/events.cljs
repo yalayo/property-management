@@ -66,13 +66,13 @@
  ::show-add-property-dialog
  [local-storage-interceptor]
  (fn [db]
-   (assoc-in db [:property :add-propery-dialog-open] true)))
+   (assoc-in db [:property :add-property-dialog-open] true)))
 
 (re-frame/reg-event-db
  ::close-add-property-dialog
  [local-storage-interceptor]
  (fn [db]
-   (assoc-in db [:property :add-propery-dialog-open] false)))
+   (assoc-in db [:property :add-property-dialog-open] false)))
 
 (re-frame/reg-event-db
  ::add-tenant
