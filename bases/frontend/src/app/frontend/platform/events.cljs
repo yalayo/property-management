@@ -3,7 +3,10 @@
             [cljs.reader]
             [app.frontend.db :as db]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [day8.re-frame.http-fx]))
+            [day8.re-frame.http-fx]
+            [app.frontend.property.events :as property-events]
+            [app.frontend.tenant.events :as tenant-events]
+            [app.frontend.apartment.events :as apartment-events]))
 
 ;; Initializing
 ;; Interceptors
@@ -26,4 +29,7 @@
  ::initialize-db
  [(re-frame/inject-cofx :local-store-db)]
  (fn-traced [{:keys [local-store-db]} _]
-            {:db local-store-db}))
+            {:db local-store-db
+             :dispatch-n [[::property-events/get-properties] 
+                          [::tenant-events/get-tenants] 
+                          [::apartment-events/get-apartments]]}))
