@@ -6,6 +6,7 @@
             [app.frontend.property.views :as property]
             [app.frontend.bank.views :as bank]
             [app.frontend.tenant.views :as tenant]
+            [app.frontend.apartment.views :as apartment]
             ["/pages/dashboard$default" :as dashboard-js]))
 
 (def dashboard (r/adapt-react-class dashboard-js))
@@ -17,4 +18,5 @@
     :submitLogout #(re-frame/dispatch [::events/log-out %])}
    (property/property-list-component)
    (bank/bank-data-upload-component)
-   (tenant/tenants-list-component)])
+   (tenant/tenants-list-component)
+   (apartment/apartments-list-component)])

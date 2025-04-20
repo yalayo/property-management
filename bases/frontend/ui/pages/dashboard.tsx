@@ -20,6 +20,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'properties'
   );
 
+  const listApartments = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'apartments'
+  );
+
   const uploadBankData = React.Children.toArray(props.children).find(
     child => child.props['id'] === 'documents'
   );
@@ -71,6 +75,14 @@ export default function Dashboard(props) {
               >
                 <Home className="mr-3 h-5 w-5" />
                 Properties
+              </Button>
+              <Button
+                variant={activeTab === "apartments" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => props.onChangeActiveTab("apartments")}
+              >
+                <Home className="mr-3 h-5 w-5" />
+                Apartments
               </Button>
               <Button
                 variant={activeTab === "tenants" ? "default" : "ghost"}
@@ -133,6 +145,10 @@ export default function Dashboard(props) {
 
               {activeTab === "properties" && (
                 listProperties
+              )}
+
+              {activeTab === "apartments" && (
+                listApartments
               )}
 
               {activeTab === "tenants" && (
