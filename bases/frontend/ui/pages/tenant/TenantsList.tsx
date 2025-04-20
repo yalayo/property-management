@@ -106,7 +106,7 @@ export default function TenantsList(props) {
                     <div>
                       <h3 className="font-semibold text-lg">{tenant.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{tenant.lastname}</p>
-                      <p className="text-sm text-gray-500">{tenant.email}, {tenant.phone}</p>
+                      <p className="text-sm text-gray-500">{tenant.email} {tenant.phone}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={props.addNewTenant}>
