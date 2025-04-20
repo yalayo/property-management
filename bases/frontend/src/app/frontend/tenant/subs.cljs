@@ -2,16 +2,16 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- ::properties
+ ::tenants
  (fn [db]
-   (get-in db [:property :properties])))
+   (get-in db [:tenant :tenants])))
 
 (re-frame/reg-sub
  ::form
  (fn [db [_ id]]
-   (get-in db [:property :form id] "")))
+   (get-in db [:tenant :form id] "")))
 
 (re-frame/reg-sub
- ::add-propery-dialog-open
+ ::add-tenant-dialog-open
  (fn [db]
-   (get-in db [:property :add-propery-dialog-open] false)))
+   (get-in db [:tenant :add-tenant-dialog-open] false)))

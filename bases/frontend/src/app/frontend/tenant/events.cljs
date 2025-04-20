@@ -12,64 +12,64 @@
  ::update-field
  [local-storage-interceptor]
  (fn [db [_ id val]]
-   (assoc-in db [:property :form id] val)))
+   (assoc-in db [:tenant :form id] val)))
 
 (re-frame/reg-event-fx
- ::save-property
+ ::save-tenant
  (fn [{:keys [db]} _]
    {:http-xhrio {:method          :post
-                 :uri             (str config/api-url "/api/new-property")
-                 :params          (get-in db [:property :form])
+                 :uri             (str config/api-url "/api/new-tenant")
+                 :params          (get-in db [:tenant :form])
                  :format          (ajax-edn/edn-request-format)
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
-                 :on-success      [::property-submitted]
-                 :on-failure      [::property-creation-error]}}))
+                 :on-success      [::tenant-submitted]
+                 :on-failure      [::tenant-creation-error]}}))
 
 (re-frame/reg-event-db
- ::property-submitted
+ ::tenant-submitted
  (fn [db [_ response]]
-   (js/console.log "Property saved:" response)
+   (js/console.log "Tenant saved:" response)
    (-> db
-       (assoc-in [:property :form] nil)
-       (assoc-in [:property ::add-propery-dialog-open] false))))
+       (assoc-in [:tenant :form] nil)
+       (assoc-in [:tenant ::add-tenant-dialog-open] false))))
 
 (re-frame/reg-event-fx
- ::property-creation-error
+ ::tenant-creation-error
  (fn [{:keys [_]} [_ error]]
-   (js/console.error "Failed to submitt property:" error)
+   (js/console.error "Failed to submitt tenant:" error)
    {}))
 
 (re-frame/reg-event-fx
- ::get-properties
+ ::get-tenants
  (fn [{:keys [db]} _]
    {:http-xhrio {:method          :get
-                 :uri             (str config/api-url "/api/properties")
+                 :uri             (str config/api-url "/api/tenants")
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
                  :on-success      [::update-db]
-                 :on-failure      [::get-properties-error]}}))
+                 :on-failure      [::get-tenants-error]}}))
 
 (re-frame/reg-event-db
  ::update-db
  [local-storage-interceptor]
  (fn [db [_ response]]
-   (assoc-in db [:property :properties] response)))
+   (assoc-in db [:tenant :tenants] response)))
 
 (re-frame/reg-event-fx
- ::get-properties-error
+ ::get-tenants-error
  (fn [{:keys [_]} [_ error]]
-   (js/console.error "Failed to get the list of properties:" error)
+   (js/console.error "Failed to get the list of tenants:" error)
    {}))
 
 (re-frame/reg-event-db
- ::show-add-property-dialog
+ ::show-add-tenant-dialog
  [local-storage-interceptor]
  (fn [db]
-   (assoc-in db [:property :add-propery-dialog-open] true)))
+   (assoc-in db [:tenant :add-tenant-dialog-open] true)))
 
 (re-frame/reg-event-db
- ::close-add-property-dialog
+ ::close-add-tenant-dialog
  [local-storage-interceptor]
  (fn [db]
-   (assoc-in db [:property :add-propery-dialog-open] false)))
+   (assoc-in db [:tenant :add-tenant-dialog-open] false)))
