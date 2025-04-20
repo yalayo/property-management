@@ -17,4 +17,4 @@
     :submitLogout #(re-frame/dispatch [::events/log-out %])}
    (property/property-list-component)
    (bank/bank-data-upload-component)
-   (tenant/new-tenant-component)])
+   (tenant/tenants-list-component)])
