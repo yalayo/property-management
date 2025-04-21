@@ -15,3 +15,13 @@
  ::add-apartment-dialog-open
  (fn [db]
    (get-in db [:apartment :add-apartment-dialog-open] false)))
+
+(re-frame/reg-sub
+ ::selected-apartment
+ (fn [db]
+   (some? (get-in db [:apartment :selected-apartment]))))
+
+(re-frame/reg-sub
+ ::selected-tenant
+ (fn [db]
+   (get-in db [:apartment :selected-tenant] "")))

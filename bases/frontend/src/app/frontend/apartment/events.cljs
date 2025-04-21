@@ -78,3 +78,25 @@
  [local-storage-interceptor]
  (fn [db]
    (assoc-in db [:apartment :add-apartment-dialog-open] false)))
+
+(re-frame/reg-event-db
+ ::assign-tenant
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:apartment :selected-apartment] val)))
+
+(re-frame/reg-event-db
+ ::select-tenant
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:apartment :selected-tenant] val)))
+
+(re-frame/reg-event-db
+ ::save-selection
+ #_[local-storage-interceptor]
+ (fn [db]
+   (let [selected-tenant (get-in db [:apartment :selected-tenant])]
+     (println "Save to the db: " selected-tenant)
+     (-> db 
+         (assoc-in [:apartment :selected-apartment] nil)
+         (assoc-in [:apartment :selected-tenant] nil)))))
