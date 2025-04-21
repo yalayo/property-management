@@ -63,8 +63,16 @@
         (throw e)))))
 
 (defn query [query database-name]
-  (d/q {:query query}
-       (d/db (get-connection database-name))))
+  (try 
+    (d/q {:query query}
+       (d/db (get-connection database-name)))
+    (catch java.sql.SQLException e
+      (when (.contains (.getMessage e) "has been closed()")
+        (println "Connection was closed, resetting...")
+        (reset-connection! database-name)
+        (d/q {:query query}
+             (d/db (get-connection database-name)))
+        (throw e)))))
 
 (comment
   "Experiment to transact only new schema"
