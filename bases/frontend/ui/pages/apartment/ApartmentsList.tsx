@@ -93,7 +93,7 @@ export default function ApartmentsList(props) {
                       )}
                     </div>
                     <div className="flex space-x-2">
-                      <Button variant="ghost" size="icon" onClick={props.addNewApartment}>
+                      <Button variant="ghost" size="icon" onClick={() => props.onAssignTenant(apartment.id)}>
                         <Plus className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon">
