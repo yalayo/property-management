@@ -8,6 +8,7 @@
             [app.property.interface :as property]
             [app.tenant.interface :as tenant]
             [app.apartment.interface :as apartment]
+            [app.account.interface :as account]
             [app.bank.interface :as bank]
             [app.html.interface :as html]
             [app.user.interface :as user]
@@ -22,7 +23,7 @@
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
                        :dataSourceProperties {:socketTimeout 30}}
-             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (property/get-routes) (tenant/get-routes) (apartment/get-routes) (bank/get-routes) (survey/get-routes)))
+             :routes {:external (into #{} (concat (user/get-routes) (html/get-routes) (property/get-routes) (tenant/get-routes) (apartment/get-routes) (account/get-routes) (bank/get-routes) (survey/get-routes)))
                       :internal (into #{} (concat (user/get-internal-routes) (flags/get-routes) (property/get-internal-routes) 
                                                   (bank/get-internal-routes)))}})
 
@@ -50,6 +51,7 @@
    :property (property/property-component config)
    :tenant (tenant/tenant-component config)
    :apartment (apartment/apartment-component config)
+   :account (account/account-component config)
    :routes (route/route-component {:config (:routes config)})
    :server (component/using
             (server/server-component {:port 8080 :active-route :external})
