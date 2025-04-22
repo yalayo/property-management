@@ -6,7 +6,8 @@
             [day8.re-frame.http-fx]
             [app.frontend.property.events :as property-events]
             [app.frontend.tenant.events :as tenant-events]
-            [app.frontend.apartment.events :as apartment-events]))
+            [app.frontend.apartment.events :as apartment-events]
+            [app.frontend.account.events :as account-events]))
 
 ;; Initializing
 ;; Interceptors
@@ -32,4 +33,5 @@
             {:db local-store-db
              :dispatch-n [[::property-events/get-properties] 
                           [::tenant-events/get-tenants] 
-                          [::apartment-events/get-apartments]]}))
+                          [::apartment-events/get-apartments]
+                          [::account-events/get-accounts]]}))
