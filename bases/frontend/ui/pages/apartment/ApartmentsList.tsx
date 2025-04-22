@@ -86,7 +86,7 @@ export default function ApartmentsList(props) {
                       {apartment.tenant ? (
                         <>
                           <p className="text-sm text-gray-500 mt-1">Ocupied</p>
-                          <p className="text-sm text-gray-500 mt-1">{apartment.tenant}</p>
+                          <p className="text-sm text-gray-500 mt-1">{apartment.tname}</p>
                         </>
                       ) : (
                         <p className="text-sm text-gray-500 mt-1">Empty</p>  

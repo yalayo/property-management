@@ -9,7 +9,7 @@
      (map (fn [apt]
             (if-let [tenant-id (:tenant apt)]
               (if-let [tenant (some #(when (= (:id %) tenant-id) %) tenants)]
-                (assoc apt :tenant-name (str (:name tenant) " " (:lastname tenant)))
+                (assoc apt :tname (str (:name tenant) " " (:lastname tenant)))
                 apt)
               apt))
           apartments))))
