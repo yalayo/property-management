@@ -86,6 +86,12 @@
    (assoc-in db [:apartment :selected-apartment] val)))
 
 (re-frame/reg-event-db
+ ::cancel
+ [local-storage-interceptor]
+ (fn [db]
+   (assoc-in db [:apartment :selected-apartment] nil)))
+
+(re-frame/reg-event-db
  ::select-tenant
  [local-storage-interceptor]
  (fn [db [_ val]]

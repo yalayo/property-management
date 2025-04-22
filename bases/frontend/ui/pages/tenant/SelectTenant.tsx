@@ -82,13 +82,21 @@ export default function SelectTenant(props) {
         )}
       </CardContent>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t flex gap-2">
         <Button
           variant="outline"
           className="flex items-center justify-center"
           onClick={props.onSaveSelection}
         >
           Continue
+        </Button>
+
+        <Button
+          variant="outline"
+          className="flex items-center justify-center"
+          onClick={props.onCancel}
+        >
+          Cancel
         </Button>
       </div>
     </Card>

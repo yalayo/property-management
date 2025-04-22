@@ -20,6 +20,7 @@
        :tenants @(re-frame/subscribe [::tenant-subs/tenants])
        :selectedTenant @(re-frame/subscribe [::subs/selected-tenant])
        :onSelectTenant #(re-frame/dispatch [::events/select-tenant %])
+       :onCancel #(re-frame/dispatch [::events/cancel])
        :onSaveSelection #(re-frame/dispatch [::events/save-selection])}]
       [apartments-list
        {:id "apartments"
