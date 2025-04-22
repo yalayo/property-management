@@ -6,6 +6,8 @@
             [app.frontend.property.subs :as property-subs]
             [app.frontend.property.views :as property]
             [app.frontend.bank.views :as bank]
+            [app.frontend.account.subs :as account-subs]
+            [app.frontend.account.views :as account]
             [app.frontend.tenant.subs :as tenant-subs]
             [app.frontend.tenant.views :as tenant]
             [app.frontend.apartment.views :as apartment]
@@ -18,7 +20,8 @@
 (defn dashboard-component []
   (let [active-tab @(re-frame/subscribe [::subs/active-tab])
         properties @(re-frame/subscribe [::property-subs/properties])
-        tenants @(re-frame/subscribe [::tenant-subs/tenants])]
+        tenants @(re-frame/subscribe [::tenant-subs/tenants])
+        accounts @(re-frame/subscribe [::account-subs/accounts])]
     [dashboard
      {:activeTab active-tab
       :onChangeActiveTab #(re-frame/dispatch [::events/change-active-tab %])
@@ -26,8 +29,10 @@
      [dashboard-summary 
       {:id "dashboard-summary"
        :properties properties
-       :tenants tenants}]
+       :tenants tenants
+       :accounts accounts}]
      (property/property-list-component)
      (bank/bank-data-upload-component)
      (tenant/tenants-list-component)
+     (account/accounts-list-component)
      (apartment/apartments-component properties)]))

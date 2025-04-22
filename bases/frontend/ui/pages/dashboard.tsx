@@ -32,6 +32,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'tenants'
   );
 
+  const listAccounts = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'accounts'
+  );
+
   const newTenant = React.Children.toArray(props.children).find(
     child => child.props['id'] === 'new-tenant'
   );
@@ -91,6 +95,14 @@ export default function Dashboard(props) {
               >
                 <Users className="mr-3 h-5 w-5" />
                 Tenants
+              </Button>
+              <Button
+                variant={activeTab === "accounts" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => props.onChangeActiveTab("accounts")}
+              >
+                <Users className="mr-3 h-5 w-5" />
+                Accounts
               </Button>
               <Button
                 variant={activeTab === "documents" ? "default" : "ghost"}
@@ -156,6 +168,10 @@ export default function Dashboard(props) {
                   {listTenants}
                   <TenantPayments />
                 </>
+              )}
+
+              {activeTab === "accounts" && (
+                listAccounts
               )}
 
               {activeTab === "new-tenant" && (
