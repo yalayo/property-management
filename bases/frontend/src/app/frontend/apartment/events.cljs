@@ -91,12 +91,20 @@
  (fn [db [_ val]]
    (assoc-in db [:apartment :selected-tenant] val)))
 
-(re-frame/reg-event-db
+(re-frame.core/reg-event-db
  ::save-selection
- #_[local-storage-interceptor]
- (fn [db]
-   (let [selected-tenant (get-in db [:apartment :selected-tenant])]
-     (println "Save to the db: " selected-tenant)
-     (-> db 
+ #_[local-storage-interceptor]  ;; Remove later
+ (fn [db _]
+   (let [selected-tenant   (get-in db [:apartment :selected-tenant])
+         selected-apartment (get-in db [:apartment :selected-apartment])
+         apartments         (get-in db [:apartment :apartments])
+         updated-apartments (mapv (fn [apt]
+                                    (if (= (:id apt) selected-apartment)
+                                      (assoc apt :tenant selected-tenant)
+                                      apt))
+                                  apartments)]
+     (println "Assigning tenant:" selected-tenant "to apartment:" selected-apartment)
+     (-> db
+         (assoc-in [:apartment :apartments] updated-apartments)
          (assoc-in [:apartment :selected-apartment] nil)
          (assoc-in [:apartment :selected-tenant] nil)))))

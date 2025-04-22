@@ -1,10 +1,18 @@
 (ns app.frontend.apartment.subs
   (:require [re-frame.core :as re-frame]))
 
-(re-frame/reg-sub
+(re-frame.core/reg-sub
  ::apartments
  (fn [db]
-   (get-in db [:apartment :apartments])))
+   (let [apartments (get-in db [:apartment :apartments])
+         tenants    (get-in db [:tenant :tenants])]
+     (map (fn [apt]
+            (if-let [tenant-id (:tenant apt)]
+              (if-let [tenant (some #(when (= (:id %) tenant-id) %) tenants)]
+                (assoc apt :tenant-name (str (:name tenant) " " (:lastname tenant)))
+                apt)
+              apt))
+          apartments))))
 
 (re-frame/reg-sub
  ::form
