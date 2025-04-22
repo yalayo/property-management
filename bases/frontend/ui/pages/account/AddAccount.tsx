@@ -54,7 +54,7 @@ export default function AddAccount(props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input  placeholder="John"
+                    <Input  placeholder="Sparkasse"
                             defaultValue={props.name} 
                             onBlur={props.onChangeName} />
                   </FormControl>
@@ -64,44 +64,14 @@ export default function AddAccount(props) {
             />
 
             <FormField
-              name="lastname"
+              name="iban"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>IBAN</FormLabel>
                   <FormControl>
-                    <Input  placeholder="Smith"
-                            defaultValue={props.lastName} 
-                            onBlur={props.onChangeLastName} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input  placeholder="john@mail.com"
-                            defaultValue={props.email} 
-                            onBlur={props.onChangeEmail} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input  placeholder="+49 1234 567890"
-                            defaultValue={props.phone} 
-                            onBlur={props.onChangePhone} />
+                    <Input  placeholder="DE76 1256 7853 5617 2567 8953"
+                            defaultValue={props.iban} 
+                            onBlur={props.onChangeIban} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

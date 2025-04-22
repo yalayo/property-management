@@ -30,28 +30,6 @@ export default function AccountsList(props) {
     child => child.props['id'] === 'add-account'
   );
 
-  /* Add Account mutation
-  const addAccountMutation = useMutation({
-    mutationFn: (data: AccountFormValues) => 
-      apiRequest('POST', '/api/properties', data),
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Account added successfully",
-      });
-      refetch();
-      setIsAddAccountDialogOpen(false);
-      form.reset();
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: `Failed to add Account: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  });*/
-
   if (isLoading) {
     return (
       <Card>
@@ -105,8 +83,7 @@ export default function AccountsList(props) {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold text-lg">{account.name}</h3>
-                      <p className="text-sm text-gray-500 mt-1">{account.lastname}</p>
-                      <p className="text-sm text-gray-500">{account.email} {account.phone}</p>
+                      <p className="text-sm text-gray-500 mt-1">{account.iban}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={props.addNewAccount}>
