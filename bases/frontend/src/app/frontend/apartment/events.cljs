@@ -91,10 +91,24 @@
  (fn [db [_ val]]
    (assoc-in db [:apartment :selected-tenant] val)))
 
-(re-frame.core/reg-event-db
+(re-frame.core/reg-event-fx
  ::save-selection
- #_[local-storage-interceptor]  ;; Remove later
- (fn [db _]
+ (fn [{:keys [db]} _]
+   (let [selected-tenant   (get-in db [:apartment :selected-tenant])
+         selected-apartment (get-in db [:apartment :selected-apartment])]
+     {:http-xhrio {:method          :post
+                   :uri             (str config/api-url "/api/assign-tenant")
+                   :params          {:apartment-id selected-apartment :tenant-id selected-tenant}
+                   :format          (ajax-edn/edn-request-format)
+                   :response-format (ajax-edn/edn-response-format)
+                   :timeout         8000
+                   :on-success      [::tenant-assigned]
+                   :on-failure      [::tenant-assigning-error]}})))
+
+(re-frame/reg-event-db
+ ::tenant-assigned
+ [local-storage-interceptor]
+ (fn [db [_ response]]
    (let [selected-tenant   (get-in db [:apartment :selected-tenant])
          selected-apartment (get-in db [:apartment :selected-apartment])
          apartments         (get-in db [:apartment :apartments])
@@ -103,8 +117,13 @@
                                       (assoc apt :tenant selected-tenant)
                                       apt))
                                   apartments)]
-     (println "Assigning tenant:" selected-tenant "to apartment:" selected-apartment)
      (-> db
          (assoc-in [:apartment :apartments] updated-apartments)
          (assoc-in [:apartment :selected-apartment] nil)
          (assoc-in [:apartment :selected-tenant] nil)))))
+
+(re-frame/reg-event-fx
+ ::tenant-assigning-error
+ (fn [{:keys [_]} [_ error]]
+   (js/console.error "Failed to assign tenant:" error)
+   {}))
