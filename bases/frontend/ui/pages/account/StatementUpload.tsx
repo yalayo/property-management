@@ -48,6 +48,12 @@ export default function StatementUpload(props) {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+
+  const months = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
   
   const data = null;
   const files = null;
@@ -390,7 +396,7 @@ export default function StatementUpload(props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bank Statement Processor</CardTitle>
+        <CardTitle>Account: {props.selectedAccount}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
@@ -398,6 +404,26 @@ export default function StatementUpload(props) {
           <p className="text-sm text-blue-700 mt-1">
             Upload your bank statements in PDF format to have them automatically processed and later imported into the system.
           </p>
+        </div>
+
+        <div className="mb-4">
+          <h4 className="font-medium mb-2">Select Month</h4>
+          <div className="flex flex-wrap gap-2">
+            {months.map((month) => (
+              <Button
+                key={month}
+                type="button"
+                variant={selectedMonth === month ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedMonth(month)}
+              >
+                {month}
+              </Button>
+            ))}
+          </div>
+          {selectedMonth && (
+            <p className="text-sm text-gray-600 mt-2">Selected month: <strong>{selectedMonth}</strong></p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
