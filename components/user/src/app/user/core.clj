@@ -24,7 +24,7 @@
    If status is false and email is registered the message is about email\n
    If status is false and password do not mathc but email isn't registered, the message is about password"
   [data]
-  (let [result {:status true :msg "Ok"} db-email (db/get-account (:email data))]
+  (let [result {:status true :msg "Ok"} db-email (persistance/get-account (:email data))]
    (if (and (= (:psw data) (:pswc data)) (= db-email nil))
      result
      (if (not= db-email nil)
