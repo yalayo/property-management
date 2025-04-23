@@ -78,7 +78,7 @@ export default function AccountsList(props) {
         {accounts && accounts.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {accounts.map((account: any) => (
-              <Card key={account.id} className="overflow-hidden">
+              <Card key={account.id} onClick={() => props.onSelectAccount(account.id)} className="overflow-hidden cursor-pointer">
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
