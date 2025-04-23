@@ -15,3 +15,18 @@
  ::add-account-dialog-open
  (fn [db]
    (get-in db [:account :add-account-dialog-open] false)))
+
+(re-frame/reg-sub
+ ::selected-account
+ (fn [db]
+   (some? (get-in db [:account :selected-account]))))
+
+(re-frame/reg-sub
+ ::is-loading
+ (fn [db]
+   (get-in db [:account :data :is-loading] false)))
+
+(re-frame/reg-sub
+ ::transactions
+ (fn [db]
+   (get-in db [:account :transactions])))

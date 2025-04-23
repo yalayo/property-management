@@ -78,3 +78,44 @@
  [local-storage-interceptor]
  (fn [db]
    (assoc-in db [:account :add-account-dialog-open] false)))
+
+(re-frame/reg-event-db
+ ::cancel
+ [local-storage-interceptor]
+ (fn [db]
+   (assoc-in db [:account :selected-account] nil)))
+
+(re-frame/reg-event-db
+ ::select-account
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:account :selected-account] val)))
+
+(re-frame/reg-event-fx
+ ::upload-data
+ (fn [db [_ file]]
+   {:http-xhrio {:method          :post
+                 :uri             (str config/api-url "/api/upload-transactions")
+                 :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
+                 :body             (let [form-data (js/FormData.)]
+                                     (.append form-data "file" file)
+                                     form-data)
+                 :response-format (ajax-edn/edn-response-format)
+                 :timeout         8000
+                 :on-success      [::upload-success]
+                 :on-failure      [::upload-failure]}}))
+
+(re-frame/reg-event-db
+ ::upload-success
+ (fn [db [_ response]]
+   (js/console.log "Transactions:" response)
+   (-> db
+       (assoc-in [:account :transactions] response)
+       (assoc-in [:account :data :is-loading] false))))
+
+(re-frame/reg-event-fx
+ ::upload-failure
+ (fn [{:keys [_]} [_ {:keys [status status-text response]}]]
+   (js/console.error (str "Upload failed! HTTP status: " status " " status-text))
+   (js/console.log "Backend responded with:" (clj->js response))
+   {}))
