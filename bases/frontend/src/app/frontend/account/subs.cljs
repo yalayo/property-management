@@ -30,3 +30,10 @@
  ::transactions
  (fn [db]
    (get-in db [:account :transactions])))
+
+(re-frame/reg-sub
+ ::selected-account
+ (fn [db]
+   (let [selected-id (get-in db [:account :selected-account])
+         accounts     (get-in db [:account :accounts])]
+     (some #(when (= (:id %) selected-id) (:name %)) accounts))))

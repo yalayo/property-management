@@ -18,6 +18,7 @@
        {:id "accounts"
         :isLoading @(re-frame/subscribe [::subs/is-loading])
         :transactions @(re-frame/subscribe [::subs/transactions])
+        :selectedAccount @(re-frame/subscribe [::subs/selected-account])
         :onCancel #(re-frame/dispatch [::events/cancel])
         :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])}]
       [accounts-list
