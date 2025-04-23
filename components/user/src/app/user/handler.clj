@@ -13,12 +13,8 @@
 (def post-sign-up
   {:name ::post
    :enter (fn [context]
-            (let [params (-> context :request :params)
-                  {:keys [email password password-confirmation]} params
-                  verify (core/verify-password-and-email {:psw password :pswc password-confirmation :email email})]
-              (when (= (:status verify) true)
-                (db/create-account email password)
-                (assoc context :response {:status 200}))))})
+            (let [params (-> context :request :params)]
+              (assoc context :response {:status 200 :body (core/create-user params)})))})
 
 (def post-change-password
   {:name ::post

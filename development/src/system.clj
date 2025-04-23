@@ -47,6 +47,7 @@
 (defn create-system [config]
   (component/system-map
    :datasource (storage/datasource-component config)
+   :user (user/user-component config)
    :survey (survey/survey-component config)
    :property (property/property-component config)
    :tenant (tenant/tenant-component config)

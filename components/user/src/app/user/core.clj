@@ -1,8 +1,21 @@
 (ns app.user.core
-  (:require [buddy.hashers :as bh]
+  (:require [com.stuartsierra.component :as component]
+            [app.user.persistance :as persistance]
+            [buddy.hashers :as bh]
             [buddy.sign.jwt :as jwt]
             [clojure.string :as string]
             [app.user.database :as db]))
+
+(defrecord UserComponent [config]
+  component/Lifecycle
+
+  (start [component]
+    (persistance/transact-schema))
+
+  (stop [component]))
+
+(defn user-component [config]
+  (map->UserComponent config))
 
 (defn verify-password-and-email  
   "Verify the matching user password and new password, also check if email is registered.\n
@@ -18,13 +31,25 @@
        (assoc result :status false :msg "The email is already registered in the system")
        (assoc result :status false :msg "Passwords do not match")))))
 
-(defn verifyPassw [data]
-  (let [result {:status true :msg "Ok"} db-email (db/get-account (:email data))]
-    (if (and (bh/check (:psw data) (:password db-email)) db-email)
-      result
-        (assoc result :status false :msg "Wrong email or password"))))
+(defn create-user [data]
+  (let [{:keys [name email password password-confirmation]} data
+        verify (verify-password-and-email {:psw password :pswc password-confirmation :email email})]
+    (when (:status verify)
+     (persistance/create-user {:name name :email email :password (bh/derive password) :created (java.util.Date.)}))))
 
-(def secret "your-super-secret-key")  ;; Use an env var!
+(defn create-normal-user [email password]
+  (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.)}))
+
+(defn create-admin-user [email password]
+  (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.) :admin true}))
+
+(defn create-admin-test-user [email password]
+  (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.) :test true :admin true}))
+
+(defn create-test-user [email password]
+  (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.) :test true}))
+
+(def secret (or (System/getenv "SESSION_SECRET") "your-super-secret-key"))
 
 ;; New way of auth/authz
 (defn wrap-jwt-auth [handler]
@@ -41,11 +66,10 @@
 (defn sign-in [context]
   (let [params (-> context :request :edn-params)
         {:keys [user password]} params
-        account (db/get-account user)]
+        account (persistance/get-account user)]
     (if (and account (bh/verify password (:password account)))
       (let [claims {:email user
-                    :role  (:role account)
-                    :exp   (+ (quot (System/currentTimeMillis) 1000) 3600)}  ;; Token expires in 1 hour
+                    :exp   (+ (quot (System/currentTimeMillis) 1000) 86400)}  ;; Token expires in 24 hour
             token  (jwt/sign claims secret)]
         (assoc context :response {:status 200
                                   :headers {"Content-Type" "application/json"}
@@ -53,8 +77,9 @@
       (assoc context :response
              {:status 401
               :headers {"Content-Type" "application/json"}
-              :body {:error "Invalid email or password"}})
-      #_(assoc context :response {:status 200
-                                :headers {"HX-Location" "/upload-excel"}
-                                :session (select-keys (into {} account) [:email :created-at])})
-      #_(assoc context :response (-> (sign-in-form {:error "Passwords are not matching" :email email}) (ok))))))
+              :body {:error "Invalid email or password"}}))))
+
+(comment
+  "Create normal user"
+  (create-normal-user "prueba@mail.com" "password")
+  )
