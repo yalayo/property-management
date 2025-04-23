@@ -14,6 +14,7 @@ services:
       - 9669:9669
     environment:
       - ENVIRONMENT=prod
+      - SESSION_SECRET=${PM_SESSION_SECRET}
       - DB_HOST=${DB_HOST}
       - DB_PASSWORD=${DB_PASSWORD}
       - BOT_TOKEN=${BOT_TOKEN}
