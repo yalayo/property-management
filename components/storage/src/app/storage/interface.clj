@@ -13,3 +13,6 @@
 
 (defn query [query database-name]
   (datahike/query query database-name))
+
+(defn query-with-parameter [query database-name value]
+  (datahike/query-with-parameter query database-name value))
