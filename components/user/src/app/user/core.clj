@@ -32,10 +32,10 @@
        (assoc result :status false :msg "Passwords do not match")))))
 
 (defn create-user [data]
-  (let [{:keys [name email password password-confirmation]} data
+  (let [{:keys [email password password-confirmation]} data
         verify (verify-password-and-email {:psw password :pswc password-confirmation :email email})]
     (when (:status verify)
-     (persistance/create-user {:name name :email email :password (bh/derive password) :created (java.util.Date.)}))))
+     (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.)}))))
 
 (defn create-normal-user [email password]
   (persistance/create-user {:email email :password (bh/derive password) :created (java.util.Date.)}))
