@@ -49,6 +49,7 @@ export default function StatementUpload(props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [transactionTenants, setTransactionTenants] = useState<Record<number, number | null>>({});
 
   const months = [
     "January", "February", "March", "April", "May", "June", 
@@ -59,6 +60,7 @@ export default function StatementUpload(props) {
   const files = null;
   const isLoading = props.isLoading;
   const transactions = props.transactions;
+  const tenants = props.tenants;
 
   const fileInputRef = useRef(null);
 
@@ -66,6 +68,13 @@ export default function StatementUpload(props) {
     e.preventDefault(); // prevent form submission if button is in a form
     fileInputRef.current?.click();
   };
+
+  const handleTenantChange = (transactionIndex: number, tenantId: number) => {
+    setTransactionTenants(prev => ({
+      ...prev,
+      [transactionIndex]: tenantId
+    }));
+  };  
 
   // Fetch previously uploaded files
   /*const { data: files, isLoading } = useQuery({
@@ -479,6 +488,18 @@ export default function StatementUpload(props) {
                         Date {new Date(element.date).toLocaleDateString()}
                       </p>
                     </div>
+
+                    <td className="px-4 py-2">
+                      <select
+                        className="border border-gray-300 rounded-md text-sm"
+                      >
+                        <option value="">Select Tenant</option>
+                        {tenants.map(tenant => (
+                          <option key={tenant.id} value={tenant.id}>{tenant.name}</option>
+                        ))}
+                      </select>
+                    </td>
+
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button 
@@ -487,7 +508,7 @@ export default function StatementUpload(props) {
                           className="ml-2"
                           onClick={() => setSelectedFileData(element.id)}
                         >
-                          <Eye className="h-4 w-4 mr-1" /> Assign
+                          Assign
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">

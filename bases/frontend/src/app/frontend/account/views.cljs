@@ -3,6 +3,7 @@
             [re-frame.core :as re-frame]
             [app.frontend.account.subs :as subs]
             [app.frontend.account.events :as events]
+            [app.frontend.tenant.subs :as tenant-subs]
             ["/pages/account/AccountsList$default" :as accounts-list-js]
             ["/pages/account/AddAccount$default" :as new-account-js]
             ["/pages/account/StatementUpload$default" :as upload-js]))
@@ -18,6 +19,7 @@
        {:id "accounts"
         :isLoading @(re-frame/subscribe [::subs/is-loading])
         :transactions @(re-frame/subscribe [::subs/transactions])
+        :tenants @(re-frame/subscribe [::tenant-subs/tenants])
         :selectedAccount @(re-frame/subscribe [::subs/selected-account])
         :onCancel #(re-frame/dispatch [::events/cancel])
         :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])}]
