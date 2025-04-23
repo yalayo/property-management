@@ -13,8 +13,9 @@
 (def post-sign-up
   {:name ::post
    :enter (fn [context]
-            (let [params (-> context :request :params)]
-              (assoc context :response {:status 200 :body (core/create-user params)})))})
+            (let [params (-> context :request :edn-params)]
+              (core/create-user params)
+              (assoc context :response {:status 200})))})
 
 (def post-change-password
   {:name ::post
