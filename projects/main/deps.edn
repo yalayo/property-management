@@ -41,7 +41,8 @@
         poly/survey {:local/root "../../components/survey"}
         poly/storage {:local/root "../../components/storage"}
         poly/route {:local/root "../../components/route"}
-        poly/bank {:local/root "../../components/bank"}}
+        poly/bank {:local/root "../../components/bank"}
+        poly/operations {:local/root "../../components/operations"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {}}
            :jib {:deps {io.github.atomisthq/jibbit {:git/url "https://github.com/yalayo/jibbit.git"
