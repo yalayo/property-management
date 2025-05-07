@@ -1,17 +1,28 @@
 (ns app.operations.persistance
   (:require [app.storage.interface :as storage]))
 
-(def schema [{:db/ident :id
+(def schema [{:db/ident :electricity}
+             {:db/ident :accountability}
+             {:db/ident :property-tax}
+             {:db/ident :garbage}
+             {:db/ident :rain-water}
+             {:db/ident :waste-water}
+             {:db/ident :drinking-water}
+             {:db/ident :expense/id
               :db/valueType :db.type/string
               :db/unique :db.unique/identity
               :db/cardinality :db.cardinality/one}
-             {:db/ident :name
-              :db/valueType :db.type/string
-              :db/unique :db.unique/identity
+             {:db/ident :expense/category
+              :db/valueType :db.type/ref
               :db/cardinality :db.cardinality/one}
-             {:db/ident :iban
+             {:db/ident :expense/year
               :db/valueType :db.type/string
-              :db/unique :db.unique/identity
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :expense/property
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :expense/amount
+              :db/valueType :db.type/number
               :db/cardinality :db.cardinality/one}])
 
 (defn transact-schema []
