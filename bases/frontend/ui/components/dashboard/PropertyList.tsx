@@ -125,7 +125,7 @@ export default function PropertyList(props) {
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-lg">{property.name}</h3>
+                      <h3 className="font-semibold text-lg cursor-pointer" onClick={() => props.onManageProperty(property.id)}>{property.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{property.address}</p>
                       <p className="text-sm text-gray-500">{property.city}, {property.postalcode}</p>
                     </div>

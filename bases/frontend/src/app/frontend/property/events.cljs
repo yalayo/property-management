@@ -84,3 +84,15 @@
  [local-storage-interceptor]
  (fn [db]
    (assoc-in db [:dashboard :active-tab] "new-tenant")))
+
+(re-frame/reg-event-db
+ ::manage-property
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:property :selected-property] val)))
+
+(re-frame/reg-event-db
+ ::cancel
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:property :selected-property] nil)))

@@ -15,3 +15,8 @@
  ::add-property-dialog-open
  (fn [db]
    (get-in db [:property :add-property-dialog-open] false)))
+
+(re-frame/reg-sub
+ ::selected-property
+ (fn [db]
+   (some? (get-in db [:property :selected-property]))))
