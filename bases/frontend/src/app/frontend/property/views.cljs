@@ -16,6 +16,7 @@
     (if select-property?
       [manage-property
        {:id "properties"
+        :selectedProperty @(re-frame/subscribe [::subs/selected-property])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"

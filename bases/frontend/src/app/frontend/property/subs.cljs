@@ -20,3 +20,10 @@
  ::selected-property
  (fn [db]
    (some? (get-in db [:property :selected-property]))))
+
+(re-frame/reg-sub
+ ::selected-property
+ (fn [db]
+   (let [selected-id (get-in db [:property :selected-property])
+         properties     (get-in db [:property :properties])]
+     (some #(when (= (:id %) selected-id) (:name %)) properties))))

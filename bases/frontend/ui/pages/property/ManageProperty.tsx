@@ -391,52 +391,11 @@ export default function ManageProperty(props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bank Statement Processor</CardTitle>
+        <CardTitle>Property - {props.selectedProperty}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-          <h4 className="font-medium text-blue-800">New Feature: Bank Statement Processing</h4>
-          <p className="text-sm text-blue-700 mt-1">
-            Upload your bank statements in PDF format to have them automatically processed and later imported into the system.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Input
-              id="file-upload"
-              type="file"
-              className="hidden"
-              accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.txt"
-              onChange={props.onUploadData}
-              ref={fileInputRef}
-              disabled={false}
-            />
-            
-            <Button 
-              type="button" 
-              onClick={handleButtonClick}
-              variant="outline" 
-              size="sm"
-            >
-              {false ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <UploadCloud className="mr-2 h-4 w-4" />
-                  Upload Document
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-
-        {/* Recent uploads */}
         <div className="mt-8">
-          <h3 className="text-lg font-medium mb-4">Detected transactions</h3>
+          <h3 className="text-lg font-medium mb-4">Manage property data</h3>
           
           {isLoading ? (
             <div className="flex justify-center p-4">
@@ -483,10 +442,7 @@ export default function ManageProperty(props) {
           ) : (
             <div className="text-center py-8 text-gray-500 border rounded-md">
               <FileText className="h-12 w-12 mx-auto mb-3 text-gray-400" />
-              <p className="font-medium">No documents uploaded yet</p>
-              <p className="text-sm mt-2 max-w-md mx-auto">
-                Upload your documents to automatically extract important information using Google Gemini AI
-              </p>
+              <p className="font-medium">No information registered yet</p>
             </div>
           )}
         </div>
