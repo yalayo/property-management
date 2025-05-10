@@ -1,6 +1,7 @@
 import React from "react";
 import { useRef } from 'react';
 import { useState } from "react";
+import { Link } from 'wouter';
 import { queryClient } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
@@ -59,7 +60,7 @@ export default function ManageProperty(props) {
 
   const handleButtonClick = (e) => {
     e.preventDefault(); // prevent form submission if button is in a form
-    fileInputRef.current?.click();
+    console.log("Test")
   };
 
   // Fetch previously uploaded files
@@ -397,54 +398,19 @@ export default function ManageProperty(props) {
         <div className="mt-8">
           <h3 className="text-lg font-medium mb-4">Manage property data</h3>
           
-          {isLoading ? (
-            <div className="flex justify-center p-4">
-              <Loader2 className="h-6 w-6 animate-spin text-primary-600" />
-            </div>
-          ) : transactions && transactions.length > 0 ? (
-            <div className="space-y-3">
-              {transactions.map((element) => (
-                <div key={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center">
-                    <div className="flex-1">
-                      <p className="font-medium">{element.amount.toFixed(2)} €</p>
-                      <p className="font-medium">{element.text}</p>
-                      <p className="text-xs text-gray-500">
-                        Date {new Date(element.date).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="ml-2"
-                          onClick={() => setSelectedFileData(element.id)}
-                        >
-                          <Eye className="h-4 w-4 mr-1" /> Assign
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center">
-                            {element.name}
-                          </DialogTitle>
-                          <DialogDescription>
-                            Uploaded on {new Date(element.date).toLocaleDateString()} at {new Date(element.date).toLocaleTimeString()}
-                          </DialogDescription>
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+          <div className="space-y-3">
+            <div key="electricity" className="transition-colors">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <p className="font-medium">Electricity</p>
                 </div>
-              ))}
+
+                <Button onClick={handleButtonClick}>
+                  Add
+                </Button>
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500 border rounded-md">
-              <FileText className="h-12 w-12 mx-auto mb-3 text-gray-400" />
-              <p className="font-medium">No information registered yet</p>
-            </div>
-          )}
+          </div>
         </div>
       </CardContent>
 
