@@ -407,6 +407,7 @@ export default function ManageProperty(props) {
 
                 {props.editelectricity ? (
                   <Input
+                    className="w-[100px]"
                     placeholder="Used electricity"
                     defaultValue={props.electricity}
                     onBlur={props.onChangePropertyElectricity}
