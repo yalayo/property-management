@@ -400,7 +400,7 @@ export default function ManageProperty(props) {
           
           <div className="space-y-3">
             <div key="electricity" className="transition-colors">
-              <div className="flex items-center">
+              <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
                   <p className="font-medium">Electricity</p>
                 </div>
@@ -414,9 +414,9 @@ export default function ManageProperty(props) {
                 ) : (
                   <a
                     onClick={props.onEditelectricity}
-                    className="text-blue-600 underline cursor-pointer ml-2"
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap"
                   >
-                    {props.electricity ? `EUR ${props.electricity}` : 'Add'}
+                    {props.electricity ? `€ ${props.electricity}` : 'Add'}
                   </a>
                 )}
                 
