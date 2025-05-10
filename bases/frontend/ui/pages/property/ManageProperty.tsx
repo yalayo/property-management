@@ -406,17 +406,18 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editelectricity ? (
-                  <Input  placeholder="Used electricity"
-                          defaultValue={props.electricity} 
-                          onBlur={props.onChangePropertyElectricity} />    
-                ) : props.electricity ? (
-                  <Button onClick={props.onEditelectricity}>
-                    EUR {props.electricity}
-                  </Button>
+                  <Input
+                    placeholder="Used electricity"
+                    defaultValue={props.electricity}
+                    onBlur={props.onChangePropertyElectricity}
+                  />
                 ) : (
-                  <Button onClick={props.onEditelectricity}>
-                    Add
-                  </Button>
+                  <a
+                    onClick={props.onEditelectricity}
+                    className="text-blue-600 underline cursor-pointer ml-2"
+                  >
+                    {props.electricity ? `EUR ${props.electricity}` : 'Add'}
+                  </a>
                 )}
                 
               </div>
