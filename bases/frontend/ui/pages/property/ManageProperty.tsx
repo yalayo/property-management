@@ -401,13 +401,24 @@ export default function ManageProperty(props) {
           <div className="space-y-3">
             <div key="electricity" className="transition-colors">
               <div className="flex items-center">
-                <div className="flex-1">
+                <div className="flex w-full">
                   <p className="font-medium">Electricity</p>
                 </div>
 
-                <Button onClick={handleButtonClick}>
-                  Add
-                </Button>
+                {props.editelectricity ? (
+                  <Input  placeholder="Used electricity"
+                          defaultValue={props.electricity} 
+                          onBlur={props.onChangePropertyElectricity} />    
+                ) : props.electricity ? (
+                  <Button onClick={props.onEditelectricity}>
+                    EUR {props.electricity}
+                  </Button>
+                ) : (
+                  <Button onClick={props.onEditelectricity}>
+                    Add
+                  </Button>
+                )}
+                
               </div>
             </div>
           </div>

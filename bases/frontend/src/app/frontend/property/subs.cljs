@@ -27,3 +27,13 @@
    (let [selected-id (get-in db [:property :selected-property])
          properties     (get-in db [:property :properties])]
      (some #(when (= (:id %) selected-id) (:name %)) properties))))
+
+(re-frame/reg-sub
+ ::edit-field
+ (fn [db [_ id]]
+   (get-in db [:property id :edit] false)))
+
+(re-frame/reg-sub
+ ::property-electricity
+ (fn [db]
+   (get-in db [:property :electricity :value])))

@@ -14,6 +14,20 @@
  (fn [db [_ id val]]
    (assoc-in db [:property :form id] val)))
 
+(re-frame/reg-event-db
+ ::update-data
+ [local-storage-interceptor]
+ (fn [db [_ id val]]
+   (-> db
+       (assoc-in [:property id :value] val)
+       (assoc-in [:property id :edit] false))))
+
+(re-frame/reg-event-db
+ ::edit-field
+ [local-storage-interceptor]
+ (fn [db [_ id]]
+   (assoc-in db [:property id :edit] true)))
+
 (re-frame/reg-event-fx
  ::save-property
  (fn [{:keys [db]} _]

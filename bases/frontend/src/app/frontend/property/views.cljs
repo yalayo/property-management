@@ -17,6 +17,10 @@
       [manage-property
        {:id "properties"
         :selectedProperty @(re-frame/subscribe [::subs/selected-property])
+        :electricity @(re-frame/subscribe [::subs/property-electricity])
+        :editelectricity @(re-frame/subscribe [::subs/edit-field :electricity])
+        :onEditelectricity #(re-frame/dispatch [::events/edit-field :electricity])
+        :onChangePropertyElectricity #(re-frame/dispatch [::events/update-data :electricity (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"
