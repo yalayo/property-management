@@ -57,3 +57,13 @@
  ::property-rainwater
  (fn [db]
    (get-in db [:property :rainwater :value])))
+
+(re-frame/reg-sub
+ ::property-wastewater
+ (fn [db]
+   (get-in db [:property :wastewater :value])))
+
+(re-frame/reg-sub
+ ::property-drinkingwater
+ (fn [db]
+   (get-in db [:property :drinkingwater :value])))

@@ -443,8 +443,7 @@ export default function ManageProperty(props) {
                   >
                     {props.accountability ? `€ ${props.accountability}` : 'Add'}
                   </a>
-                )}
-                
+                )}  
               </div>
             </div>
 
@@ -515,6 +514,54 @@ export default function ManageProperty(props) {
                     className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
                     {props.rainwater ? `€ ${props.rainwater}` : 'Add'}
+                  </a>
+                )}  
+              </div>
+            </div>
+
+            <div key="wastewater" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Schmutzwasser</p>
+                </div>
+
+                {props.editWastewater ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Insurance paid"
+                    defaultValue={props.wastewater}
+                    onBlur={props.onChangePropertyWastewater}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditWastewater}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.wastewater ? `€ ${props.wastewater}` : 'Add'}
+                  </a>
+                )}  
+              </div>
+            </div>
+
+            <div key="drinkingwater" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Trinkwasser</p>
+                </div>
+
+                {props.editDrinkingwater ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Insurance paid"
+                    defaultValue={props.drinkingwater}
+                    onBlur={props.onChangePropertyDrinkingwater}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditDrinkingwater}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.drinkingwater ? `€ ${props.drinkingwater}` : 'Add'}
                   </a>
                 )}  
               </div>

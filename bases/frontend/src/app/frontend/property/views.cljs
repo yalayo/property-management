@@ -37,6 +37,14 @@
         :editRainwater @(re-frame/subscribe [::subs/edit-field :rainwater])
         :onEditRainwater #(re-frame/dispatch [::events/edit-field :rainwater])
         :onChangePropertyRainwater #(re-frame/dispatch [::events/update-data :rainwater (-> % .-target .-value)])
+        :wastewater @(re-frame/subscribe [::subs/property-wastewater])
+        :editWastewater @(re-frame/subscribe [::subs/edit-field :wastewater])
+        :onEditWastewater #(re-frame/dispatch [::events/edit-field :wastewater])
+        :onChangePropertyWastewater #(re-frame/dispatch [::events/update-data :wastewater (-> % .-target .-value)])
+        :drinkingwater @(re-frame/subscribe [::subs/property-drinkingwater])
+        :editDrinkingwater @(re-frame/subscribe [::subs/edit-field :drinkingwater])
+        :onEditDrinkingwater #(re-frame/dispatch [::events/edit-field :drinkingwater])
+        :onChangePropertyDrinkingwater #(re-frame/dispatch [::events/update-data :drinkingwater (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"
