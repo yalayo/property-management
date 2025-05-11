@@ -33,6 +33,10 @@
         :editGarbage @(re-frame/subscribe [::subs/edit-field :garbage])
         :onEditGarbage #(re-frame/dispatch [::events/edit-field :garbage])
         :onChangePropertyGarbage #(re-frame/dispatch [::events/update-data :garbage (-> % .-target .-value)])
+        :rainwater @(re-frame/subscribe [::subs/property-rainwater])
+        :editRainwater @(re-frame/subscribe [::subs/edit-field :rainwater])
+        :onEditRainwater #(re-frame/dispatch [::events/edit-field :rainwater])
+        :onChangePropertyRainwater #(re-frame/dispatch [::events/update-data :rainwater (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"

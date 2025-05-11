@@ -419,8 +419,7 @@ export default function ManageProperty(props) {
                   >
                     {props.electricity ? `€ ${props.electricity}` : 'Add'}
                   </a>
-                )}
-                
+                )}  
               </div>
             </div>
 
@@ -492,6 +491,30 @@ export default function ManageProperty(props) {
                     className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
                     {props.garbage ? `€ ${props.garbage}` : 'Add'}
+                  </a>
+                )}  
+              </div>
+            </div>
+
+            <div key="rain-water" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Niederschlagwasser</p>
+                </div>
+
+                {props.editRainwater ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Rain water paid"
+                    defaultValue={props.rainwater}
+                    onBlur={props.onChangePropertyRainwater}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditRainwater}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.rainwater ? `€ ${props.rainwater}` : 'Add'}
                   </a>
                 )}  
               </div>

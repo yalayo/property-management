@@ -52,3 +52,8 @@
  ::property-garbage
  (fn [db]
    (get-in db [:property :garbage :value])))
+
+(re-frame/reg-sub
+ ::property-rainwater
+ (fn [db]
+   (get-in db [:property :rainwater :value])))
