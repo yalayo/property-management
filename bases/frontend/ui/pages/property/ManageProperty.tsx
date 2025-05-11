@@ -448,6 +448,31 @@ export default function ManageProperty(props) {
                 
               </div>
             </div>
+
+            <div key="property-tax" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Grundsteuer</p>
+                </div>
+
+                {props.editTax ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Insurance paid"
+                    defaultValue={props.tax}
+                    onBlur={props.onChangePropertyTax}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditTax}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.tax ? `€ ${props.tax}` : 'Add'}
+                  </a>
+                )}
+                
+              </div>
+            </div>
           </div>
         </div>
       </CardContent>

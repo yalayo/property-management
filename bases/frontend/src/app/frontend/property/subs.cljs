@@ -42,3 +42,8 @@
  ::property-accountability
  (fn [db]
    (get-in db [:property :accountability :value])))
+
+(re-frame/reg-sub
+ ::property-tax
+ (fn [db]
+   (get-in db [:property :tax :value])))

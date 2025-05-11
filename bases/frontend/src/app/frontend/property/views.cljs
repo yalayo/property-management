@@ -25,6 +25,10 @@
         :editAccountability @(re-frame/subscribe [::subs/edit-field :accountability])
         :onEditAccountability #(re-frame/dispatch [::events/edit-field :accountability])
         :onChangePropertyAccountability #(re-frame/dispatch [::events/update-data :accountability (-> % .-target .-value)])
+        :tax @(re-frame/subscribe [::subs/property-tax])
+        :editTax @(re-frame/subscribe [::subs/edit-field :tax])
+        :onEditTax #(re-frame/dispatch [::events/edit-field :tax])
+        :onChangePropertyTax #(re-frame/dispatch [::events/update-data :tax (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"
