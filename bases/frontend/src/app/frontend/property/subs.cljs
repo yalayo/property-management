@@ -37,3 +37,8 @@
  ::property-electricity
  (fn [db]
    (get-in db [:property :electricity :value])))
+
+(re-frame/reg-sub
+ ::property-accountability
+ (fn [db]
+   (get-in db [:property :accountability :value])))

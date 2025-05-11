@@ -18,9 +18,13 @@
        {:id "properties"
         :selectedProperty @(re-frame/subscribe [::subs/selected-property])
         :electricity @(re-frame/subscribe [::subs/property-electricity])
-        :editelectricity @(re-frame/subscribe [::subs/edit-field :electricity])
-        :onEditelectricity #(re-frame/dispatch [::events/edit-field :electricity])
+        :editElectricity @(re-frame/subscribe [::subs/edit-field :electricity])
+        :onEditElectricity #(re-frame/dispatch [::events/edit-field :electricity])
         :onChangePropertyElectricity #(re-frame/dispatch [::events/update-data :electricity (-> % .-target .-value)])
+        :accountability @(re-frame/subscribe [::subs/property-accountability])
+        :editAccountability @(re-frame/subscribe [::subs/edit-field :accountability])
+        :onEditAccountability #(re-frame/dispatch [::events/edit-field :accountability])
+        :onChangePropertyAccountability #(re-frame/dispatch [::events/update-data :accountability (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"

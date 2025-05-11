@@ -402,10 +402,10 @@ export default function ManageProperty(props) {
             <div key="electricity" className="transition-colors hover:bg-gray-100 rounded p-2">
               <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
-                  <p className="font-medium">Electricity</p>
+                  <p className="font-medium">Allgemeinstrom</p>
                 </div>
 
-                {props.editelectricity ? (
+                {props.editElectricity ? (
                   <Input
                     className="w-[100px] h-8 text-right text-sm"
                     placeholder="Used electricity"
@@ -414,10 +414,35 @@ export default function ManageProperty(props) {
                   />
                 ) : (
                   <a
-                    onClick={props.onEditelectricity}
+                    onClick={props.onEditElectricity}
                     className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
                     {props.electricity ? `€ ${props.electricity}` : 'Add'}
+                  </a>
+                )}
+                
+              </div>
+            </div>
+
+            <div key="accountability" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Gebäude/Haftpflicht</p>
+                </div>
+
+                {props.editAccountability ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Insurance paid"
+                    defaultValue={props.accountability}
+                    onBlur={props.onChangePropertyAccountability}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditAccountability}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.accountability ? `€ ${props.accountability}` : 'Add'}
                   </a>
                 )}
                 
