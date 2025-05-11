@@ -399,7 +399,7 @@ export default function ManageProperty(props) {
           <h3 className="text-lg font-medium mb-4">Manage property data</h3>
           
           <div className="space-y-3">
-            <div key="electricity" className="transition-colors">
+            <div key="electricity" className="transition-colors hover:bg-gray-100 rounded p-2">
               <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
                   <p className="font-medium">Electricity</p>
@@ -407,7 +407,7 @@ export default function ManageProperty(props) {
 
                 {props.editelectricity ? (
                   <Input
-                    className="w-[100px]"
+                    className="w-[100px] h-8 text-right text-sm"
                     placeholder="Used electricity"
                     defaultValue={props.electricity}
                     onBlur={props.onChangePropertyElectricity}
@@ -415,7 +415,7 @@ export default function ManageProperty(props) {
                 ) : (
                   <a
                     onClick={props.onEditelectricity}
-                    className="text-blue-600 underline cursor-pointer whitespace-nowrap"
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
                     {props.electricity ? `€ ${props.electricity}` : 'Add'}
                   </a>
