@@ -47,3 +47,8 @@
  ::property-tax
  (fn [db]
    (get-in db [:property :tax :value])))
+
+(re-frame/reg-sub
+ ::property-garbage
+ (fn [db]
+   (get-in db [:property :garbage :value])))

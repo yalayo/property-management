@@ -469,8 +469,31 @@ export default function ManageProperty(props) {
                   >
                     {props.tax ? `€ ${props.tax}` : 'Add'}
                   </a>
-                )}
-                
+                )}  
+              </div>
+            </div>
+
+            <div key="garbage" className="transition-colors hover:bg-gray-100 rounded p-2">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex w-full">
+                  <p className="font-medium">Müllabfuhr</p>
+                </div>
+
+                {props.editGarbage ? (
+                  <Input
+                    className="w-[100px] h-8 text-right text-sm"
+                    placeholder="Garbate aervice paid"
+                    defaultValue={props.garbage}
+                    onBlur={props.onChangePropertyGarbage}
+                  />
+                ) : (
+                  <a
+                    onClick={props.onEditGarbage}
+                    className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
+                  >
+                    {props.garbage ? `€ ${props.garbage}` : 'Add'}
+                  </a>
+                )}  
               </div>
             </div>
           </div>

@@ -29,6 +29,10 @@
         :editTax @(re-frame/subscribe [::subs/edit-field :tax])
         :onEditTax #(re-frame/dispatch [::events/edit-field :tax])
         :onChangePropertyTax #(re-frame/dispatch [::events/update-data :tax (-> % .-target .-value)])
+        :garbage @(re-frame/subscribe [::subs/property-garbage])
+        :editGarbage @(re-frame/subscribe [::subs/edit-field :garbage])
+        :onEditGarbage #(re-frame/dispatch [::events/edit-field :garbage])
+        :onChangePropertyGarbage #(re-frame/dispatch [::events/update-data :garbage (-> % .-target .-value)])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"
