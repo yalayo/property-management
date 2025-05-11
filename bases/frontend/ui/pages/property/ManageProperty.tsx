@@ -528,7 +528,7 @@ export default function ManageProperty(props) {
                 {props.editWastewater ? (
                   <Input
                     className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Insurance paid"
+                    placeholder="Waste water paid"
                     defaultValue={props.wastewater}
                     onBlur={props.onChangePropertyWastewater}
                   />
@@ -552,7 +552,7 @@ export default function ManageProperty(props) {
                 {props.editDrinkingwater ? (
                   <Input
                     className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Insurance paid"
+                    placeholder="Drink water paid"
                     defaultValue={props.drinkingwater}
                     onBlur={props.onChangePropertyDrinkingwater}
                   />
