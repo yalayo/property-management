@@ -60,19 +60,30 @@ export default function ManageProperty(props) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (props.editDrinkingwater && inputRef.current) {
+    if (props.editRainwater && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editWastewater && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editDrinkingwater && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [props.editDrinkingwater]);
+    
+  }, [props.editRainwater, props.editWastewater, props.editDrinkingwater]);
 
-  const drinkingWaterSchema = z.string()
+  const amountSchema = z.string()
     .nonempty("This field is required")
     .refine(val => !isNaN(parseFloat(val)), {
       message: "Must be a valid number",
     });
 
+  const [rainwater, setValueRainWater] = useState(props.rainwater || '');
+  const [rainWaterError, setRainWaterError] = useState(''); 
+  
+  const [wastewater, setValueWastewater] = useState(props.wastewater || '');
+  const [wastewaterError, setWastewaterError] = useState('');
+
   const [drinkingwater, setValueDrinkingwater] = useState(props.drinkingwater || '');
-  const [drinkingwaterError, setDrinkingwaterError] = useState('');  
+  const [drinkingwaterError, setDrinkingwaterError] = useState('');
 
   const handleButtonClick = (e) => {
     e.preventDefault(); // prevent form submission if button is in a form
@@ -483,12 +494,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editRainwater ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Rain water paid"
-                    defaultValue={props.rainwater}
-                    onBlur={props.onChangePropertyRainwater}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Rain water paid"
+                      ref={inputRef}
+                      defaultValue={props.rainwater}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setRainWaterError(result.error.errors[0].message);
+                          } else {
+                            setRainWaterError('');
+                            props.onChangePropertyRainwater(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditRainwater(false);
+                        }
+                      }}
+                    />
+                    {rainWaterError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {rainWaterError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditRainwater}
@@ -507,12 +539,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editWastewater ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Waste water paid"
-                    defaultValue={props.wastewater}
-                    onBlur={props.onChangePropertyWastewater}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Waste water paid"
+                      ref={inputRef}
+                      defaultValue={props.wastewater}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setWastewaterError(result.error.errors[0].message);
+                          } else {
+                            setWastewaterError('');
+                            props.onChangePropertyWastewater(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditWastewater(false);
+                        }
+                      }}
+                    />
+                    {wastewaterError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {wastewaterError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditWastewater}
@@ -541,7 +594,7 @@ export default function ManageProperty(props) {
                         if (e.key === 'Enter') {
                           const inputVal = e.target.value;
                     
-                          const result = drinkingWaterSchema.safeParse(inputVal);
+                          const result = amountSchema.safeParse(inputVal);
                           if (!result.success) {
                             setDrinkingwaterError(result.error.errors[0].message);
                           } else {
