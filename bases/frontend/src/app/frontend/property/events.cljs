@@ -54,8 +54,8 @@
 (re-frame/reg-event-db
  ::edit-field
  [local-storage-interceptor]
- (fn [db [_ id]]
-   (assoc-in db [:property id :edit] true)))
+ (fn [db [_ id val]]
+   (assoc-in db [:property id :edit] val)))
 
 (re-frame/reg-event-fx
  ::save-property
