@@ -1,5 +1,5 @@
 import React from "react";
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from "react";
 import { z } from 'zod';
 import { Link } from 'wouter';
@@ -56,6 +56,14 @@ export default function ManageProperty(props) {
   const files = null;
   const isLoading = props.isLoading;
   const transactions = props.transactions;
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (props.editDrinkingwater && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [props.editDrinkingwater]);
 
   const drinkingWaterSchema = z.string()
     .nonempty("This field is required")
@@ -527,6 +535,7 @@ export default function ManageProperty(props) {
                     <Input
                       className="w-[200px] h-8 text-right text-sm"
                       placeholder="Drink water paid"
+                      ref={inputRef}
                       defaultValue={props.drinkingwater}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -539,6 +548,8 @@ export default function ManageProperty(props) {
                             setDrinkingwaterError('');
                             props.onChangePropertyDrinkingwater(inputVal);
                           }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditDrinkingwater(false);
                         }
                       }}
                     />
