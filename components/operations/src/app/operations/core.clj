@@ -12,3 +12,8 @@
 
 (defn operations-component [config]
   (map->OperationsComponent config))
+
+(defn store-operation [data]
+  (let [kind (:kind data)]
+    (case kind
+      :expense (persistance/store-expense data))))
