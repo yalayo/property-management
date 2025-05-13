@@ -44,7 +44,7 @@
         :drinkingwater @(re-frame/subscribe [::subs/property-drinkingwater])
         :editDrinkingwater @(re-frame/subscribe [::subs/edit-field :drinkingwater])
         :onEditDrinkingwater #(re-frame/dispatch [::events/edit-field :drinkingwater])
-        :onChangePropertyDrinkingwater #(re-frame/dispatch [::events/update-data :drinkingwater (-> % .-target .-value)])
+        :onChangePropertyDrinkingwater #(re-frame/dispatch [::events/update-data :drinkingwater %])
         :onCancel #(re-frame/dispatch [::events/cancel])}]
       [property-list
        {:id "properties"

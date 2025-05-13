@@ -14,13 +14,42 @@
  (fn [db [_ id val]]
    (assoc-in db [:property :form id] val)))
 
-(re-frame/reg-event-db
+(defn last-year []
+  (let [today (js/Date.)
+        current-year (.getFullYear today)]
+    (- current-year 1)))
+
+(re-frame/reg-event-fx
  ::update-data
  [local-storage-interceptor]
- (fn [db [_ id val]]
-   (-> db
-       (assoc-in [:property id :value] val)
-       (assoc-in [:property id :edit] false))))
+ (fn [{:keys [db]} [_ id val]]
+   (let [new-state (-> db
+                       (assoc-in [:property id :value] val)
+                       (assoc-in [:property id :edit] false))
+         property-id (get-in db [:property :selected-property])
+         amount (js/parseFloat val)
+         data {:kind :expense :category id :year (last-year) :property property-id :amount amount}]
+     {:db new-state
+      :http-xhrio {:method          :post
+                   :uri             (str config/api-url "/api/new-operation")
+                   :params          data
+                   :format          (ajax-edn/edn-request-format)
+                   :response-format (ajax-edn/edn-response-format)
+                   :timeout         8000
+                   :on-success      [::property-data-updated]
+                   :on-failure      [::property-data-update-error]}})))
+
+(re-frame/reg-event-db
+ ::property-data-updated
+ [local-storage-interceptor]
+ (fn [db [_ response]]
+   (js/console.log "Property attribute updated:" response)))
+
+(re-frame/reg-event-fx
+ ::property-data-update-error
+ (fn [{:keys [_]} [_ error]]
+   (js/console.error "Failed to update property data:" error)
+   {}))
 
 (re-frame/reg-event-db
  ::edit-field

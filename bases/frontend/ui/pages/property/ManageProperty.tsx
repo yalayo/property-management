@@ -1,6 +1,7 @@
 import React from "react";
 import { useRef } from 'react';
 import { useState } from "react";
+import { z } from 'zod';
 import { Link } from 'wouter';
 import { queryClient } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
@@ -56,47 +57,19 @@ export default function ManageProperty(props) {
   const isLoading = props.isLoading;
   const transactions = props.transactions;
 
-  const fileInputRef = useRef(null);
+  const drinkingWaterSchema = z.string()
+    .nonempty("This field is required")
+    .refine(val => !isNaN(parseFloat(val)), {
+      message: "Must be a valid number",
+    });
+
+  const [drinkingwater, setValueDrinkingwater] = useState(props.drinkingwater || '');
+  const [drinkingwaterError, setDrinkingwaterError] = useState('');  
 
   const handleButtonClick = (e) => {
     e.preventDefault(); // prevent form submission if button is in a form
     console.log("Test")
   };
-
-  // Fetch previously uploaded files
-  /*const { data: files, isLoading } = useQuery({
-    queryKey: ['/api/files'],
-    queryFn: () => fetch('/api/files').then(res => res.json())
-  });*/
-
-  // Setup file upload mutation
-  /*const uploadMutation = useMutation({
-    mutationFn: (formData: FormData) => {
-      return fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-      }).then(res => {
-        if (!res.ok) throw new Error('Upload failed');
-        return res.json();
-      });
-    },
-    onSuccess: () => {
-      setSelectedFile(null);
-      queryClient.invalidateQueries({ queryKey: ['/api/files'] });
-      toast({
-        title: "File uploaded successfully",
-        description: "Your file is being processed with AI-powered data extraction. This may take a minute.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Upload failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  });*/
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -550,12 +523,30 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editDrinkingwater ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Drink water paid"
-                    defaultValue={props.drinkingwater}
-                    onBlur={props.onChangePropertyDrinkingwater}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Drink water paid"
+                      defaultValue={props.drinkingwater}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = drinkingWaterSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setDrinkingwaterError(result.error.errors[0].message);
+                          } else {
+                            setDrinkingwaterError('');
+                            props.onChangePropertyDrinkingwater(inputVal);
+                          }
+                        }
+                      }}
+                    />
+                    {drinkingwaterError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {drinkingwaterError}
+                      </p>)}
+                  </div>  
                 ) : (
                   <a
                     onClick={props.onEditDrinkingwater}
