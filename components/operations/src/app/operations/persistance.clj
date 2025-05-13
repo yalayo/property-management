@@ -34,3 +34,12 @@
 
 (defn list-operations []
   (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "operations"))
+
+(defn store-expense [data]
+  (let [expense-id (str (java.util.UUID/randomUUID))
+        expense-data [{:expense/id expense-id
+                       :expense/category (:category data)
+                       :expense/year (:year data) 
+                       :expense/property (:property data)
+                       :expense/amount (:amount data)}]]
+    (storage/transact expense-data "operations")))

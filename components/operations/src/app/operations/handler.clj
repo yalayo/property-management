@@ -1,5 +1,6 @@
 (ns app.operations.handler
-  (:require [app.operations.persistance :as persistance]))
+  (:require [app.operations.core :as core]
+            [app.operations.persistance :as persistance]))
 
 (def operations-handler
   {:name ::get
@@ -9,5 +10,5 @@
 (def new-operation-handler
   {:name ::post
    :enter (fn [context]
-            (persistance/create-operations (-> context :request :edn-params))
+            (core/store-operation (-> context :request :edn-params))
             (assoc context :response {:status 200}))})
