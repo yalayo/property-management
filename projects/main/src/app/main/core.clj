@@ -9,6 +9,7 @@
             [app.tenant.interface :as tenant]
             [app.apartment.interface :as apartment]
             [app.account.interface :as account]
+            [app.operations.interface :as operations]
             [app.bank.interface :as bank]
             [app.html.interface :as html]
             [app.user.interface :as user]
