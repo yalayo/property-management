@@ -34,7 +34,15 @@ export default function ManageProperty(props) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (props.editRainwater && inputRef.current) {
+    if (props.editElectricity && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editAccountability && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editTax && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editGarbage && inputRef.current) {
+      inputRef.current.focus();
+    } else if (props.editRainwater && inputRef.current) {
       inputRef.current.focus();
     } else if (props.editWastewater && inputRef.current) {
       inputRef.current.focus();
@@ -42,13 +50,18 @@ export default function ManageProperty(props) {
       inputRef.current.focus();
     }
     
-  }, [props.editRainwater, props.editWastewater, props.editDrinkingwater]);
+  }, [props.editElectricity, props.editAccountability, props.editTax, props.editGarbage, props.editRainwater, props.editWastewater, props.editDrinkingwater]);
 
   const amountSchema = z.string()
     .nonempty("This field is required")
     .refine(val => !isNaN(parseFloat(val)), {
       message: "Must be a valid number",
     });
+
+  const [electricityError, setElectricityError] = useState('');
+  const [accountabilityError, setAccountabilityError] = useState('');
+  const [taxError, setTaxError] = useState('');
+  const [garbageError, setGarbageError] = useState('');
 
   const [rainwater, setValueRainWater] = useState(props.rainwater || '');
   const [rainWaterError, setRainWaterError] = useState(''); 
@@ -76,12 +89,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editElectricity ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Used electricity"
-                    defaultValue={props.electricity}
-                    onBlur={props.onChangePropertyElectricity}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Electricity paid"
+                      ref={inputRef}
+                      defaultValue={props.electricity}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setElectricityError(result.error.errors[0].message);
+                          } else {
+                            setElectricityError('');
+                            props.onChangePropertyElectricity(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditElectricity(false);
+                        }
+                      }}
+                    />
+                    {electricityError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {electricityError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditElectricity}
@@ -100,12 +134,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editAccountability ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Insurance paid"
-                    defaultValue={props.accountability}
-                    onBlur={props.onChangePropertyAccountability}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Insurance paid"
+                      ref={inputRef}
+                      defaultValue={props.accountability}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setAccountabilityError(result.error.errors[0].message);
+                          } else {
+                            setAccountabilityError('');
+                            props.onChangePropertyAccountability(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditAccountability(false);
+                        }
+                      }}
+                    />
+                    {accountabilityError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {accountabilityError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditAccountability}
@@ -124,12 +179,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editTax ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Insurance paid"
-                    defaultValue={props.tax}
-                    onBlur={props.onChangePropertyTax}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Property tax paid"
+                      ref={inputRef}
+                      defaultValue={props.tax}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setTaxError(result.error.errors[0].message);
+                          } else {
+                            setTaxError('');
+                            props.onChangePropertyTax(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditTax(false);
+                        }
+                      }}
+                    />
+                    {taxError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {taxError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditTax}
@@ -148,12 +224,33 @@ export default function ManageProperty(props) {
                 </div>
 
                 {props.editGarbage ? (
-                  <Input
-                    className="w-[100px] h-8 text-right text-sm"
-                    placeholder="Garbate aervice paid"
-                    defaultValue={props.garbage}
-                    onBlur={props.onChangePropertyGarbage}
-                  />
+                  <div className="relative mt-2">
+                    <Input
+                      className="w-[200px] h-8 text-right text-sm"
+                      placeholder="Garbage service paid"
+                      ref={inputRef}
+                      defaultValue={props.garbage}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const inputVal = e.target.value;
+                    
+                          const result = amountSchema.safeParse(inputVal);
+                          if (!result.success) {
+                            setGarbageError(result.error.errors[0].message);
+                          } else {
+                            setGarbageError('');
+                            props.onChangePropertyGarbage(inputVal);
+                          }
+                        } else if (e.key === 'Escape') {
+                          props.cancelEditGarbage(false);
+                        }
+                      }}
+                    />
+                    {garbageError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">
+                        {garbageError}
+                      </p>)}
+                  </div>
                 ) : (
                   <a
                     onClick={props.onEditGarbage}
