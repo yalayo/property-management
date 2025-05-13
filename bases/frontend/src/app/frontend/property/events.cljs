@@ -23,21 +23,27 @@
  ::update-data
  [local-storage-interceptor]
  (fn [{:keys [db]} [_ id val]]
-   (let [new-state (-> db
-                       (assoc-in [:property id :value] val)
-                       (assoc-in [:property id :edit] false))
+   (let [parsed-val (js/parseFloat val)
+         current-value (get-in db [:property id :value])
          property-id (get-in db [:property :selected-property])
          amount (js/parseFloat val)
-         data {:kind :expense :category id :year (last-year) :property property-id :amount amount}]
-     {:db new-state
-      :http-xhrio {:method          :post
-                   :uri             (str config/api-url "/api/new-operation")
-                   :params          data
-                   :format          (ajax-edn/edn-request-format)
-                   :response-format (ajax-edn/edn-response-format)
-                   :timeout         8000
-                   :on-success      [::property-data-updated]
-                   :on-failure      [::property-data-update-error]}})))
+         data {:kind :expense :category id :year (str (last-year)) :property property-id :amount amount}]
+     (println "Parsed: " (type parsed-val))
+     (println "Current: " (type (js/parseFloat current-value)))
+     (println "Compare: " (= parsed-val (js/parseFloat current-value)))
+     (if (= parsed-val (js/parseFloat current-value))
+       {:db (assoc-in db [:property id :edit] false)}
+       {:db (-> db
+                (assoc-in [:property id :value] val)
+                (assoc-in [:property id :edit] false))
+        :http-xhrio {:method          :post
+                     :uri             (str config/api-url "/api/new-operation")
+                     :params          data
+                     :format          (ajax-edn/edn-request-format)
+                     :response-format (ajax-edn/edn-response-format)
+                     :timeout         8000
+                     :on-success      [::property-data-updated]
+                     :on-failure      [::property-data-update-error]}}))))
 
 (re-frame/reg-event-db
  ::property-data-updated
