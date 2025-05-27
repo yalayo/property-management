@@ -4,9 +4,7 @@
             [app.frontend.config :as config]
             [app.frontend.events :as main-events]
             [day8.re-frame.http-fx]
-            [ajax.edn :as ajax-edn]
-            [ajax.core :as ajax]
-            [ajax.core :refer [raw-response-format]]))
+            [ajax.edn :as ajax-edn]))
 
 (def local-storage-interceptor main-events/->local-store)
 
@@ -68,6 +66,15 @@
    (js/console.error "Failed to get the list of properties:" error)
    {}))
 
+(defn raw-pdf-response-format []
+  {:read        (fn [xhrio]
+                  (let [^js xhrio xhrio
+                        array-buffer (.getResponse xhrio)]
+                    (js/Blob. #js [array-buffer] #js {:type "application/pdf"})))
+   :description "Raw PDF Blob"
+   :content-type "application/pdf"
+   :type         :arraybuffer})
+
 (re-frame/reg-event-fx
  ::create-letter
  (fn [{:keys [db]} [_ data]]
@@ -81,7 +88,7 @@
                    :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
                    :params          {:data tenant-data :year year}
                    :format          (ajax-edn/edn-request-format)
-                   :response-format (raw-response-format)
+                   :response-format (raw-pdf-response-format)
                    :timeout         8000
                    :on-success      [::create-letter-success]
                    :on-failure      [::create-letter-failure]}})))
@@ -89,9 +96,8 @@
 (re-frame/reg-event-db
  ::create-letter-success
  [local-storage-interceptor]
- (fn [db [_ response]]
-   (let [blob (js/Blob. #js [response] #js {:type "application/pdf"})
-         url (.createObjectURL js/URL blob)]
+ (fn [db [_ blob]]
+   (let [url (.createObjectURL js/URL blob)]
      (.open js/window url "_blank")
      (-> db
          (assoc-in [:letter :tenants] nil)
