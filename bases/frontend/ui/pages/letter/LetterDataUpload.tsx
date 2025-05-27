@@ -237,7 +237,7 @@ export default function LetterDataUpload(props) {
                 <div key={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="font-medium">Fam Name</p>
+                      <p className="font-medium">{element.family}</p>
                     </div>
                     <Button 
                       variant="outline" 
