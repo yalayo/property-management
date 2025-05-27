@@ -4,7 +4,9 @@
             [app.frontend.config :as config]
             [app.frontend.events :as main-events]
             [day8.re-frame.http-fx]
-            [ajax.edn :as ajax-edn]))
+            [ajax.edn :as ajax-edn]
+            [ajax.core :as ajax]
+            [ajax.core :refer [raw-response-format]]))
 
 (def local-storage-interceptor main-events/->local-store)
 
@@ -79,7 +81,7 @@
                    :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
                    :params          {:data tenant-data :year year}
                    :format          (ajax-edn/edn-request-format)
-                   :response-format (ajax-edn/edn-response-format)
+                   :response-format (raw-response-format)
                    :timeout         8000
                    :on-success      [::create-letter-success]
                    :on-failure      [::create-letter-failure]}})))
@@ -88,10 +90,12 @@
  ::create-letter-success
  [local-storage-interceptor]
  (fn [db [_ response]]
-   (js/console.log "Letters created:" response)
-   (-> db
-       (assoc-in [:letter :tenants] nil)
-       (assoc-in [:letter :data :is-loading] false))))
+   (let [blob (js/Blob. #js [response] #js {:type "application/pdf"})
+         url (.createObjectURL js/URL blob)]
+     (.open js/window url "_blank")
+     (-> db
+         (assoc-in [:letter :tenants] nil)
+         (assoc-in [:letter :data :is-loading] false)))))
 
 (re-frame/reg-event-fx
  ::create-letter-failure
