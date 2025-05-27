@@ -60,7 +60,8 @@
 
 (defn create [info]
   (let [output (ByteArrayOutputStream.)
-        today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
+        given-date (get-in info [:data :date])
+        today (if (some? given-date) given-date (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy")))
         tenant (:data info)
         headers (get-in info [:data :headers])
         content (get-in info [:data :content])

@@ -80,6 +80,7 @@
         (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
 
 (def attributes [{:name "last-name" :cell "B3"}
+                 {:name "date" :cell "D2"}
                  {:name "family" :cell "B3"}
                  {:name "property-id" :cell "C3"}
                  {:name "id" :cell "C3"}
