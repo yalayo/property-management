@@ -28,6 +28,10 @@ export default function Dashboard(props) {
     child => child.props['id'] === 'documents'
   );
 
+  const uploadLetterData = React.Children.toArray(props.children).find(
+    child => child.props['id'] === 'letters'
+  );
+
   const listTenants = React.Children.toArray(props.children).find(
     child => child.props['id'] === 'tenants'
   );
@@ -113,6 +117,14 @@ export default function Dashboard(props) {
                 Documents
               </Button>
               <Button
+                variant={activeTab === "letters" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => props.onChangeActiveTab("letters")}
+              >
+                <FileText className="mr-3 h-5 w-5" />
+                Letters
+              </Button>
+              <Button
                 variant={activeTab === "analytics" ? "default" : "ghost"}
                 className="w-full justify-start"
                 onClick={() => props.onChangeActiveTab("analytics")}
@@ -180,6 +192,10 @@ export default function Dashboard(props) {
 
               {activeTab === "documents" && (
                 uploadBankData
+              )}
+
+              {activeTab === "letters" && (
+                uploadLetterData
               )}
 
               {activeTab === "analytics" && (

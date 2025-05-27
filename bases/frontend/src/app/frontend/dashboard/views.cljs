@@ -11,6 +11,7 @@
             [app.frontend.tenant.subs :as tenant-subs]
             [app.frontend.tenant.views :as tenant]
             [app.frontend.apartment.views :as apartment]
+            [app.frontend.letter.views :as letter]
             ["/pages/dashboard$default" :as dashboard-js]
             ["/components/dashboard/DashboardSummary$default" :as dashboard-summary-js]))
 
@@ -35,4 +36,5 @@
      (bank/bank-data-upload-component)
      (tenant/tenants-list-component)
      (account/accounts-list-component)
-     (apartment/apartments-component properties)]))
+     (apartment/apartments-component properties)
+     (letter/letter-data-upload-component)]))

@@ -18,7 +18,8 @@
             [app.html.dashboard :as dashboard]
             [app.html.user-buildings :as user-buildings]
             [app.html.building-apartments :as building-apartments]
-            [app.html.apartment-details :as apartment-datails])
+            [app.html.apartment-details :as apartment-datails]
+            [app.user.interface :refer [wrap-jwt-auth]])
   (:import [java.util UUID]))
 
 ;; Prepare the hicup to return it as html
@@ -86,9 +87,7 @@
                 (let [result (flatten (excel/process file-input-stream))]
                   (if (some #(:error %) result)
                     (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
-                    (assoc context :response {:status 200
-                                              :headers {"HX-Redirect" "/tenants"}
-                                              :session {:tenants result}})))
+                    (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
 (def post-upload-clients-handler
@@ -105,6 +104,16 @@
                                               :headers {"HX-Redirect" "/clients"}
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
+
+(def post-generate-letter-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [session (-> context :request :session)
+                  headers (:headers session)
+                  content (:content  session)]
+              (assoc context :response {:status 200
+                                        :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
+                                        :body (java.io.ByteArrayInputStream. (letter/create headers content))})))})
 
 (def letter-handler
   {:name ::get
@@ -268,9 +277,12 @@
   #{["/upload-excel"
      :get [(body-params/body-params) auth-required upload-details-handler]
      :route-name ::upload-excel]
-    ["/upload-details"
-     :post [(ring-mw/multipart-params) auth-required post-upload-details-handler]
+    ["/api/upload-details"
+     :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-upload-details-handler]
      :route-name ::post-upload-details]
+    ["/api/generate-letter"
+     :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-generate-letter-handler]
+     :route-name ::post-generate-letter-handler]
     ["/upload-clients"
      :get [(body-params/body-params) upload-client-handler]
      :route-name ::upload-clients]
