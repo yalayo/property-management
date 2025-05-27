@@ -68,14 +68,16 @@
 
 (re-frame/reg-event-fx
  ::create-letter
- (fn [db [_ data]]
-   (println "Data: " data)
-   (let [info (js->clj data)
-         year (:year info)]
+ (fn [{:keys [db]} [_ data]]
+   (let [info (js->clj data :keywordize-keys true)
+         year (:year info)
+         id (:id info)
+         tenants (get-in db [:letter :tenants])
+         tenant-data (first (filter #(= (:property-id %) id) tenants))]
      {:http-xhrio {:method          :post
                    :uri             (str config/api-url "/api/create-letter")
                    :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
-                   :params          {:data "" :year year}
+                   :params          {:data tenant-data :year year}
                    :format          (ajax-edn/edn-request-format)
                    :response-format (ajax-edn/edn-response-format)
                    :timeout         8000

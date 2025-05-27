@@ -58,18 +58,20 @@
    [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "IBAN:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} iban]]]
    [[:pdf-cell {:valign :middle} [:paragraph {:size 10} "BANK:"]] [:pdf-cell {:valign :middle} [:paragraph {:size 10 :style :bold} bank-name]]]])
 
-(defn create [tenant]
+(defn create [info]
   (let [output (ByteArrayOutputStream.)
         today (.format (LocalDate/now) (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
-        headers (:headers tenant)
-        content (:content tenant)
+        tenant (:data info)
+        headers (get-in info [:data :headers])
+        content (get-in info [:data :content])
         first-rows (get-rows-but-last-three content)
         last-rows (get-rows-last-three content)
         scaffold [:pdf-table {:width-percent 100 :cell-border true} (into [25 15] (repeatedly (- (count headers) 2) #(/ 60 (- (count headers) 2))))]
         with-headers (conj scaffold (create-headers headers))
         first-part (into with-headers (map create-row first-rows))
         table (into first-part (map create-last-three-rows last-rows))
-        year (if (str/blank? (:year tenant)) "2023" (:year tenant))]
+        which-year? (str (:year info))
+        year (if (str/blank? which-year?) "2023" which-year?)]
     (pdf/pdf
      [{:title "Brief"
        :subject "Betriebskostenabrechnung"

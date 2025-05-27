@@ -105,15 +105,12 @@
                                               :session {:tenants result}})))
                 (assoc context :response (respond upload-details/no-file-selected2 "Hochladen")))))})
 
-(def post-generate-letter-handler
+(def post-create-letter-handler
   {:name ::get
    :enter (fn [context]
-            (let [session (-> context :request :session)
-                  headers (:headers session)
-                  content (:content  session)]
-              (assoc context :response {:status 200
-                                        :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
-                                        :body (java.io.ByteArrayInputStream. (letter/create headers content))})))})
+            (assoc context :response {:status 200
+                                      :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
+                                      :body (java.io.ByteArrayInputStream. (letter/create (-> context :request :edn-params)))}))})
 
 (def letter-handler
   {:name ::get
@@ -281,8 +278,8 @@
      :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-upload-details-handler]
      :route-name ::post-upload-details]
     ["/api/create-letter"
-     :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-generate-letter-handler]
-     :route-name ::post-generate-letter-handler]
+     :post [(body-params/body-params) params/keyword-params (wrap-jwt-auth identity) post-create-letter-handler]
+     :route-name ::post-create-letter-handler]
     ["/upload-clients"
      :get [(body-params/body-params) upload-client-handler]
      :route-name ::upload-clients]
