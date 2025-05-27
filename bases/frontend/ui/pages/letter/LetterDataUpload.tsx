@@ -1,7 +1,6 @@
 import React from "react";
 import { useRef } from 'react';
 import { useState } from "react";
-import { queryClient } from "../../lib/queryClient";
 import { useToast } from "../../hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -19,14 +18,6 @@ import {
   CircleX,
   FileIcon
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog";
 import {
   Accordion,
   AccordionContent,
@@ -50,8 +41,6 @@ export default function LetterDataUpload(props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileData, setSelectedFileData] = useState<FileData | null>(null);
   
-  const data = null;
-  const files = null;
   const isLoading = props.isLoading;
   const tenants = props.tenants;
 
@@ -122,38 +111,11 @@ export default function LetterDataUpload(props) {
     }
   };
 
-  // Function to render extracted data or error
-  const renderExtractedData = (file: FileData) => {
-    if (!file.extractedData) return null;
-    
-    // Check if there was an error during processing
-    if (file.extractedData.processingFailed || file.extractedData.error) {
-      return (
-        <div className="bg-red-50 p-4 rounded-md mt-4">
-          <div className="flex items-start">
-            <CircleX className="h-5 w-5 text-red-500 mr-2 mt-0.5" />
-            <div>
-              <h4 className="font-medium text-red-800">Processing Error</h4>
-              <p className="text-sm text-red-700 mt-1">
-                {file.extractedData.error || "Failed to extract data from this file"}
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    }
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 3 }, (_, i) => currentYear - i);
+  const [selectedYear, setSelectedYear] = useState(null);
 
-    // Check if we have raw text instead of structured data
-    if (file.extractedData.rawText) {
-      return (
-        <div className="mt-4">
-          <h4 className="font-medium mb-2">Extracted Text:</h4>
-          <div className="bg-gray-50 p-3 rounded-md text-sm whitespace-pre-wrap max-h-60 overflow-y-auto">
-            {file.extractedData.rawText}
-          </div>
-        </div>
-      );
-    }
+  const renderExtractedData = (file: FileData) => {
     
     // Render other structured data
     return (
@@ -188,6 +150,28 @@ export default function LetterDataUpload(props) {
           <p className="text-sm text-blue-700 mt-1">
             Upload your tenant's data to create the letters.
           </p>
+        </div>
+
+        <div className="mb-4">
+          <h4 className="font-medium mb-2">Select Year</h4>
+          <div className="flex flex-wrap gap-2">
+            {years.map((year) => (
+              <Button
+                key={year}
+                type="button"
+                variant={selectedYear === year ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedYear(year)}
+              >
+                {year}
+              </Button>
+            ))}
+          </div>
+          {selectedYear && (
+            <p className="text-sm text-gray-600 mt-2">
+              Selected year: <strong>{selectedYear}</strong>
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -256,7 +240,7 @@ export default function LetterDataUpload(props) {
               <FileText className="h-12 w-12 mx-auto mb-3 text-gray-400" />
               <p className="font-medium">No documents uploaded yet</p>
               <p className="text-sm mt-2 max-w-md mx-auto">
-                Upload your documents to automatically extract important information using Google Gemini AI
+                Upload your documents to extract the necessary information.
               </p>
             </div>
           )}
