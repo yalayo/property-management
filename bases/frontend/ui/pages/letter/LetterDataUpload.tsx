@@ -227,6 +227,7 @@ export default function LetterDataUpload(props) {
                       variant="outline" 
                       size="sm" 
                       className="ml-2"
+                      disabled={!selectedYear}
                       onClick={() => props.onCreateLetter({id: element.id, year: selectedYear})}
                     >
                       Create letter
