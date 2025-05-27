@@ -227,7 +227,7 @@ export default function LetterDataUpload(props) {
                       variant="outline" 
                       size="sm" 
                       className="ml-2"
-                      onClick={() => setSelectedFileData(element.id)}
+                      onClick={() => props.onCreateLetter({id: element.id, year: selectedYear})}
                     >
                       Create letter
                     </Button>

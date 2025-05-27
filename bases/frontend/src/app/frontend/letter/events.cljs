@@ -18,7 +18,7 @@
  ::upload-data
  (fn [db [_ file]] 
    {:http-xhrio {:method          :post
-                 :uri             (str config/api-url "/api//upload-details")
+                 :uri             (str config/api-url "/api/upload-details")
                  :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
                  :body             (let [form-data (js/FormData.)]
                                      (.append form-data "file" file)
@@ -64,4 +64,36 @@
  ::get-properties-error
  (fn [{:keys [_]} [_ error]]
    (js/console.error "Failed to get the list of properties:" error)
+   {}))
+
+(re-frame/reg-event-fx
+ ::create-letter
+ (fn [db [_ data]]
+   (println "Data: " data)
+   (let [info (js->clj data)
+         year (:year info)]
+     {:http-xhrio {:method          :post
+                   :uri             (str config/api-url "/api/create-letter")
+                   :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
+                   :params          {:data "" :year year}
+                   :format          (ajax-edn/edn-request-format)
+                   :response-format (ajax-edn/edn-response-format)
+                   :timeout         8000
+                   :on-success      [::create-letter-success]
+                   :on-failure      [::create-letter-failure]}})))
+
+(re-frame/reg-event-db
+ ::create-letter-success
+ [local-storage-interceptor]
+ (fn [db [_ response]]
+   (js/console.log "Letters created:" response)
+   (-> db
+       (assoc-in [:letter :tenants] nil)
+       (assoc-in [:letter :data :is-loading] false))))
+
+(re-frame/reg-event-fx
+ ::create-letter-failure
+ (fn [{:keys [_]} [_ {:keys [status status-text response]}]]
+   (js/console.error (str "Letter creation failed: " status " " status-text))
+   (js/console.log "Backend responded with:" (clj->js response))
    {}))

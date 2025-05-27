@@ -280,7 +280,7 @@
     ["/api/upload-details"
      :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-upload-details-handler]
      :route-name ::post-upload-details]
-    ["/api/generate-letter"
+    ["/api/create-letter"
      :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-generate-letter-handler]
      :route-name ::post-generate-letter-handler]
     ["/upload-clients"

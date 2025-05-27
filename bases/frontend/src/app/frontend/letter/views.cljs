@@ -12,4 +12,5 @@
    {:id "letters"
     :isLoading @(re-frame/subscribe [::subs/is-loading])
     :tenants @(re-frame/subscribe [::subs/tenants])
-    :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])}])
+    :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])
+    :onCreateLetter #(re-frame/dispatch [::events/create-letter %])}])
