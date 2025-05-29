@@ -30,6 +30,11 @@
         :manage-apartment [manage-apartment
                            {:id "apartments"
                             :selectedApartment select-apartment
+                            :surface @(re-frame/subscribe [::subs/apartment-surface])
+                            :editSurface @(re-frame/subscribe [::subs/edit-field :surface])
+                            :onEditSurface #(re-frame/dispatch [::events/edit-field :surface true])
+                            :cancelEditSurface #(re-frame/dispatch [::events/edit-field :surface %])
+                            :onChangePropertySurface #(re-frame/dispatch [::events/update-data :surface %])
                             :onCancel #(re-frame/dispatch [::events/cancel])
                             :onSaveSelection #(re-frame/dispatch [::events/save-selection])}])
      

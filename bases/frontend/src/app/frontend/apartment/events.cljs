@@ -139,3 +139,49 @@
  (fn [{:keys [_]} [_ error]]
    (js/console.error "Failed to assign tenant:" error)
    {}))
+
+(re-frame/reg-event-db
+ ::edit-field
+ [local-storage-interceptor]
+ (fn [db [_ id val]]
+   (assoc-in db [:apartment id :edit] val)))
+
+(defn last-year []
+  (let [today (js/Date.)
+        current-year (.getFullYear today)]
+    (- current-year 1)))
+
+(re-frame/reg-event-fx
+ ::update-data
+ [local-storage-interceptor]
+ (fn [{:keys [db]} [_ id val]]
+   (let [parsed-val (js/parseFloat val)
+         current-value (get-in db [:apartment id :value])
+         apartment-id (get-in db [:apartment :selected-apartment])
+         amount (js/parseFloat val)
+         data {:kind :expense :category id :year (str (last-year)) :apartment apartment-id :amount amount}] 
+     (if (= parsed-val (js/parseFloat current-value))
+       {:db (assoc-in db [:apartment id :edit] false)}
+       {:db (-> db
+                (assoc-in [:apartment id :value] val)
+                (assoc-in [:apartment id :edit] false))
+        :http-xhrio {:method          :post
+                     :uri             (str config/api-url "/api/new-operation")
+                     :params          data
+                     :format          (ajax-edn/edn-request-format)
+                     :response-format (ajax-edn/edn-response-format)
+                     :timeout         8000
+                     :on-success      [::apartment-data-updated]
+                     :on-failure      [::apartment-data-update-error]}}))))
+
+(re-frame/reg-event-db
+ ::apartment-data-updated
+ [local-storage-interceptor]
+ (fn [db [_ response]]
+   (js/console.log "Apartment attribute updated:" response)))
+
+(re-frame/reg-event-fx
+ ::apartment-data-update-error
+ (fn [{:keys [_]} [_ error]]
+   (js/console.error "Failed to update apartment data:" error)
+   {}))

@@ -33,3 +33,13 @@
  ::selected-tenant
  (fn [db]
    (get-in db [:apartment :selected-tenant] "")))
+
+(re-frame/reg-sub
+ ::edit-field
+ (fn [db [_ id]]
+   (get-in db [:apartment id :edit] false)))
+
+(re-frame/reg-sub
+ ::apartment-surface
+ (fn [db]
+   (get-in db [:apartment :surface :value])))

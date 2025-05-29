@@ -34,7 +34,7 @@ export default function ManageApartment(props) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (props.editElectricity && inputRef.current) {
+    if (props.editSurface && inputRef.current) {
       inputRef.current.focus();
     } else if (props.editAccountability && inputRef.current) {
       inputRef.current.focus();
@@ -50,7 +50,7 @@ export default function ManageApartment(props) {
       inputRef.current.focus();
     }
     
-  }, [props.editElectricity, props.editAccountability, props.editTax, props.editGarbage, props.editRainwater, props.editWastewater, props.editDrinkingwater]);
+  }, [props.editSurface, props.editAccountability, props.editTax, props.editGarbage, props.editRainwater, props.editWastewater, props.editDrinkingwater]);
 
   const amountSchema = z.string()
     .nonempty("This field is required")
@@ -58,7 +58,7 @@ export default function ManageApartment(props) {
       message: "Must be a valid number",
     });
 
-  const [electricityError, setElectricityError] = useState('');
+  const [surfaceError, setSurfaceError] = useState('');
   const [accountabilityError, setAccountabilityError] = useState('');
   const [taxError, setTaxError] = useState('');
   const [garbageError, setGarbageError] = useState('');
@@ -82,46 +82,46 @@ export default function ManageApartment(props) {
           <h3 className="text-lg font-medium mb-4">Manage apartment data</h3>
           
           <div className="space-y-3">
-            <div key="electricity" className="transition-colors hover:bg-gray-100 rounded p-2">
+            <div key="surface" className="transition-colors hover:bg-gray-100 rounded p-2">
               <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
-                  <p className="font-medium">Allgemeinstrom</p>
+                  <p className="font-medium">Wohnflasche</p>
                 </div>
 
-                {props.editElectricity ? (
+                {props.editSurface ? (
                   <div className="relative mt-2">
                     <Input
                       className="w-[200px] h-8 text-right text-sm"
-                      placeholder="Electricity paid"
+                      placeholder="Apartment surface"
                       ref={inputRef}
-                      defaultValue={props.electricity}
+                      defaultValue={props.surface}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           const inputVal = e.target.value;
                     
                           const result = amountSchema.safeParse(inputVal);
                           if (!result.success) {
-                            setElectricityError(result.error.errors[0].message);
+                            setSurfaceError(result.error.errors[0].message);
                           } else {
-                            setElectricityError('');
-                            props.onChangePropertyElectricity(inputVal);
+                            setSurfaceError('');
+                            props.onChangePropertySurface(inputVal);
                           }
                         } else if (e.key === 'Escape') {
-                          props.cancelEditElectricity(false);
+                          props.cancelEditSurface(false);
                         }
                       }}
                     />
-                    {electricityError && (
+                    {surfaceError && (
                       <p className="text-red-500 text-xs mt-1 text-right">
-                        {electricityError}
+                        {surfaceError}
                       </p>)}
                   </div>
                 ) : (
                   <a
-                    onClick={props.onEditElectricity}
+                    onClick={props.onEditSurface}
                     className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
-                    {props.electricity ? `€ ${props.electricity}` : 'Add'}
+                    {props.surface ? `${props.surface} m2` : 'Add'}
                   </a>
                 )}  
               </div>
