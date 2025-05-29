@@ -27,7 +27,7 @@
 (re-frame/reg-sub
  ::selected-apartment
  (fn [db]
-   (some? (get-in db [:apartment :selected-apartment]))))
+   (get-in db [:apartment :selected-apartment])))
 
 (re-frame/reg-sub
  ::selected-tenant

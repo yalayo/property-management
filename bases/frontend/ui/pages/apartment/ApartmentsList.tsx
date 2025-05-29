@@ -81,7 +81,7 @@ export default function ApartmentsList(props) {
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-lg">{apartment.code}</h3>
+                      <h3 className="font-semibold text-lg cursor-pointer" onClick={() => props.onManageApartment(apartment.id)}>{apartment.code}</h3>
 
                       {apartment.tenant ? (
                         <>

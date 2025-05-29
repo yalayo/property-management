@@ -83,7 +83,13 @@
  ::assign-tenant
  [local-storage-interceptor]
  (fn [db [_ val]]
-   (assoc-in db [:apartment :selected-apartment] val)))
+   (assoc-in db [:apartment :selected-apartment] {:action :assign-tenant :value val})))
+
+(re-frame/reg-event-db
+ ::manage-apartment
+ [local-storage-interceptor]
+ (fn [db [_ val]]
+   (assoc-in db [:apartment :selected-apartment] {:action :manage-apartment :value val})))
 
 (re-frame/reg-event-db
  ::cancel
