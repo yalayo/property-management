@@ -83,7 +83,6 @@
                  {:name "date" :cell "D2"}
                  {:name "family" :cell "B3"}
                  {:name "property-id" :cell "C3"}
-                 {:name "id" :cell "C3"}
                  {:name "street" :cell "A2"}
                  {:name "location" :cell "B2"}
                  {:name "total-costs" :cell "I2"}
@@ -124,7 +123,7 @@
 (defn get-tenant-data [general headers content]
   (let [with-headers (into {} {:headers (format-headers headers)})
         with-content (into with-headers {:content (format-content content (count headers))})
-        with-id (into with-content {:tenant-id (str (java.util.UUID/randomUUID))})]
+        with-id (into with-content {:id (str (java.util.UUID/randomUUID))})]
     (into with-id general)))
 
 (defn process-sheet [sheet workbook]
