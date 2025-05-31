@@ -41,5 +41,10 @@
 
 (re-frame/reg-sub
  ::apartment-surface
- (fn [db]
-   (get-in db [:apartment :surface :value])))
+ (fn [db [_ id]]
+   (get-in db [:apartment id :surface :value]))) ;; Use another level which is the selected apartment id
+
+(re-frame/reg-sub
+ ::start-date
+ (fn [db [_ id]]
+   (get-in db [:apartment id :start-date :value])))

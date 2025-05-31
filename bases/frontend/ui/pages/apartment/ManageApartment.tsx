@@ -71,6 +71,14 @@ export default function ManageApartment(props) {
 
   const [drinkingwater, setValueDrinkingwater] = useState(props.drinkingwater || '');
   const [drinkingwaterError, setDrinkingwaterError] = useState('');
+
+  const [startDateError, setStartDateError] = useState('');
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'Add';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString(); // Customize format if needed
+  };
   
   return (
     <Card>
@@ -127,46 +135,45 @@ export default function ManageApartment(props) {
               </div>
             </div>
 
-            <div key="accountability" className="transition-colors hover:bg-gray-100 rounded p-2">
+            <div key="startDate" className="transition-colors hover:bg-gray-100 rounded p-2">
               <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
-                  <p className="font-medium">Gebäude/Haftpflicht</p>
+                  <p className="font-medium">Beginndatum</p>
                 </div>
 
-                {props.editAccountability ? (
+                {props.editStartDate ? (
                   <div className="relative mt-2">
-                    <Input
+                    <input
+                      type="date"
                       className="w-[200px] h-8 text-right text-sm"
-                      placeholder="Insurance paid"
                       ref={inputRef}
-                      defaultValue={props.accountability}
+                      defaultValue={props.startDate}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (!value) {
+                          setStartDateError('Invalid date');
+                        } else {
+                          setStartDateError('');
+                          setStartDate(value);
+                          props.onChangeStartDate(value);
+                        }
+                      }}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const inputVal = e.target.value;
-                    
-                          const result = amountSchema.safeParse(inputVal);
-                          if (!result.success) {
-                            setAccountabilityError(result.error.errors[0].message);
-                          } else {
-                            setAccountabilityError('');
-                            props.onChangePropertyAccountability(inputVal);
-                          }
-                        } else if (e.key === 'Escape') {
-                          props.cancelEditAccountability(false);
+                        if (e.key === 'Escape') {
+                          props.cancelEditStartDate(false);
                         }
                       }}
                     />
-                    {accountabilityError && (
-                      <p className="text-red-500 text-xs mt-1 text-right">
-                        {accountabilityError}
-                      </p>)}
+                    {startDateError && (
+                      <p className="text-red-500 text-xs mt-1 text-right">{startDateError}</p>
+                    )}
                   </div>
                 ) : (
                   <a
-                    onClick={props.onEditAccountability}
+                    onClick={props.onEditStartDate}
                     className="text-blue-600 underline cursor-pointer whitespace-nowrap h-8 flex items-center text-sm"
                   >
-                    {props.accountability ? `€ ${props.accountability}` : 'Add'}
+                    {props.startDate ? formatDate(props.startDate) : 'Add'}
                   </a>
                 )}  
               </div>
@@ -175,7 +182,7 @@ export default function ManageApartment(props) {
             <div key="property-tax" className="transition-colors hover:bg-gray-100 rounded p-2">
               <div className="flex items-center justify-between w-full">
                 <div className="flex w-full">
-                  <p className="font-medium">Grundsteuer</p>
+                  <p className="font-medium">Endedatum</p>
                 </div>
 
                 {props.editTax ? (
