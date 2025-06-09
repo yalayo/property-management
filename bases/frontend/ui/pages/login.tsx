@@ -9,27 +9,30 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Redirect, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 type PropertyFormValues = z.infer<typeof propertyFormSchema>;
 
-const loginSchema = "";
+const loginSchema = z.object({
+  username: z.string().min(3, { message: "Username must be at least 3 characters" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
 
-type LoginFormValues = null;
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login(props) {
-  const form = useForm<PropertyFormValues>({
-      defaultValues: {
-        name: "",
-        address: "",
-        city: "",
-        postalCode: "",
-        units: "1",
-        purchasePrice: "",
-        currentValue: "",
-      },
-    });
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
   const onSubmit = (data: LoginFormValues) => {
-    //loginMutation.mutate(data);
+    props.submitLogin(data);
   };
 
   return (
@@ -80,12 +83,20 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your username" defaultValue={props.user} onBlur={props.onChangeUser} />
+                        <Input
+                          placeholder="Enter your username"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);        // react-hook-form
+                            props.onChangeUser?.(e);  // tu función extra si la necesitas
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="password"
@@ -93,24 +104,26 @@ export default function Login(props) {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" defaultValue={props.password} onBlur={props.onChangePassword} />
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);      
+                            props.onChangePassword?.(e); 
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <Button
                   className="w-full"
-                  onClick={props.submitLogin}
+                  onClick={form.handleSubmit(onSubmit)}
                 >
-                  {false ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Logging in...
-                    </>
-                  ) : (
-                    "Login"
-                  )}
+                  Login
                 </Button>
               </div>
             </Form>
