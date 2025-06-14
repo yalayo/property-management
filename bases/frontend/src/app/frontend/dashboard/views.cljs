@@ -26,7 +26,7 @@
     [dashboard
      {:activeTab active-tab
       :onChangeActiveTab #(re-frame/dispatch [::events/change-active-tab %])
-      :submitLogout #(re-frame/dispatch [::events/log-out %])}
+      :submitLogout #(re-frame/dispatch [::events/log-out])}
      [dashboard-summary 
       {:id "dashboard-summary"
        :properties properties

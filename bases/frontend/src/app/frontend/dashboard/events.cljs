@@ -14,3 +14,13 @@
  (fn [db [_ id _]]
    (js/console.log "Id: " id)
    (assoc-in db [:dashboard :active-tab] id)))
+
+(re-frame/reg-event-fx
+ ::log-out
+ [local-storage-interceptor]
+ (fn [{:keys [db]} _]
+   {:db (-> db
+            (assoc-in [:user :token] nil)
+            (assoc-in [:user :user-loged-in?] false))})) 
+
+
