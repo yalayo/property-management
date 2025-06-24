@@ -1,7 +1,7 @@
 (ns app.property.core
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.params :as params]
+            [io.pedestal.http.params :as params] 
             [app.html.interface :as html]
             [app.excel.interface :as excel]
             [io.pedestal.http.ring-middlewares :as ring-mw]
@@ -19,16 +19,7 @@
 (defn property-component [config]
   (map->PropertyComponent config))
 
-(def properties-handler
-  {:name ::get
-   :enter (fn [context]
-            (assoc context :response {:status 200 :body (persistance/list-properties) :headers {"Content-Type" "text/edn"}}))})
-
-(def new-property-handler
-  {:name ::post
-   :enter (fn [context]
-            (persistance/create-property (-> context :request :edn-params))
-            (assoc context :response {:status 200}))})
+(defn create-property [])
 
 (def propertie-handler
     {:name ::get
@@ -51,24 +42,11 @@
                                               :headers {"HX-Redirect" "/clients"}
                                               :session {:tenants result}})))))})
 
-(def routes
-  #{["/api/properties"
-     :get properties-handler
-     :route-name ::properties]
-    ["/api/new-property"
-     :post [(body-params/body-params) params/keyword-params new-property-handler]
-     :route-name ::new-property]})
 
 (def internal-routes
-  #{["/properties"
-     :get properties-handler
-     :route-name ::properties]
-    ["/property/:name"
+  #{["/property/:name"
      :get [(body-params/body-params) params/keyword-params propertie-handler]
      :route-name ::propertie]
     ["/upload-property-details"
      :post [(ring-mw/multipart-params) post-upload-property-handler]
-     :route-name ::upload-property-details]
-    ["/new-property"
-     :post [(body-params/body-params) params/keyword-params new-property-handler]
-     :route-name ::new-property]})
+     :route-name ::upload-property-details]})

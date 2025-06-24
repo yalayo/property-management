@@ -40,9 +40,9 @@
 (defn transact-schema []
   (storage/transact-schema schema "properties"))
 
-(defn create-property [data]
+(defn create-property [data db]
   (let [property-data (conj [] (assoc data :id (str (java.util.UUID/randomUUID))))]
-    (storage/transact property-data "properties")))
+    (storage/transact property-data db)))
 
 (defn list-properties []
   (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "properties"))
