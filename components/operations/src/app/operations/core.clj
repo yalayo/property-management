@@ -16,4 +16,6 @@
 (defn store-operation [data]
   (let [kind (:kind data)]
     (case kind
-      :expense (persistance/store-expense data))))
+      :expense (persistance/store-expense data)
+      :start (persistance/store-ocupancy data)
+      :end (persistance/store-ocupancy data))))

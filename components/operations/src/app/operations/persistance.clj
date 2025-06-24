@@ -23,6 +23,21 @@
               :db/cardinality :db.cardinality/one}
              {:db/ident :expense/amount
               :db/valueType :db.type/number
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :ocupancy/start
+              :db/valueType :db.type/instant
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :ocupancy/end
+              :db/valueType :db.type/instant
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :ocupancy/year
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :ocupancy/tenant
+              :db/valueType :db.type/string
+              :db/cardinality :db.cardinality/one}
+             {:db/ident :ocupancy/apartment
+              :db/valueType :db.type/string
               :db/cardinality :db.cardinality/one}])
 
 (defn transact-schema []
@@ -43,3 +58,13 @@
                        :expense/property (:property data)
                        :expense/amount (:amount data)}]]
     (storage/transact expense-data "operations")))
+
+(defn store-ocupancy [data]
+  (let [year (:year data)
+        tenant (:tenant data)
+        apartment (:apartment data)
+        value (:value data)
+        kind (:kind data)]
+    (case kind
+     :start (storage/transact [{:ocupancy/start value :ocupancy/year year :ocupancy/tenant tenant :ocupancy/apartment apartment}] "operations")
+     :end (storage/transact [{:ocupancy/end value :ocupancy/year year :ocupancy/tenant tenant :ocupancy/apartment apartment}] "operations"))))
