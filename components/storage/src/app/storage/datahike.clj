@@ -16,7 +16,7 @@
 
 (defonce db-connections (atom {}))
 
-(defn get-connection [database-name]
+(defn get-connection-old [database-name]
   (let [config (get-config database-name)]
     (if-let [existing-conn (@db-connections database-name)]
       existing-conn
@@ -28,6 +28,15 @@
           conn)
         (catch ExceptionInfo e
           (mu/log :log-exception :exception e))))))
+
+(defn get-connection [database-name]
+  (let [config (get-config database-name)]
+    (try
+      (when-not (d/database-exists? config)
+        (d/create-database config))
+      (d/connect config)
+      (catch ExceptionInfo e
+        (mu/log :log-exception :exception e)))))
 
 (defn reset-connection! [database-name]
   (when-let [existing-conn (@db-connections database-name)]
@@ -49,40 +58,37 @@
         schema-to-transact (filter #(not (contains? existing-idents (:db/ident %))) schema)]
     (println "Schema to transact: " schema-to-transact)
     (when (seq schema-to-transact)
-      (d/transact conn schema-to-transact))))
+      (d/transact conn schema-to-transact)
+      (d/release conn))))
 
 (defn transact [data database-name]
   (try
-    (d/transact (get-connection database-name) data)
+    (let [conn (get-connection database-name)]
+      ;(transact-schema )
+      (d/transact conn data)
+      (d/release conn))
     (catch clojure.lang.ExceptionInfo e
-      (if (re-find #"has been closed\(\)" (ex-message e))
-        (do
-          (println "Connection was closed, resetting...")
-          (reset-connection! database-name)
-          (d/transact (get-connection database-name) data))
-        (throw e)))))
+      (println "EXCEPTION: " e)
+      (throw e))))
 
 (defn query [query database-name]
-  (try 
-    (d/q {:query query}
-       (d/db (get-connection database-name)))
+  (try
+    (let [conn (get-connection database-name)]
+      (d/q {:query query}
+           (d/db conn))
+      (d/release conn)) 
     (catch java.sql.SQLException e
-      (when (.contains (.getMessage e) "has been closed()")
-        (println "Connection was closed, resetting...")
-        (reset-connection! database-name)
-        (d/q {:query query}
-             (d/db (get-connection database-name)))
-        (throw e)))))
+      (println "EXCEPTION: " e)
+      (throw e))))
 
 (defn query-with-parameter [query database-name value]
   (try
-    (d/q {:query query} (d/db (get-connection database-name)) value)
+    (let [conn (get-connection database-name)]
+      (d/q {:query query} (d/db conn) value)
+      (d/release conn))
     (catch java.sql.SQLException e
-      (when (.contains (.getMessage e) "has been closed()")
-        (println "Connection was closed, resetting...")
-        (reset-connection! database-name)
-        (d/q {:query query} (d/db (get-connection database-name)) value)
-        (throw e)))))
+      (println "EXCEPTION: " e)
+      (throw e))))
 
 (comment
   "Experiment to transact only new schema"
