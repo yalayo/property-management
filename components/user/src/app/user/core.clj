@@ -65,10 +65,11 @@
 
 (defn sign-in [context]
   (let [params (-> context :request :edn-params)
-        {:keys [user password]} params
+        {:keys [id user password]} params
         account (persistance/get-account user)]
     (if (and account (bh/verify password (:password account)))
-      (let [claims {:email user
+      (let [claims {:id    id
+                    :email user
                     :exp   (+ (quot (System/currentTimeMillis) 1000) 86400)}  ;; Token expires in 24 hour
             token  (jwt/sign claims secret)]
         (assoc context :response {:status 200
@@ -82,4 +83,9 @@
 (comment
   "Create normal user"
   (create-normal-user "prueba@mail.com" "password")
+  )
+
+(comment
+  "Create admin user"
+  (create-admin-user "prueba@mail.com" "prueba")
   )

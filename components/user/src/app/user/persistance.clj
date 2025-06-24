@@ -1,5 +1,6 @@
 (ns app.user.persistance
-  (:require [app.storage.interface :as storage]))
+  (:require [app.storage.interface :as storage]
+            [clojure.string :as string]))
 
 (def schema [{:db/ident :id
               :db/valueType :db.type/string
@@ -40,7 +41,10 @@
   (storage/transact-schema schema "users"))
 
 (defn create-user [data]
-  (let [user-data (conj [] (assoc data :id (str (java.util.UUID/randomUUID))))]
+  (let [id (str (java.util.UUID/randomUUID))
+        user-data (conj [] (assoc data :id id))
+        db (string/replace id "-" "")]
+    (storage/transact-schema schema db)
     (storage/transact user-data "users")))
 
 (defn list-users []
