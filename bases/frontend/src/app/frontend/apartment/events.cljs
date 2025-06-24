@@ -158,8 +158,9 @@
    (let [parsed-val (js/parseFloat val)
          current-value (get-in db [:apartment id :value])
          apartment-id (get-in db [:apartment :selected-apartment])
-         amount (js/parseFloat val)
-         data {:kind :expense :category id :year (str (last-year)) :apartment apartment-id :amount amount}] 
+         ;; still in progress 
+         tenant-id ""
+         data {:kind :s :year (str (last-year)) :apartment apartment-id :tenant tenant-id :value ""}] 
      (if (= parsed-val (js/parseFloat current-value))
        {:db (assoc-in db [:apartment id :edit] false)}
        {:db (-> db
