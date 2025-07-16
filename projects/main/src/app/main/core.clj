@@ -1,7 +1,6 @@
 (ns app.main.core
   (:require [com.stuartsierra.component :as component]
             [com.brunobonacci.mulog :as mu]
-            [app.storage.interface :as storage]
             [app.route.interface :as route]
             [app.server.core :as server]
             [app.flags.interface :as flags]
@@ -41,7 +40,6 @@
 
 (defn create-system [config]
   (component/system-map
-   :datasource (storage/datasource-component config)
    :user (user/user-component config)
    :survey (survey/survey-component config)
    :property (property/property-component config)
@@ -52,10 +50,10 @@
    :routes (route/route-component {:config (:routes config)})
    :server (component/using
             (server/server-component {:port 8080 :active-route :external})
-            [:datasource :routes])
+            [:routes])
    :internal-server (component/using
             (server/server-component {:port 9090 :active-route :internal})
-            [:datasource :routes])))
+            [:routes])))
 
 (defn -main []
   (init-logging)
