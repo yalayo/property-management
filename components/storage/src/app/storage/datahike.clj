@@ -5,14 +5,25 @@
   (:import (clojure.lang ExceptionInfo)))
 
 (defn get-config [dabase-name]
-  {:store {:backend :jdbc
-           :dbtype "postgresql"
-           :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
-           :port 5432
-           :user "user"
-           :password (System/getenv "DB_PASSWORD")
-           :table dabase-name
-           :dbname "property-management"}})
+  (let [environment (System/getenv "ENVIRONMENT")]
+    (case environment
+      "prod" {:store {:backend :jdbc
+                      :dbtype "postgresql"
+                      :host (System/getenv "DB_HOST")
+                      :port 5432
+                      :user "user"
+                      :password (System/getenv "DB_PASSWORD")
+                      :table dabase-name
+                      :dbname "property-management"}}
+      "local" #_{:store {:backend :mem :id dabase-name}} {:store {:backend :file :path "tmp/file-storage"}}
+      {:store {:backend :jdbc
+               :dbtype "postgresql"
+               :host "localhost"
+               :port 5432
+               :user (System/getenv "DB_USER")
+               :password (System/getenv "DB_PASSWORD")
+               :table dabase-name
+               :dbname "property-management"}})))
 
 (defonce db-connections (atom {}))
 
