@@ -36,3 +36,4 @@ docker/postgresql/*
 .vscode/*
 .env
 *.pdf
+tmp/*
