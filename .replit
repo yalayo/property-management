@@ -1,6 +1,6 @@
 hidden = [".clj-kondo", ".lsp", ".config"]
-
-modules = ["clojure-1.11"]
+modules = ["nodejs-20", "clojure-1.11", "web"]
+run = "npm run dev"
 
 [nix]
 channel = "stable-24_05"
@@ -9,3 +9,6 @@ channel = "stable-24_05"
 localPort = 8080
 externalPort = 80
 exposeLocalhost = true
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
