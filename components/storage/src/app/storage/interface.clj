@@ -3,7 +3,7 @@
             [app.storage.datahike :as datahike]))
 
 (defn datasource-component [config]
-  (core/datasource-component config))
+  (core/storage-component config))
 
 (defn transact-schema [data database-name]
   (datahike/transact-schema data database-name))
