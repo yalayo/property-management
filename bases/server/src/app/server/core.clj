@@ -3,9 +3,7 @@
             [com.brunobonacci.mulog :as mu]
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
-            [io.pedestal.http.ring-middlewares :as middlewares]
-            [io.pedestal.interceptor :refer [interceptor]]
-            [jdbc-ring-session.core :as jdbc-ring-session]))
+            [io.pedestal.interceptor :refer [interceptor]]))
 
 (defn cors-response [origin]
   {"Access-Control-Allow-Origin" origin
@@ -31,12 +29,11 @@
              (assoc-in context [:response :headers "Content-Security-Policy"]
                        "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self';"))}))
 
-(defrecord ServerComponent [config datasource routes]
+(defrecord ServerComponent [config routes]
   component/Lifecycle
   
   (start [component]
-         (let [session-interceptor (middlewares/session {:store (jdbc-ring-session/jdbc-store (datasource) {:table :session_store})})
-               server (-> {:env :prod
+         (let [server (-> {:env :prod
                            ::http/routes (route/expand-routes (get-in routes [:routes (:active-route config)]))
                            ::http/resource-path "/public"
                            ::http/type :immutant
@@ -44,7 +41,6 @@
                            ::http/port (:port config)
                            ::http/secure-headers nil}
                           (http/default-interceptors)
-                          (update ::http/interceptors concat [session-interceptor])
                           (http/create-server)
                           (http/start))]
            (mu/log :server-started :message (str "Starting server with " (name (:active-route config)) " routes!"))
