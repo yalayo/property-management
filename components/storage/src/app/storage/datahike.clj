@@ -4,7 +4,7 @@
             [com.brunobonacci.mulog :as mu])
   (:import (clojure.lang ExceptionInfo)))
 
-(defn get-config [dabase-name]
+(defn get-config [database-name]
   (let [environment (System/getenv "ENVIRONMENT")]
     (case environment
       "prod" {:store {:backend :jdbc
@@ -13,16 +13,16 @@
                       :port 5432
                       :user "user"
                       :password (System/getenv "DB_PASSWORD")
-                      :table dabase-name
+                      :table database-name
                       :dbname "property-management"}}
-      "local" #_{:store {:backend :mem :id dabase-name}} {:store {:backend :file :path "tmp/file-storage"}}
+      "local" #_{:store {:backend :mem :id database-name}} {:store {:backend :file :path (str "tmp/" database-name)}}
       {:store {:backend :jdbc
                :dbtype "postgresql"
                :host "localhost"
                :port 5432
                :user (System/getenv "DB_USER")
                :password (System/getenv "DB_PASSWORD")
-               :table dabase-name
+               :table database-name
                :dbname "property-management"}})))
 
 (defonce db-connections (atom {}))
@@ -86,8 +86,7 @@
   (try
     (let [conn (get-connection database-name)]
       (d/q {:query query}
-           (d/db conn))
-      (d/release conn)) 
+           (d/db conn))) 
     (catch java.sql.SQLException e
       (println "EXCEPTION: " e)
       (throw e))))
@@ -95,8 +94,7 @@
 (defn query-with-parameter [query database-name value]
   (try
     (let [conn (get-connection database-name)]
-      (d/q {:query query} (d/db conn) value)
-      (d/release conn))
+      (d/q {:query query} (d/db conn) value))
     (catch java.sql.SQLException e
       (println "EXCEPTION: " e)
       (throw e))))
@@ -127,4 +125,5 @@
   (seq schema-to-transact)
 
   (when (seq schema-to-transact)
-    (d/transact conn schema-to-transact)))
+    (d/transact conn schema-to-transact))
+  )
