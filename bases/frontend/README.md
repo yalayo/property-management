@@ -16,6 +16,12 @@ Use this command to translate the jsx, tsx, ts code to js (you can adapt it late
 Open a terminal and run the following command:
 npx babel ./ui --out-dir ./js --extensions ".ts,.tsx,.jsx" --ignore "node_modules" --watch
 
+## Run all commands at once
+cd bases/frontend & npx babel ./ui --out-dir ./js --extensions ".ts,.tsx,.jsx" --ignore "node_modules" --watch & npx tailwindcss -i ./ui/index.css -o ./resources/public/css/index.css --watch & npm run dev
+
+## Run the repl via command line
+clj -M:dev:repl
+
 ## Access the frontend
 There are three different sections. You can open each of them with the following links
 http://localhost:8080/index.html
