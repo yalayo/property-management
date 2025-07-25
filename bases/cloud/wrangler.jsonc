@@ -1,0 +1,27 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "containers-examples-v1",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-05-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "containers": [
+    {
+      "class_name": "PropertyManagementContainer",
+      "image": "./containers/python-fastapi/Dockerfile",
+      "max_instances": 3,
+      "name": "property-managemnt-container"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      
+    ]
+  }
+}
