@@ -15,36 +15,19 @@
         name = "property-management";
         tag = "latest";
 
-        # Include your app source code
-        contents = [
-          (pkgs.lib.cleanSource ../..)
-          (pkgs.lib.cleanSource ./nixfs)
-        ];
+        # Use NixFS docker image as the base
+        fromImage = "explore-bzl/nixfs:latest";  
 
-        # Install required packages for your app + nixfs
+        # Copy your Clojure app into the image
+        copyToRoot = pkgs.lib.cleanSource ../..;  
+
         config = {
-          Env = {
-            PATH = "/bin:/usr/bin:/usr/local/bin";
-          };
-
-          Cmd = [
+            Cmd = [
             "bash" "-c" ''
-              # Mount nixfs at /nix/store
-              mkdir -p /nix/store
-              ./nixfs/nixfs --mount /nix/store &
-
-              # Run your Clojure app
-              ./run.sh
+                ./run.sh
             ''
-          ];
+            ];
         };
-
-        # Optional: install dependencies inside the image
-        extraCommands = ''
-          ${pkgs.bash}/bin/bash --version
-          ${pkgs.openjdk}/bin/java -version
-          ${pkgs.curl}/bin/curl --version
-        '';
-      };
+        };
     };
 }
