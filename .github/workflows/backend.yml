@@ -1,0 +1,66 @@
+name: Deploy to k3s
+
+on:
+  workflow_dispatch:
+  ##push:
+    ##branches: [ main ]
+    ##paths:
+      #- '.github/workflows/main.yml'
+      #- 'bases/server/**'
+      #- 'components/**'
+      #- 'projects/main/**'
+
+jobs:
+  deploy:
+    needs: infrastructure
+    name: Deploy to OCI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+      
+      - name: Install Nix
+        uses: cachix/install-nix-action@v26
+
+      - name: Build Docker image with Nix
+        run: |
+          cd ./projects/main/nix
+          nix build .#dockerImage
+
+      - name: Copy image to k3s node
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.K3S_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: result
+          target: /tmp/clj-nixfs-demo
+
+      - name: Load image into k3s
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.K3S_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Importing Docker image into k3s containerd..."
+            sudo ctr -n k8s.io images import /tmp/clj-nixfs-demo
+
+      - name: Apply Kubernetes manifests
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.K3S_HOST }}
+          username: ${{ secrets.K3S_USER }}
+          key: ${{ secrets.K3S_SSH_KEY }}
+          script: |
+            echo "Applying Kubernetes deployment..."
+            sudo k3s kubectl apply -f ./projects/main/k8s/deployment.yaml
