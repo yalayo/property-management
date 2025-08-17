@@ -17,8 +17,8 @@
 
         # Include your app source code
         contents = [
-          ./                   # your Clojure app source
-          ./nixfs              # path to nixfs repo/code
+          (pkgs.lib.cleanSource ./../../)
+          (pkgs.lib.cleanSource ./nixfs)
         ];
 
         # Install required packages for your app + nixfs
