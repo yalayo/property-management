@@ -17,7 +17,7 @@
 
         # Include your app source code
         contents = [
-          (pkgs.lib.cleanSource ./../../)
+          (pkgs.lib.cleanSource ../../)
           (pkgs.lib.cleanSource ./nixfs)
         ];
 
