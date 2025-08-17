@@ -61,7 +61,24 @@
       '';
 
       config = {
-        Cmd = [ "bash" "-c" "./run.sh" ];
+        # JVM command to start your Clojure app
+        Cmd = [
+            "java"
+            "-Duser.language=de"
+            "-Duser.country=DE"
+            "-Xms3g"
+            "-Xmx4g"
+            "-Xlog:gc"
+            "-XX:+UseG1GC"
+            "-cp"
+            "/app/classes:/app/dependency/*"
+            "app.main.core"   # your main Clojure class
+        ];
+
+        Env = [
+            "LANG=de_DE.UTF-8"
+            "LC_ALL=de_DE.UTF-8"
+        ];
       };
     };
   };
