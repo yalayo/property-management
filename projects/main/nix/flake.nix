@@ -10,12 +10,52 @@
     pkgsAArch = import nixpkgs { system = "aarch64-linux"; crossSystem = { config = "aarch64-linux"; }; };
     in {
         packages.x86_64-linux.default = pkgsX86.hello; # optional
+        packages.aarch64-linux.nixfsImage = pkgsAArch.dockerTools.buildImage {
+            name = "explore-bzl/nixfs";
+            tag = "latest";
+
+            copyToRoot = pkgsAArch.buildEnv {
+                name = "rootfs";
+                paths = [
+                    # include all your packages
+                    pkgsAArch.python310Full
+                    pkgsAArch.python310Packages.fusepy
+                    pkgsAArch.python310Packages.urllib3
+                    pkgsAArch.fuse
+                    pkgsAArch.cacert
+
+                    # add your custom files
+                    copyToRoot = pkgsAArch.runCommand "nixfs-root" { } ''
+                        mkdir -p $out/bin
+                        cp ${./rootfs/bin/nixfs.py} $out/bin/storefs
+                    '';
+                ];
+            };
+
+            config = {
+                Env = [
+                "SSL_CERT_FILE=${pkgsAArch.cacert}/etc/ssl/certs/ca-bundle.crt"
+                "PYTHONPATH=${pkgsAArch.python310Packages.fusepy}/${pkgsAArch.python310Packages.urllib3}/lib/python3.10/site-packages"
+                ];
+                Entrypoint = [ "/bin/storefs" ];
+            };
+        };
+
+        # Now build your property-management image FROM nixfs
         packages.aarch64-linux.dockerImage = pkgsAArch.dockerTools.buildImage {
             name = "property-management";
             tag = "latest";
-            fromImage = "explore-bzl/nixfs:latest";
-            copyToRoot = pkgsAArch.lib.cleanSource ../..;
-            config = { Cmd = ["bash" "-c" "./run.sh"]; };
+
+            fromImage = self.packages.aarch64-linux.nixfsImage;
+
+            copyToRoot = pkgsAArch.runCommand "property-management-root" { } ''
+                mkdir -p $out
+                cp -r ${pkgsAArch.lib.cleanSource ../..}/* $out/
+            '';
+
+            config = {
+                Cmd = [ "bash" "-c" "./run.sh" ];
+            };
         };
     };
 }
