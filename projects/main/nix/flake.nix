@@ -17,7 +17,7 @@
 
         # Include your app source code
         contents = [
-          .                     # your Clojure app source
+          ./                   # your Clojure app source
           ./nixfs              # path to nixfs repo/code
         ];
 
