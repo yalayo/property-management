@@ -37,6 +37,8 @@
 
         # Copy custom file
         cp ${./rootfs/bin/nixfs.py} $out/bin/storefs
+        sed -i 's/\r$//' $out/bin/storefs
+        chmod +x $out/bin/storefs
       '';
 
       config = {
@@ -58,6 +60,10 @@
       copyToRoot = pkgsAArch.runCommand "property-management-root" { } ''
         mkdir -p $out
         cp -r ${pkgsAArch.lib.cleanSource ../..}/* $out/
+
+        # Fix line endings for scripts
+        find $out -type f -name '*.sh' -o -name '*.py' | xargs sed -i 's/\r$//'
+        find $out -type f -name '*.sh' -o -name '*.py' | xargs chmod +x
       '';
 
       config = {
