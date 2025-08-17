@@ -23,7 +23,16 @@ jobs:
           chmod 600 ~/.kube/config
       - name: Install kubectl
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          # Fetch stable version
+          K8S_VER=$(curl -fsSL https://dl.k8s.io/release/stable.txt)
+
+          # Check if we got a version
+          echo "Stable version: $K8S_VER"
+
+          # Download kubectl
+          curl -LO "https://dl.k8s.io/release/${K8S_VER}/bin/linux/amd64/kubectl"
+
+          # Make it executable and move
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
       
