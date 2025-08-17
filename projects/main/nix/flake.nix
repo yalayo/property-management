@@ -5,29 +5,17 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }: 
-    let
-      system = "aarch64-linux";
-      pkgs = import nixpkgs { inherit system; };
-    in
-    {
-      dockerImage = pkgs.dockerTools.buildImage {
-        name = "property-management";
-        tag = "latest";
-
-        # Use NixFS docker image as the base
-        fromImage = "explore-bzl/nixfs:latest";  
-
-        # Copy your Clojure app into the image
-        copyToRoot = pkgs.lib.cleanSource ../..;  
-
-        config = {
-            Cmd = [
-            "bash" "-c" ''
-                ./run.sh
-            ''
-            ];
-        };
+  outputs = { self, nixpkgs }: let
+    pkgsX86 = import nixpkgs { system = "x86_64-linux"; };
+    pkgsAArch = import nixpkgs { system = "aarch64-linux"; };
+    in {
+        packages.x86_64-linux.default = pkgsX86.hello; # optional
+        packages.aarch64-linux.dockerImage = pkgsAArch.dockerTools.buildImage {
+            name = "property-management";
+            tag = "latest";
+            fromImage = "explore-bzl/nixfs:latest";
+            copyToRoot = pkgsAArch.lib.cleanSource ../..;
+            config = { Cmd = ["bash" "-c" "./run.sh"]; };
         };
     };
 }
