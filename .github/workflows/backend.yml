@@ -38,6 +38,11 @@ jobs:
       
       - name: Install Nix
         uses: cachix/install-nix-action@v26
+        with:
+          extra_nix_config: |
+            allow-import-from-derivation = true
+            system = x86_64-linux
+            extra-platforms = aarch64-linux
 
       - name: Set up QEMU for cross-build
         run: |
