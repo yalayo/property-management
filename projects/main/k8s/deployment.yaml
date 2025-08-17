@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: property-management
+  labels:
+    app: property-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: property-management
+  template:
+    metadata:
+      labels:
+        app: property-management
+    spec:
+      containers:
+        - name: property-management
+          image: property-management:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000   # adjust to your Clojure app port
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: property-management
+spec:
+  selector:
+    app: property-management
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080   # must match containerPort
+  type: ClusterIP
