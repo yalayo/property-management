@@ -7,7 +7,7 @@
 
   outputs = { self, nixpkgs }: let
     pkgsX86 = import nixpkgs { system = "x86_64-linux"; };
-    pkgsAArch = import nixpkgs { system = "aarch64-linux"; };
+    pkgsAArch = import nixpkgs { system = "aarch64-linux"; crossSystem = { config = "aarch64-linux"; }; };
     in {
         packages.x86_64-linux.default = pkgsX86.hello; # optional
         packages.aarch64-linux.dockerImage = pkgsAArch.dockerTools.buildImage {
