@@ -12,7 +12,6 @@ on:
 
 jobs:
   deploy:
-    needs: infrastructure
     name: Deploy to OCI
     runs-on: ubuntu-latest
     steps:
