@@ -1,5 +1,6 @@
 (ns app.operations.persistance
-  (:require [app.storage.interface :as storage]))
+  (:require [app.storage.interface :as storage]
+            [datahike.api :as d]))
 
 (def schema [{:db/ident :electricity}
              {:db/ident :accountability}
@@ -68,3 +69,44 @@
     (case kind
      :start (storage/transact [{:ocupancy/start value :ocupancy/year year :ocupancy/tenant tenant :ocupancy/apartment apartment}] "operations")
      :end (storage/transact [{:ocupancy/end value :ocupancy/year year :ocupancy/tenant tenant :ocupancy/apartment apartment}] "operations"))))
+
+(comment
+  (defn get-connection []
+    (let [config {:store {:backend :mem :id "test"}}]
+      (when-not (d/database-exists? config)
+        (d/create-database config))
+      (d/connect config)))
+
+
+
+  (def conn (get-connection))
+
+  (d/transact conn schema)
+
+  ;; Getting the idents of the schema already in the database
+  (into #{} (map first (d/q '[:find ?ident
+                              :where [?e :db/ident ?ident]]
+                            (d/db conn))))
+  
+  (defn store-expense [data]
+    (let [expense-id (str (java.util.UUID/randomUUID))
+          expense-data [{:expense/id expense-id
+                         :expense/category (:category data)
+                         :expense/year (:year data)
+                         :expense/property (:property data)
+                         :expense/amount (:amount data)}]]
+      (d/transact conn expense-data)))
+  
+  ;; Store an expense
+  (store-expense {:category :garbage :year "2022" :property "property-2" :amount 120.80})
+  
+  (d/q '[:find [(pull ?tg [*]) ...]
+         :where
+         [?tg :expense/property ?tgn]]
+       @conn)
+  
+  ;; Get category-db-id and amount given a property-id
+  (d/q '[:find ?property ?category ?amount
+         :where [?e :expense/property "property-2"] [?e :expense/property ?property] [?e :expense/category ?category] [?e :expense/amount ?amount]]
+       (d/db conn))
+  )
