@@ -16,6 +16,7 @@
             fromImage = "explore-bzl/nixfs:latest";
             copyToRoot = pkgsAArch.lib.cleanSource ../..;
             config = { Cmd = ["bash" "-c" "./run.sh"]; };
+            platforms = ["aarch64-linux"];
         };
     };
 }

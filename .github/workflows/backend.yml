@@ -39,10 +39,10 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v26
 
-      - name: Set up QEMU for aarch64
+      - name: Set up QEMU for cross-build
         run: |
           sudo apt-get update
-          sudo apt-get install -y qemu-user-static
+          sudo apt-get install -y qemu-user-static binfmt-support
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Build Docker image with Nix
