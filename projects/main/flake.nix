@@ -22,8 +22,10 @@
         # For running in production (without compilation)
         apps.default = {
           type = "app";
-          program = "${pkgs.clojure}/bin/clojure";
-          args = [ "-M" "-m" "app.main.core" ];
+          program = pkgs.lib.getExe (pkgs.writeShellScriptBin "run-myapp" ''
+            cd ${./.}
+            exec ${pkgs.clojure}/bin/clojure -M -m app.main.core
+          '');
         };
       });
 }
