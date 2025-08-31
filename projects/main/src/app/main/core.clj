@@ -15,7 +15,7 @@
             [app.survey.interface :as survey]))
 
 (def config {:db-spec {:dbtype "postgres"
-                       :host (if (= (System/getenv "ENVIRONMENT") "prod") (System/getenv "DB_HOST") "localhost")
+                       :host (System/getenv "DB_HOST")
                        :dbname "property-management"
                        :username "user"
                        :password (System/getenv "DB_PASSWORD")
