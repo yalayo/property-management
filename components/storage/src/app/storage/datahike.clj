@@ -7,20 +7,12 @@
 (defn get-config [database-name]
   (let [environment (System/getenv "ENVIRONMENT")]
     (case environment
-      "prod" {:store {:backend :jdbc
-                      :dbtype "postgresql"
-                      :host (System/getenv "DB_HOST")
-                      :port 5432
-                      :user "user"
-                      :password (System/getenv "DB_PASSWORD")
-                      :table database-name
-                      :dbname "property-management"}}
       "local" #_{:store {:backend :mem :id database-name}} {:store {:backend :file :path (str "tmp/" database-name)}}
       {:store {:backend :jdbc
                :dbtype "postgresql"
-               :host "localhost"
+               :host (System/getenv "DB_HOST")
                :port 5432
-               :user (System/getenv "DB_USER")
+               :user "user"
                :password (System/getenv "DB_PASSWORD")
                :table database-name
                :dbname "property-management"}})))
