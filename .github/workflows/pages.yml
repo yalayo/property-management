@@ -1,0 +1,56 @@
+name: Cloudflare Pages
+
+on:
+    push:
+      branches: [ main ]
+      paths:
+        - '.github/workflows/pages.yml'
+        - 'bases/frontend/**'
+        #- 'projects/cloudflare/**'
+jobs:
+  build:
+    name: Build with shadow-cljs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Build the application
+        run: |
+            cd ./bases/frontend/
+            npm install
+            npx babel ./ui --out-dir ./js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
+            npm run release
+            cp -R resources/public/ out/
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: compilation
+            path: ./bases/frontend/out/
+
+  deploy:
+    name: Deploy the app
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: compilation
+      # Deploy to Cloudflare Pages
+      - name: Deploy frontend
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: "4.7.0"
+          workingDirectory: "./"
+          command: pages deploy ./public --project-name pmanagement-frontend
