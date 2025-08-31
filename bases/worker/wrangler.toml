@@ -1,4 +1,4 @@
-name = "linkedin-autoposter-ai"
+name = "pmanagement-backend"
 main = "out/main.js"
 compatibility_date = "2025-02-04"
 assets = { directory = "./public" }
