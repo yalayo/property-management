@@ -11,5 +11,5 @@ enabled = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "autoposter-db"
+database_name = "landlord-db"
 database_id = "{{db id}}"
