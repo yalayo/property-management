@@ -1,7 +1,13 @@
 name = "pmanagement-backend"
 main = "out/main.js"
 compatibility_date = "2025-02-04"
+compatibility_flags = ["nodejs_compat"]
+
+# global environment variables
+vars = { ENV = "dev" }
+
 assets = { directory = "./public" }
+
 #routes = [
 #    { pattern = "your-domain.com", custom_domain = true },
 #]

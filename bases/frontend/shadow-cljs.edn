@@ -1,8 +1,8 @@
 {:deps true
  :builds {:app
           {:target :browser
-           :output-dir "../worker/public/js"
-           :asset-path "/js"
+           :output-dir "../worker/public/landing"
+           :asset-path "/landing"
            :modules {:app {:init-fn app.frontend.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload] 
                       :watch-dir "../worker/public"}
@@ -15,8 +15,8 @@
            :optimizations :none}
           :survey
           {:target :browser
-           :output-dir "../worker/public/survey/js"
-           :asset-path "/survey/js"
+           :output-dir "../worker/public/survey"
+           :asset-path "/survey"
            :modules {:app {:init-fn app.frontend.survey.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload]
                       :watch-dir "../worker/public/survey"}
@@ -29,8 +29,8 @@
            :optimizations :none}
           :platform
           {:target :browser
-           :output-dir "../worker/public/platform/js"
-           :asset-path "/platform/js"
+           :output-dir "../worker/public/platform"
+           :asset-path "/platform"
            :modules {:app {:init-fn app.frontend.platform.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload]
                       :watch-dir "../worker/public/platform"}
