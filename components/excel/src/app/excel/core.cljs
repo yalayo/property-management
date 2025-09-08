@@ -1,5 +1,6 @@
 (ns app.excel.core
-  (:require ["exceljs" :as excel]))
+  (:require ["exceljs" :as excel]
+            [clojure.string :as str]))
 
 (defn get-cell-value [cell]
   (when cell
@@ -14,15 +15,15 @@
         :else nil))))
 
 (defn get-headers [^js worksheet name-range]
-  (->> (.getCell worksheet name-range)
-       (get-cell-value)
-       (clojure.string/trim)))
+  (->> (.getRow worksheet name-range)
+       (.-values)
+       (map #(some-> % str str/trim))))
 
 ;; if you don’t have named ranges, iterate the first row
 (defn get-headers-from-row [^js worksheet row-num]
   (->> (.getRow worksheet row-num)
        (.-values)
-       (map #(when % (clojure.string/trim (str %))))))
+       (map #(when % (str/trim (str %))))))
 
 ;; Should't change much
 (def attributes [{:name "last-name" :cell "B3"}
@@ -80,9 +81,9 @@
     (-> (.. workbook -xlsx (load data))
         (.then
          (fn [^js wb]
-           (js/console.log "Result:" (->> (array-seq (.-worksheets wb))
-                (filter #(clojure.string/starts-with? (.-name %) "W"))
-                (map process-sheet))))))))
+           (->> (array-seq (.-worksheets wb))
+                (filter #(str/starts-with? (.-name %) "W"))
+                (map process-sheet)))))))
                   
 #_(defn process [data]
   (let [workbook (excel/Workbook.)]
