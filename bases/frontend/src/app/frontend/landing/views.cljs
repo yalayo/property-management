@@ -1,6 +1,7 @@
 (ns app.frontend.landing.views
   (:require [reagent.core  :as r]
             [re-frame.core :as re-frame]
+            [app.frontend.letter.views :as letter]
             ["/components/landing/Header$default" :as header-js]
             ["/components/landing/Footer$default" :as footer-js]
             ["/components/landing/Hero$default" :as hero-js]
@@ -15,8 +16,10 @@
 
 (defn landing-component []
   [:<>
-   [header]
-   #_[hero]
+   #_[header]
    [features]
+   [:div.max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8.py-12
+    (letter/letter-data-upload-component)] 
+   #_[hero] 
    [pricing]
    [footer]])
