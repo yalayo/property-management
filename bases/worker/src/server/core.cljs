@@ -1,11 +1,24 @@
 (ns server.core
 	(:require ["cloudflare:workers" :refer [DurableObject]]
-						[reitit.core :as r]
-						[lib.async :refer [js-await]]
-						[server.cf.durable-objects :as do]
-						[server.db :as db]
-						[server.cf :as cf :refer [defclass]]
-						[server.schema :as schema]))
+			  [reitit.core :as r]
+			  [lib.async :refer [js-await]]
+			  [server.cf.durable-objects :as do]
+			  [server.db :as db]
+			  [server.cf :as cf :refer [defclass]]
+			  [server.schema :as schema]
+      		  [app.excel.interface :as excel]))
+
+(def base-routes
+  ["/api"
+   ["/todos" ::todos]
+   ["/todos/:id" ::todo]
+   ["/presence" ::presence]])
+
+(def routes
+  (conj base-routes (excel/routes)))
+
+(def router
+  (r/router routes))
 
 ;; usage example of Durable Objects as a short-lived state
 ;; for user presence tracking in multiplayer web app
@@ -23,20 +36,21 @@
 				(do/storage-delete+ ctx id))
 			(do/storage-list+ ctx))))
 
-(def router
-	(r/router
-		["/api"
-		 ["/todos" ::todos]
-		 ["/todos/:id" ::todo]
-		 ["/presence" ::presence]]))
-
 ;; args:
 ;;  route: Reitit route data
 ;;  request: js/Request object https://developers.cloudflare.com/workers/runtime-apis/request/
 ;;  env: Environment object containing env vars and bindings to Cloudflare services https://developers.cloudflare.com/workers/configuration/environment-variables/
 ;;  ctx: The Context API provides methods to manage the lifecycle of your Worker https://developers.cloudflare.com/workers/runtime-apis/context/
 (defmulti handle-route (fn [route request env ctx]
-												 [(-> route :data :name) (keyword (.-method ^js request))]))
+                         [(-> route :data :name) (keyword (.-method ^js request))]))
+
+(defmethod handle-route [:post-upload-details :POST]
+  [route request env ctx]
+  (js-await [form-data (.formData request)
+             file (.get form-data "file")
+             buf (.arrayBuffer file)
+             result (excel/process buf)]
+            (cf/response-edn {:result result} {:status 200})))
 
 (defmethod handle-route [::todos :GET] [route request env ctx]
 	(js-await [{:keys [success results]} (db/query+ {:select [:*]
