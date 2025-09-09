@@ -9,4 +9,4 @@
     [:<>
      (if user-loged-in?
        (dashboard/dashboard-component)
-       (user-view/login-component))]))
+       (user-view/access-component))]))

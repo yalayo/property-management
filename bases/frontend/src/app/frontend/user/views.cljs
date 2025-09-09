@@ -9,10 +9,19 @@
 (def login (r/adapt-react-class login-js))
 (def register (r/adapt-react-class register-js))
 
-(defn login-component []
-  [login 
-   {:user @(re-frame/subscribe [::subs/sign-in-form :user])
-    :onChangeUser #(re-frame/dispatch [::events/update-sign-in :user (-> % .-target .-value)])
-    :password @(re-frame/subscribe [::subs/sign-in-form :password])
-    :onChangePassword #(re-frame/dispatch [::events/update-sign-in :password (-> % .-target .-value)])
-    :submitLogin #(re-frame/dispatch [::events/sign-in])}])
+(defn access-component []
+  (let [active-form @(re-frame/subscribe [::subs/active-form])]
+    (case active-form
+      :sign-in [login
+                {:user @(re-frame/subscribe [::subs/sign-in-form :user])
+                 :onChangeUser #(re-frame/dispatch [::events/update-sign-in :user (-> % .-target .-value)])
+                 :password @(re-frame/subscribe [::subs/sign-in-form :password])
+                 :onChangePassword #(re-frame/dispatch [::events/update-sign-in :password (-> % .-target .-value)])
+                 :submitLogin #(re-frame/dispatch [::events/sign-in])
+                 :showSignUp #(re-frame/dispatch [::events/show-sign-up])}]
+      :sign-up [register
+                {:user @(re-frame/subscribe [::subs/sign-in-form :user])
+                 :onChangeUser #(re-frame/dispatch [::events/update-sign-in :user (-> % .-target .-value)])
+                 :password @(re-frame/subscribe [::subs/sign-in-form :password])
+                 :onChangePassword #(re-frame/dispatch [::events/update-sign-in :password (-> % .-target .-value)])
+                 :submitLogin #(re-frame/dispatch [::events/sign-in])}])))

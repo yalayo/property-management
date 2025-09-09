@@ -70,3 +70,9 @@
  (fn [{:keys [_]} [_ error]]
    (js/console.error "Signup failed:" error)
    {}))
+
+(re-frame/reg-event-db
+ ::show-sign-up
+ [local-storage-interceptor]
+ (fn [db [_ _]]
+   (assoc-in db [:user :active-form] :sign-up)))
