@@ -14,6 +14,12 @@
  (fn [db [_ id val]]
    (assoc-in db [:user :sign-in :form id] val)))
 
+(re-frame/reg-event-db
+ ::update-sign-up
+ [local-storage-interceptor]
+ (fn [db [_ id val]]
+   (assoc-in db [:user :sign-up :form id] val)))
+
 (re-frame/reg-event-fx
  ::sign-in
  (fn [{:keys [db]} _]

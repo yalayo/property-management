@@ -10,7 +10,6 @@ import { Redirect, Link } from "wouter";
 import { Loader2 } from "lucide-react";
 
 const registerSchema = z.object({
-  username: z.string().min(3, { message: "Username must be at least 3 characters" }),
   email: z.string().email({ message: "Please enter a valid email" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   fullName: z.string().optional(),
@@ -18,7 +17,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export default function Register() {
+export default function Register(props) {
   
   // Redirect to dashboard if already logged in
   /*if (user) {
@@ -27,7 +26,6 @@ export default function Register() {
 
   const form = useForm<RegisterFormValues>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       fullName: "",
@@ -35,7 +33,7 @@ export default function Register() {
   });
 
   const onSubmit = (data: RegisterFormValues) => {
-    //registerMutation.mutate(data);
+    props.submitRegister(data);
   };
 
   return (
@@ -78,20 +76,7 @@ export default function Register() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input placeholder="johndoe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
                   name="email"
@@ -99,7 +84,13 @@ export default function Register() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john.doe@example.com" {...field} />
+                        <Input 
+                        placeholder="john.doe@example.com" 
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);        // react-hook-form
+                          props.onChangeUser?.(e);  // tu función extra si la necesitas
+                        }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -112,12 +103,19 @@ export default function Register() {
                     <FormItem>
                       <FormLabel>Full Name (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input 
+                        placeholder="John Doe" 
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);        // react-hook-form
+                          props.onChangeName?.(e);  // tu función extra si la necesitas
+                        }} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="password"
@@ -125,16 +123,23 @@ export default function Register() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
+                        <Input 
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);        // react-hook-form
+                            props.onChangePassword?.(e);  // tu función extra si la necesitas
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button 
-                  type="submit" 
+                <Button
                   className="w-full"
-                  disabled={false}
+                  onClick={form.handleSubmit(onSubmit)}
                 >
                   {false ? (
                     <>
@@ -145,13 +150,13 @@ export default function Register() {
                     "Register"
                   )}
                 </Button>
-              </form>
+              </div>
             </Form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-muted-foreground text-center">
               Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline" onClick={props.showSignIn}>
                 Login
               </Link>
             </div>
