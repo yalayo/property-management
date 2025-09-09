@@ -5,6 +5,7 @@
 	metosin/reitit {:mvn/version "0.8.0-alpha1"}
 	com.github.seancorfield/honeysql {:mvn/version "2.6.1270"}
 	metosin/malli {:mvn/version "0.17.0"}
+    app/user {:local/root "../../components/user"}
     app/excel {:local/root "../../components/excel"}
     app/letter {:local/root "../../components/letter"}}
 :paths ["src" ]
