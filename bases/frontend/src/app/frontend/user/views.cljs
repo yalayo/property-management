@@ -26,4 +26,4 @@
                  :onChangeUser #(re-frame/dispatch [::events/update-sign-up :user (-> % .-target .-value)])
                  :password @(re-frame/subscribe [::subs/sign-up-form :password])
                  :onChangePassword #(re-frame/dispatch [::events/update-sign-up :password (-> % .-target .-value)])
-                 :submitLogin #(re-frame/dispatch [::events/sign-in])}])))
+                 :submitRegister #(re-frame/dispatch [::events/sign-up])}])))

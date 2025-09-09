@@ -85,12 +85,10 @@ export default function Register(props) {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input 
-                        placeholder="john.doe@example.com" 
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);        // react-hook-form
-                          props.onChangeUser?.(e);  // tu función extra si la necesitas
-                        }} />
+                        placeholder="john.doe@example.com"
+                        defaultValue={props.user}
+                        onBlur={props.onChangeUser}
+                      />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -104,12 +102,10 @@ export default function Register(props) {
                       <FormLabel>Full Name (Optional)</FormLabel>
                       <FormControl>
                         <Input 
-                        placeholder="John Doe" 
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);        // react-hook-form
-                          props.onChangeName?.(e);  // tu función extra si la necesitas
-                        }} />
+                        placeholder="John Doe"
+                        defaultValue={props.name}
+                        onBlur={props.onChangeName}
+                      />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -126,12 +122,9 @@ export default function Register(props) {
                         <Input 
                           type="password"
                           placeholder="••••••••"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);        // react-hook-form
-                            props.onChangePassword?.(e);  // tu función extra si la necesitas
-                          }}
-                        />
+                          defaultValue={props.password}
+                          onBlur={props.onChangePassword}
+                      />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
