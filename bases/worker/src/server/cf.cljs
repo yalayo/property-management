@@ -101,3 +101,16 @@
 
 							 :else x))]
 		 (f x))))
+
+(defn ring->fetch [handler ^js request env ctx]
+  (js/Promise.
+   (fn [resolve reject]
+     (js-await
+      [resp (handler {:request-method (keyword (.toLowerCase (.-method request)))
+                      :uri (.-url request)
+                      :headers (js->clj (.-headers request) :keywordize-keys true)}
+                     env
+                     ctx)]
+      (resolve (js/Response. (pr-str (:body resp))
+                             #js {:status (:status resp)
+                                  :headers (clj->js (:headers resp))}))))))

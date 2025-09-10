@@ -1,7 +1,9 @@
 (ns app.user.routes)
 
-(def routes [["/sign-in" :post-sign-in]
-             ["/sign-up" :post-sign-up]])
+(def routes [["/sign-in" {:post (fn [req] 
+                                  (println "Test sign-in"))}]
+             ["/sign-up" {:post (fn [req]
+                                  (println "Test sign-up"))}]])
 
 
 (comment 
