@@ -41,20 +41,17 @@
 									 (assoc ret (keyword k) v))
 								 {}))))
 
-(defn with-handler [router handler]
-	(fn [request ^js env ctx]
-		(let [url (js/URL. (.-url request))
-					route (r/match-by-path router (.-pathname url))]
-			(reset! ENV env)
-			(reset! CTX ctx)
-			(reset! DB (.-DB env))
-			(js/Promise.
-				(fn [resolve reject]
-					(if route
-						(resolve (handler (with-params url route) request env ctx))
-						;; fallback when route is not found
-						(resolve (response-edn {:error "Route not found"}
-																	 {:status 404}))))))))
+(defn with-handler
+  "Given a Reitit router and a handler function, returns an entry point function for Cloudflare Worker"
+  [router handler]
+  (fn [request ^js env ctx]
+    (let [url (js/URL. (.-url request))
+          route (r/match-by-path router (.-pathname url))]
+      (reset! ENV env)
+      (reset! CTX ctx)
+      (reset! DB (.-DB env))
+      (js/Promise. (fn [resolve reject]
+                     (resolve (handler (with-params url route) request env ctx)))))))
 
 (defn js->clj
 	"Recursively transforms JavaScript arrays into ClojureScript
@@ -108,9 +105,9 @@
      (js-await
       [resp (handler {:request-method (keyword (.toLowerCase (.-method request)))
                       :uri (.-url request)
-                      :headers (js->clj (.-headers request) :keywordize-keys true)}
-                     env
-                     ctx)]
-      (resolve (js/Response. (pr-str (:body resp))
-                             #js {:status (:status resp)
-                                  :headers (clj->js (:headers resp))}))))))
+                      :headers (js->clj (.-headers request) :keywordize-keys true)})]
+      (resolve
+       (js/Response.
+        (pr-str (:body resp))
+        #js {:status  (:status resp 200)
+             :headers (clj->js (:headers resp))}))))))
