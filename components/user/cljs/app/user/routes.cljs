@@ -1,23 +1,5 @@
-(ns app.user.routes)
+(ns app.user.routes
+  (:require [app.user.handler :as handler]))
 
-(def routes [["/sign-in" {:post (fn [req] 
-                                  (println "Test sign-in"))}]
-             ["/sign-up" {:post (fn [req]
-                                  (println "Test sign-up"))}]])
-
-
-(comment 
-  (def base-routes
-  ["/api"
-   ["/todos" ::todos]
-   ["/todos/:id" ::todo]
-   ["/presence" ::presence]])
-
-(def together (concat routes routes-2))
-
-together
-
-(def all-routes
-  (into base-routes together))
-
-all-routes)
+(def routes [["/sign-in" {:name :sign-in :post handler/post-sign-in}]
+             ["/sign-up" {:name :sign-un :post handler/post-sign-up}]])

@@ -3,7 +3,11 @@
    [lib.async :refer [js-await]]
    [server.cf :as cf]))
 
-#_(defmethod handle-route [:post-sign-up :POST] [route request env ctx]
+(defn post-sign-in [route request env ctx]
+  (js-await [data (cf/request->edn request)]
+            (println "Register: " data)))
+
+(defn post-sign-un [route request env ctx]
   (js-await [data (cf/request->edn request)]
             (println "Register: " data)))
 

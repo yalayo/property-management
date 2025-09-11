@@ -1,10 +1,11 @@
 (ns server.core
   (:require ["cloudflare:workers" :refer [DurableObject]]
             [reitit.core :as r]
-         	[clojure.string :as s]
+         	  [clojure.string :as s]
             [lib.async :refer [js-await]]
             [server.cf.durable-objects :as do]
-            [server.cf :as cf :refer [defclass]]))
+            [server.cf :as cf :refer [defclass]]
+            [app.user.interface :as user]))
 
 ;; usage example of Durable Objects as a short-lived state
 ;; for user presence tracking in multiplayer web app
@@ -25,10 +26,14 @@
 (defn todos-get [route request env ctx]
   (cf/response-edn {:result :hello} {:status 200}))
 
+(def base-routes
+  ["/api"])
+
+(def routes
+    (into base-routes (user/get-routes) #_(concat (excel/routes) (user/routes))))
+
 (def router
-  (r/router
-   ["/api"
-    ["/todos" {:name ::todos :get  todos-get}]]))
+  (r/router routes))
 
 (defn handle-route [route request env ctx]
   (let [method (keyword (s/lower-case (.-method ^js request)))
