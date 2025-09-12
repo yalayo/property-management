@@ -35,3 +35,32 @@
                           [::tenant-events/get-tenants] 
                           [::apartment-events/get-apartments]
                           [::account-events/get-accounts]]}))
+
+(re-frame/reg-event-fx
+ :init-google
+ (fn [_ _]
+   {:init-google-auth true}))
+
+(defn handle-credential-response [response]
+   (let [jwt-token (.-credential response)]
+     (re-frame/dispatch [:auth-success jwt-token])))
+
+ (re-frame/reg-fx
+  :init-google-auth
+  (fn []
+    (js/google.accounts.id.initialize
+     (clj->js {:client_id "964100976552-iehqptnto63ait3j18985cai9u2jgml2.apps.googleusercontent.com"
+               :callback handle-credential-response}))
+
+    ;; Render button (optional)
+    (js/google.accounts.id.renderButton
+     (.getElementById js/document "g-signin")
+     (clj->js {:theme "outline" :size "large"}))
+
+    ;; Or enable One Tap
+    (js/google.accounts.id.prompt)))
+
+(re-frame/reg-event-db
+ :auth-success
+ (fn [db [_ jwt-token]]
+   (assoc db :auth {:jwt jwt-token})))
