@@ -29,7 +29,7 @@
                   (gen/elements [:apartment-1 :apartment-2])
                   (gen/elements (map :id (:tenants state)))))
 
-   :next-state (fn [state {{:keys [apartment tenant]} :args}]
+   :next-state (fn [state {[apartment tenant] :args}]
                  (-> state
                      (assoc-in [apartment :tenant] tenant)))
 
@@ -60,4 +60,11 @@
     (clojure.data/diff
      (fugato/execute model initial-state commands)
      (run initial-state commands)))
+  
+  (let [commands (gen/generate (fugato/commands model initial-state))]
+    (fugato/execute model initial-state commands))
+  
+  ({:invoice #{:customer-a}} ;; Only in A
+   {:invoice nil}            ;; Only in B
+   {:customer-a #{}})        ;; In both
   )
