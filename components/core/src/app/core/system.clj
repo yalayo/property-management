@@ -1,8 +1,9 @@
-(ns app.core.system)
+(ns app.core.system
+  (:require [app.core.rules :as rules]))
 
 (defn onboarding-tenant [state apartment tenant]
-  (println "System log: " apartment)
-  (println "System log: " tenant))
+  (let [result (rules/process-tenant-onboarding apartment tenant)]
+    (assoc state apartment (first result)))) ;; Work on not returning an array instead return a map
 
 (def command->fn
   {:onboarding-tenant #'onboarding-tenant})
