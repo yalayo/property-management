@@ -1,6 +1,7 @@
 (ns app.core.fugato
   (:require [fugato.core :as fugato]
-            [clojure.test.check.generators :as gen]))
+            [clojure.test.check.generators :as gen]
+            [app.core.system :as system]))
   
 (def initial-state
   {:apartment-1 {:id :apartment-1 :tenant nil}
@@ -59,7 +60,7 @@
   (let [commands (gen/generate (fugato/commands model initial-state))]
     (clojure.data/diff
      (fugato/execute model initial-state commands)
-     (run initial-state commands)))
+     (system/run initial-state commands)))
   
   (let [commands (gen/generate (fugato/commands model initial-state))]
     (fugato/execute model initial-state commands))
