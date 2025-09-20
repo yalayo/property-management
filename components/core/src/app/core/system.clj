@@ -5,8 +5,13 @@
   (let [result (rules/process-tenant-onboarding apartment tenant)]
     (assoc state apartment (first result)))) ;; Work on not returning an array instead return a map
 
+(defn start-ocupancy [state apartment tenant start-date]
+  (let [result (rules/process-start-ocupancy apartment tenant start-date)]
+    (assoc state apartment (first result))))
+
 (def command->fn
-  {:onboarding-tenant #'onboarding-tenant})
+  {:onboarding-tenant #'onboarding-tenant
+   :start-ocupancy #'start-ocupancy})
 
 (defn run [state commands]
   (reduce

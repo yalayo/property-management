@@ -21,6 +21,15 @@
                o/fire-rules)))
   (o/query-all @*session ::onboarding-tenant))
 
+(defn process-start-ocupancy [apartment tenant start-date]
+  (swap! *session
+         (fn [session]
+           (-> session
+               (o/insert ::onboarding-tenant ::id apartment)
+               (o/insert ::onboarding-tenant ::tenant tenant)
+               o/fire-rules)))
+  (o/query-all @*session ::onboarding-tenant))
+
 (comment
   (swap! *session
          (fn [session]

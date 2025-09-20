@@ -1,7 +1,8 @@
 (ns app.core.fugato
   (:require [fugato.core :as fugato]
             [clojure.test.check.generators :as gen]
-            [app.core.system :as system]))
+            [app.core.system :as system])
+  (:import [java.time LocalDate]))
   
 (def initial-state
   {:apartment-1 {:id :apartment-1 :tenant nil}
@@ -39,15 +40,39 @@
                  (= (get-tenant state apartment)
                     (:tenant state)))})
 
+(defn not-ocupied-by? [state]
+  (empty? (some #(when (and (= (:apartment %) :apartment-2) (= (:tenant %) :tenant-2)) %)  ;; returns first match or nil
+                (:ocupancies state))))
+
+;; Considering creating a separate spec to record the beginning of an ocupancy
+(def start-ocupancy-spec
+  {:run?       (fn [state] (and (apartment-empty? state) (not-ocupied-by? state)))
+
+   :args       (fn [state]
+                 (gen/tuple
+                  (gen/elements [:apartment-1 :apartment-2])
+                  (gen/elements (map :id (:tenants state)))
+                  (gen/return (str (LocalDate/now)))))
+
+   :next-state (fn [state {[apartment tenant start-date] :args}]
+                 (-> state
+                     (update :occupancies
+                              (fnil conj [])
+                              {:id        :occupancy-1
+                               :start     start-date
+                               :end       nil
+                               :tenant    tenant
+                               :apartment apartment})))
+
+   :valid?     (fn [state {apartment :args :as command}]
+                 (println "Valid? - " command)
+                 (= (get-tenant state apartment)
+                    (:tenant state)))})
+
 ;; Defining the model
 (def model
-  {:onboarding-tenant   on-boarding-spec})
-
-;; Work on the implementation here. The system to test code. 
-;; Looks like a CQRS way of doing things where C = commands.
-;; Adapt my current code to work this way
-(defn run [state commands]
-  state)
+  {:onboarding-tenant   on-boarding-spec
+   :start-ocupancy-spec start-ocupancy-spec})
 
 ;; Generate commands from the model
 (comment
@@ -58,14 +83,20 @@
 (comment
   "Compare end result of running the same commands in my code"
   (let [commands (gen/generate (fugato/commands model initial-state))]
+    (println "Commands: " commands)
     (clojure.data/diff
      (fugato/execute model initial-state commands)
      (system/run initial-state commands)))
   
   (let [commands (gen/generate (fugato/commands model initial-state))]
+    (println "Command: " commands)
     (fugato/execute model initial-state commands))
   
   ({:invoice #{:customer-a}} ;; Only in A
    {:invoice nil}            ;; Only in B
    {:customer-a #{}})        ;; In both
   )
+
+#_({:command :start-ocupancy-spec, :args [:apartment-2 :tenant-1 2025-09-20]} 
+ {:command :onboarding-tenant, :args [:apartment-2 :tenant-1]} 
+ {:command :start-ocupancy-spec, :args [:apartment-2 :tenant-2 2025-09-20]})
