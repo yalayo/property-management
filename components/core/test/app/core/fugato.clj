@@ -6,8 +6,9 @@
   
 (def initial-state
   {:apartment-1 {:id :apartment-1 :tenant nil}
-   :apartment-2 {:id :apartment-2 :tenant nil}
-   :tenants [{:id :tenant-1 :name "Max Mustermann"} {:id :tenant-2 :name "Berta Müller"}]
+   :tenant-1 {:id :tenant-1 :name "Max Mustermann"}
+   :tenant-2 {:id :tenant-2 :name "Berta Müller"}
+   :ocupancy-1 nil
    :contract {:id :contract-1
               :tenant-id :tenant-1
               :apartment-id :apartment-1
@@ -28,51 +29,48 @@
 
    :args       (fn [state]
                  (gen/tuple
-                  (gen/elements [:apartment-1 :apartment-2])
-                  (gen/elements (map :id (:tenants state)))))
+                  (gen/return :apartment-1)
+                  (gen/elements [:tenant-1 :tenant-2])))
 
    :next-state (fn [state {[apartment tenant] :args}]
                  (-> state
                      (assoc-in [apartment :tenant] tenant)))
 
-   :valid?     (fn [state {apartment :args :as command}]
+   :valid?     (fn [state command]
                  (println "Valid? - " command)
-                 (= (get-tenant state apartment)
-                    (:tenant state)))})
+                 (apartment-empty? state))})
 
-(defn not-ocupied-by? [state]
-  (empty? (some #(when (and (= (:apartment %) :apartment-2) (= (:tenant %) :tenant-2)) %)  ;; returns first match or nil
+#_(defn not-ocupied-by? [state]
+  (empty? (some #(when (and (= (:apartment %) :apartment-1) (= (:tenant %) :tenant-2)) %)  ;; returns first match or nil
                 (:ocupancies state))))
 
 ;; Considering creating a separate spec to record the beginning of an ocupancy
 (def start-ocupancy-spec
-  {:run?       (fn [state] (and (apartment-empty? state) (not-ocupied-by? state)))
+  {:run?       (fn [state] (not (apartment-empty? state)))
 
    :args       (fn [state]
                  (gen/tuple
-                  (gen/elements [:apartment-1 :apartment-2])
-                  (gen/elements (map :id (:tenants state)))
+                  (gen/return :apartment-1)
                   (gen/return (str (LocalDate/now)))))
 
-   :next-state (fn [state {[apartment tenant start-date] :args}]
+   :next-state (fn [state {[apartment start-date] :args}]
                  (-> state
                      (update :occupancies
                               (fnil conj [])
                               {:id        :occupancy-1
                                :start     start-date
                                :end       nil
-                               :tenant    tenant
+                               :tenant    (get-tenant state apartment)
                                :apartment apartment})))
 
-   :valid?     (fn [state {apartment :args :as command}]
+   :valid?     (fn [state command]
                  (println "Valid? - " command)
-                 (= (get-tenant state apartment)
-                    (:tenant state)))})
+                 (not (apartment-empty? state)))})
 
 ;; Defining the model
 (def model
   {:onboarding-tenant   on-boarding-spec
-   :start-ocupancy-spec start-ocupancy-spec})
+   :start-ocupancy start-ocupancy-spec})
 
 ;; Generate commands from the model
 (comment
@@ -97,6 +95,3 @@
    {:customer-a #{}})        ;; In both
   )
 
-#_({:command :start-ocupancy-spec, :args [:apartment-2 :tenant-1 2025-09-20]} 
- {:command :onboarding-tenant, :args [:apartment-2 :tenant-1]} 
- {:command :start-ocupancy-spec, :args [:apartment-2 :tenant-2 2025-09-20]})
