@@ -8,7 +8,7 @@
   {:apartment-1 {:id :apartment-1 :tenant nil}
    :tenant-1 {:id :tenant-1 :name "Max Mustermann"}
    :tenant-2 {:id :tenant-2 :name "Berta Müller"}
-   :ocupancy-1 nil
+   :ocupancies nil
    :contract {:id :contract-1
               :tenant-id :tenant-1
               :apartment-id :apartment-1
@@ -40,13 +40,12 @@
                  (println "Valid? - " command)
                  (apartment-empty? state))})
 
-#_(defn not-ocupied-by? [state]
-  (empty? (some #(when (and (= (:apartment %) :apartment-1) (= (:tenant %) :tenant-2)) %)  ;; returns first match or nil
-                (:ocupancies state))))
+(defn not-ocupied? [state]
+  (not (some? (get-in state [:ocupancies :apartment-1]))))
 
 ;; Considering creating a separate spec to record the beginning of an ocupancy
 (def start-ocupancy-spec
-  {:run?       (fn [state] (not (apartment-empty? state)))
+  {:run?       (fn [state] (and (not (apartment-empty? state)) (not-ocupied? state)))
 
    :args       (fn [state]
                  (gen/tuple
@@ -55,17 +54,14 @@
 
    :next-state (fn [state {[apartment start-date] :args}]
                  (-> state
-                     (update :occupancies
-                              (fnil conj [])
-                              {:id        :occupancy-1
-                               :start     start-date
-                               :end       nil
-                               :tenant    (get-tenant state apartment)
-                               :apartment apartment})))
+                     (assoc-in [:ocupancies apartment] {:start     start-date
+                                                        :end       nil
+                                                        :tenant    (get-tenant state apartment)
+                                                        :apartment apartment})))
 
    :valid?     (fn [state command]
                  (println "Valid? - " command)
-                 (not (apartment-empty? state)))})
+                 (and (not (apartment-empty? state)) (not-ocupied? state)))})
 
 ;; Defining the model
 (def model
