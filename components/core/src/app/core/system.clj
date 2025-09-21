@@ -8,7 +8,7 @@
 (defn start-ocupancy [state apartment start-date]
   (let [tenant (get-in state [apartment :tenant])
         result (rules/process-start-ocupancy apartment tenant start-date)]
-    (assoc state apartment (first result))))
+    (assoc-in state [:ocupancies apartment] (first result))))
 
 (def command->fn
   {:onboarding-tenant #'onboarding-tenant

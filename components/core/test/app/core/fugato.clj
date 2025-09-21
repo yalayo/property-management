@@ -55,7 +55,6 @@
    :next-state (fn [state {[apartment start-date] :args}]
                  (-> state
                      (assoc-in [:ocupancies apartment] {:start     start-date
-                                                        :end       nil
                                                         :tenant    (get-tenant state apartment)
                                                         :apartment apartment})))
 
