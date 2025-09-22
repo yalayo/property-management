@@ -4,6 +4,43 @@
             [com.brunobonacci.mulog :as mu])
   (:import (clojure.lang ExceptionInfo)))
 
+(defn base-config [database-name]
+  (let [environment (System/getenv "ENVIRONMENT")]
+    (case environment
+      "local" #_{:store {:backend :mem :id database-name}} {:store {:backend :file :path (str "tmp/" database-name)}}
+      {:store {:backend :jdbc
+               :dbtype "postgresql"
+               :host (System/getenv "DB_HOST")
+               :port 5432
+               :user "user"
+               :password (System/getenv "DB_PASSWORD")
+               :table database-name
+               :dbname "property-management"
+               :pool-options {:maximumPoolSize 10
+                              :minimumIdle 2
+                              :idleTimeout 60000
+                              :maxLifetime 1800000
+                              :connectionTimeout 30000}}})))
+
+(defn init [database-name] 
+  (let [cfg (base-config database-name)] 
+    (try 
+      (when-not (d/database-exists? cfg)
+                 (d/create-database cfg)) 
+      (let [conn (d/connect cfg)]
+                 (mu/log ::datahike-conn-started :db database-name)
+                 conn) 
+      (catch ExceptionInfo e 
+        (mu/log ::datahike-conn-error :db database-name :exception e) 
+        (throw e)))))
+
+(defn stop [conn]
+  (try
+    (d/release conn)
+    (mu/log ::datahike-conn-closed)
+    (catch Exception e
+      (mu/log ::datahike-conn-close-error :exception e))))
+
 (defn get-config [database-name]
   (let [environment (System/getenv "ENVIRONMENT")]
     (case environment
@@ -53,43 +90,25 @@
   ;; Force a new connection to be created
   (get-connection database-name))
 
-(defn transact-schema [schema database-name]
-  (let [conn (get-connection database-name)
-        existing-idents (into #{} (map first (d/q '[:find ?ident
-                                    :where [?e :db/ident ?ident]]
-                                  (d/db conn))))
-        schema-to-transact (filter #(not (contains? existing-idents (:db/ident %))) schema)]
-    (println "Schema to transact: " schema-to-transact)
+(defn transact-schema
+  [conn schema]
+  (let [existing (into #{}
+                       (map first
+                            (d/q '[:find ?ident
+                                   :where [?e :db/ident ?ident]]
+                                 (d/db conn))))
+        schema-to-transact (remove #(contains? existing (:db/ident %)) schema)]
     (when (seq schema-to-transact)
-      (d/transact conn schema-to-transact)
-      (d/release conn))))
+      (d/transact conn schema-to-transact))))
 
-(defn transact [data database-name]
-  (try
-    (let [conn (get-connection database-name)]
-      ;(transact-schema )
-      (d/transact conn data)
-      (d/release conn))
-    (catch clojure.lang.ExceptionInfo e
-      (println "EXCEPTION: " e)
-      (throw e))))
+(defn transact [conn data]
+  (d/transact conn data))
 
-(defn query [query database-name]
-  (try
-    (let [conn (get-connection database-name)]
-      (d/q {:query query}
-           (d/db conn))) 
-    (catch java.sql.SQLException e
-      (println "EXCEPTION: " e)
-      (throw e))))
+(defn query [conn q]
+  (d/q {:query q} (d/db conn)))
 
-(defn query-with-parameter [query database-name value]
-  (try
-    (let [conn (get-connection database-name)]
-      (d/q {:query query} (d/db conn) value))
-    (catch java.sql.SQLException e
-      (println "EXCEPTION: " e)
-      (throw e))))
+(defn query-with-parameter [conn q value]
+  (d/q {:query q} (d/db conn) value))
 
 (comment
   "Experiment to transact only new schema"

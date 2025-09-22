@@ -1,6 +1,15 @@
 (ns app.storage.interface
-  (:require [app.storage.core :as core]
+  (:require [integrant.core :as ig]
+            [app.storage.core :as core]
             [app.storage.datahike :as datahike]))
+
+(defmethod ig/init-key ::storage
+  [_ {:keys [database-name]}]
+  (datahike/init database-name))
+
+(defmethod ig/halt-key! ::storage
+  [_ conn]
+  (datahike/stop conn))
 
 (defn datasource-component [config]
   (core/storage-component config))
