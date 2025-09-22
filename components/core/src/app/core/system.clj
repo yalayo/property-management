@@ -23,3 +23,17 @@
         (ex-info (str "Unknown command: " command ", args:" args)
                  {:command command :arg args}))))
    state commands))
+
+(defn init [initial]
+  (let [state (atom initial)]
+    ;; Optional helper for dispatching commands safely
+    {:state    state
+     :dispatch (fn [cmd args]
+                 (swap! state
+                        #(run % [{:command cmd :args args}])))
+     :run      (fn [commands]
+                 (swap! state run commands))}))
+
+(defn stop [state]
+  (reset! state {})
+  nil)

@@ -13,7 +13,8 @@
    [app.bank.interface :as bank]
    [app.html.interface :as html]
    [app.user.interface :as user]
-   [app.survey.interface :as survey]))
+   [app.survey.interface :as survey]
+   [app.core.interface :as core]))
 
 (def base-config
   {:routes
@@ -32,7 +33,8 @@
                                 (bank/get-internal-routes)))}})
 
 (def config
-  {::route/external-routes {:routes (get-in base-config [:routes :external])}
+  {::core/domain {:initial {}}
+   ::route/external-routes {:routes (get-in base-config [:routes :external])}
    ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
