@@ -16,16 +16,7 @@
    [app.survey.interface :as survey]))
 
 (def base-config
-  {:db-spec {:dbtype "postgres"
-             :host (if (= (System/getenv "ENVIRONMENT") "prod")
-                     (System/getenv "DB_HOST")
-                     "localhost")
-             :dbname "property-management"
-             :username "user"
-             :password (System/getenv "DB_PASSWORD")
-             :dataSourceProperties {:socketTimeout 30}}
-
-   :routes
+  {:routes
    {:external (into #{} (concat (user/get-routes)
                                 (html/get-routes)
                                 (property/get-routes)
