@@ -1,5 +1,13 @@
 (ns app.route.interface
-  (:require [app.route.core :as core]))
+  (:require [integrant.core :as ig]
+            [app.route.core :as core]))
 
 (defn route-component [config]
   (core/route-component config))
+
+(defmethod ig/init-key ::external-routes [_ {:keys [routes]}]
+  routes)
+
+(defmethod ig/init-key ::internal-routes [_ {:keys [routes]}]
+  (println "External Routes: " routes)
+  routes)

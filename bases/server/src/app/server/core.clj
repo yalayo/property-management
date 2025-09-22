@@ -1,5 +1,6 @@
 (ns app.server.core
 	(:require [com.stuartsierra.component :as component]
+            [integrant.core :as ig]
             [com.brunobonacci.mulog :as mu]
             [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
@@ -55,3 +56,36 @@
 (defn server-component
   [config]
   (map->ServerComponent {:config config}))
+
+(defn start-server [port active-route routes]
+  (let [server (-> {:env :prod
+                    ::http/routes (route/expand-routes routes)
+                    ::http/resource-path "/public"
+                    ::http/type :immutant
+                    ::http/host "0.0.0.0"
+                    ::http/port port
+                    ::http/secure-headers nil}
+                   (http/default-interceptors)
+                   (http/create-server)
+                   (http/start))]
+    (mu/log :server-started :message (str "Starting server with " (name active-route) " routes!"))
+    server))
+
+;; Implementing integrant
+(defmethod ig/init-key ::server [_ {:keys [port active-route routes]}]
+  (println "External")
+  (start-server port active-route routes))
+
+(defmethod ig/init-key ::internal-server [_ {:keys [port active-route routes]}]
+  (println "Internal")
+  (start-server port active-route routes))
+
+(defmethod ig/halt-key! ::server [_ server]
+  (when server
+    (http/stop server)
+    (mu/log :server-stopped :message "Stopping external server!")))
+
+(defmethod ig/halt-key! ::internal-server [_ server]
+  (when server
+    (http/stop server)
+    (mu/log :server-stopped :message "Stopping internal server!")))

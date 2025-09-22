@@ -41,18 +41,10 @@
                                 (bank/get-internal-routes)))}})
 
 (def config
-  ;; Integrant system configuration
-  {::logging {}
-   ::user {:config base-config}
-   ::survey {:config base-config}
-   ::property {:config base-config}
-   ::tenant {:config base-config}
-   ::apartment {:config base-config}
-   ::account {:config base-config}
-   ::operations {:config base-config}
-   ::routes {:config (:routes base-config)}
-   ::server {:port 8080 :active-route :external :routes (ig/ref ::routes)}
-   ::internal-server {:port 9090 :active-route :internal :routes (ig/ref ::routes)}})
+  {::route/external-routes {:routes (get-in base-config [:routes :external])}
+   ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
+   ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
+   ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
 
 ;; Logging
 (defmethod ig/init-key ::logging [_ _]
@@ -69,37 +61,6 @@
 
 (defmethod ig/halt-key! ::logging [_ publisher]
   #_(when publisher (mu/stop-publisher! publisher)))
-
-;; Example: user
-(defmethod ig/init-key ::user [_ {:keys [config]}]
-  (user/user-component config))
-
-(defmethod ig/halt-key! ::user [_ c]
-  #_(component/stop c)) ; if user-component returns a component-like object
-
-;; Repeat similar for ::survey, ::property, etc.
-
-;; Routes
-(defmethod ig/init-key ::routes [_ {:keys [config]}]
-  (route/route-component {:config config}))
-
-(defmethod ig/halt-key! ::routes [_ r]
-  )
-
-;; Server
-(defmethod ig/init-key ::server [_ {:keys [port active-route routes]}]
-  (server/server-component {:port port :active-route active-route})
-  {:routes routes})
-
-(defmethod ig/halt-key! ::server [_ srv]
-  )
-
-(defmethod ig/init-key ::internal-server [_ {:keys [port active-route routes]}]
-  (server/server-component {:port port :active-route active-route})
-  {:routes routes})
-
-(defmethod ig/halt-key! ::internal-server [_ srv]
-  )
 
 (defonce system (atom nil))
 
