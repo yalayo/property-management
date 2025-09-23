@@ -90,3 +90,62 @@
    {:customer-a #{}})        ;; In both
   )
 
+;; User management system test
+(def initial-state-users
+  {:users {}         ;; map of user-id → user-data
+   :emails #{}
+   :user-ids #{}})     ;; a set of all used emails to check uniqueness
+
+(defn email-available? [state email]
+  (not (contains? (:emails state) email)))
+
+(defn user-available? [state user-id]
+  (not (contains? (:user-ids state) user-id)))
+
+(def sign-up-spec
+  {:run?       (fn [state]
+                 ;; Only run if at least one free user-id and one free email exist 
+                 (and (not-empty (remove (:user-ids state) [:user-1 :user-2 :user-3]))
+                      (not-empty (remove (:emails   state) ["email-1@mail.com"
+                                                            "email-2@mail.com"
+                                                            "email-3@mail.com"]))))
+
+   :args       (fn [state]
+                 ;; Pick only from the *available* ids/emails
+                 (let [free-users (vec (remove (:user-ids state)
+                                               [:user-1 :user-2 :user-3]))
+                       free-mails (vec (remove (:emails state)
+                                               ["email-1@mail.com"
+                                                "email-2@mail.com"
+                                                "email-3@mail.com"]))]
+                   (gen/tuple (gen/elements free-users)
+                              (gen/elements free-mails))))
+
+   :next-state (fn [state {[user-id email] :args}]
+                 (-> state
+                      (assoc-in [:users user-id] {:email email})
+                      (update :emails conj email)
+                      (update :user-ids conj user-id)))   ;; <- mark user-id as used
+
+
+   :valid?     (fn [state {[user-id email] :args}]
+                 (and (user-available? state user-id)
+                      (email-available? state email)))})
+
+
+(def users-model
+  {:sign-up sign-up-spec})
+
+(comment
+  "Compare end result of running the same commands in my code"
+  (let [commands (gen/generate (fugato/commands users-model initial-state-users))]
+    (println "Commands: " commands)
+    (clojure.data/diff
+     (fugato/execute users-model initial-state-users commands)
+     (system/run initial-state-users commands)))
+
+  (let [commands (gen/generate (fugato/commands users-model initial-state-users))]
+    (println "Command: " commands)
+    (fugato/execute users-model initial-state-users commands))
+
+  )
