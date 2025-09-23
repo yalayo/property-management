@@ -10,7 +10,7 @@
                 (core/sign-in context)
                 (assoc context :response {:status 200
                                           :headers {"HX-Location" "/upload-excel"}}))))})
-(def post-sign-up
+(defn post-sign-up [shell core]
   {:name ::post
    :enter (fn [context]
             (let [params (-> context :request :edn-params)]

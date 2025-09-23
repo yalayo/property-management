@@ -1,5 +1,6 @@
 (ns app.user.interface
-  (:require [app.user.core :as core]
+  (:require [integrant.core :as ig]
+            [app.user.core :as core]
             [app.user.routes :as routes]
             [app.user.persistance :as persistance]
             [app.user.database :as db]))
@@ -21,3 +22,6 @@
 
 (defn wrap-jwt-auth [handler]
   (core/wrap-jwt-auth handler))
+
+(defmethod ig/init-key ::routes [_ {:keys [shell core]}]
+  (routes/get-routes shell core))
