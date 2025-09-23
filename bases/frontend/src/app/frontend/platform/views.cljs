@@ -19,4 +19,4 @@
     [:<>
      (if user-loged-in?
        (dashboard/dashboard-component)
-       [home-page])]))
+       (user-view/access-component))]))
