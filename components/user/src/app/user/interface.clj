@@ -1,6 +1,7 @@
 (ns app.user.interface
   (:require [app.user.core :as core]
             [app.user.routes :as routes]
+            [app.user.persistance :as persistance]
             [app.user.database :as db]))
 
 (defn user-component [config]
@@ -8,6 +9,9 @@
 
 (defn get-routes []
   routes/routes)
+
+(defn get-schema []
+  persistance/schema)
 
 (defn get-internal-routes []
   routes/internal-routes)

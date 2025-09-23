@@ -14,6 +14,7 @@
    [app.html.interface :as html]
    [app.user.interface :as user]
    [app.survey.interface :as survey]
+   [app.storage.interface :as storage]
    [app.core.interface :as core]))
 
 (def base-config
@@ -30,10 +31,12 @@
     :internal (into #{} (concat (user/get-internal-routes)
                                 (flags/get-routes)
                                 (property/get-internal-routes)
-                                (bank/get-internal-routes)))}})
+                                (bank/get-internal-routes)))
+    :schema (user/get-schema)}})
 
 (def config
   {::core/domain {:initial {}}
+   ::storage/storage {:database-name "users" :schema (:schema base-config)}
    ::route/external-routes {:routes (get-in base-config [:routes :external])}
    ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}

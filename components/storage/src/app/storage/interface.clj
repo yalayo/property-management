@@ -4,8 +4,8 @@
             [app.storage.datahike :as datahike]))
 
 (defmethod ig/init-key ::storage
-  [_ {:keys [database-name]}]
-  (datahike/init database-name))
+  [_ {:keys [database-name schema]}]
+  (datahike/init database-name schema))
 
 (defmethod ig/halt-key! ::storage
   [_ conn]
