@@ -1,5 +1,6 @@
 {:paths ["src"]
  :deps {com.stuartsierra/component {:mvn/version "1.1.0"}
+        integrant/integrant {:mvn/version "1.0.0"}
         com.brunobonacci/mulog {:mvn/version "0.9.0"}
         com.brunobonacci/mulog-json {:mvn/version "0.9.0"}
         clj-http/clj-http {:mvn/version "3.13.0"}
@@ -27,6 +28,7 @@
 
 		;; Bricks
         poly/server {:local/root "../../bases/server"}
+        poly/core {:local/root "../../components/core"}
         poly/logs {:local/root "../../components/logs"}
         poly/flags {:local/root "../../components/flags"}
         poly/property {:local/root "../../components/property"}
