@@ -1,7 +1,7 @@
 {:deps true
  :builds {:app
           {:target :browser
-           :output-dir "./resources/public/landing"
+           :output-dir "./resources/public/landing/js"
            :asset-path "/landing"
            :modules {:app {:init-fn app.frontend.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload] 
