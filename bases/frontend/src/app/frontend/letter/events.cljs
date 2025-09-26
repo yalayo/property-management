@@ -82,7 +82,7 @@
          year (:year info)
          id (:id info)
          tenants (get-in db [:letter :tenants])
-         tenant-data (first (filter #(= (:property-id %) id) tenants))]
+         tenant-data (first (filter #(= (:id %) id) tenants))]
      {:http-xhrio {:method          :post
                    :uri             (str config/api-url "/api/create-letter")
                    :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}

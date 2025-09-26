@@ -218,7 +218,7 @@ export default function LetterDataUpload(props) {
           ) : tenants && tenants.length > 0 ? (
             <div className="space-y-3">
               {tenants.map((element) => (
-                <div key={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
+                <div id={element.id} className="p-4 border rounded-md hover:bg-gray-50 transition-colors">
                   <div className="flex items-center">
                     <div className="flex-1">
                       <p className="font-medium">{element.family}</p>
