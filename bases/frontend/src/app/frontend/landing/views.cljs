@@ -17,9 +17,9 @@
 (defn landing-component []
   [:<>
    #_[header]
-   [features]
+   #_[features]
    [:div.max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8.py-12
     (letter/letter-data-upload-component)] 
    #_[hero] 
-   [pricing]
+   #_[pricing]
    [footer]])
