@@ -275,10 +275,10 @@
      :get [(body-params/body-params) auth-required upload-details-handler]
      :route-name ::upload-excel]
     ["/api/upload-details"
-     :post [(ring-mw/multipart-params) (wrap-jwt-auth identity) post-upload-details-handler]
+     :post [(ring-mw/multipart-params) post-upload-details-handler]
      :route-name ::post-upload-details]
     ["/api/create-letter"
-     :post [(body-params/body-params) params/keyword-params (wrap-jwt-auth identity) post-create-letter-handler]
+     :post [(body-params/body-params) params/keyword-params post-create-letter-handler]
      :route-name ::post-create-letter-handler]
     ["/upload-clients"
      :get [(body-params/body-params) upload-client-handler]
