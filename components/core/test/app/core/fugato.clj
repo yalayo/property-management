@@ -1,7 +1,8 @@
 (ns app.core.fugato
   (:require [fugato.core :as fugato]
             [clojure.test.check.generators :as gen]
-            [app.core.system :as system])
+            [app.core.system :as system]
+            [clojure.data :as data])
   (:import [java.time LocalDate]))
   
 (def initial-state
@@ -140,7 +141,7 @@
   "Compare end result of running the same commands in my code"
   (let [commands (gen/generate (fugato/commands users-model initial-state-users))]
     (println "Commands: " commands)
-    (clojure.data/diff
+    (data/diff
      (fugato/execute users-model initial-state-users commands)
      (system/run initial-state-users commands)))
 
