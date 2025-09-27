@@ -3,7 +3,26 @@
 
 (def rules
   (o/ruleset
-   {::onboarding-tenant
+   {::users
+    [:what
+     #_[id ::user user-id]
+     [id ::user email]
+     [id ::name name]
+     :when (not= id ::sign-up)]
+    
+    ::user-sign-up
+    [:what
+     [::sign-up ::id id]
+     [::sign-up ::user email]
+     [::sign-up ::name name]]
+    
+    ::duplicate-email
+    [:what
+     [::sign-up ::user email]
+     [id ::user email]
+     :when (not= id ::sign-up)]
+
+    ::onboarding-tenant
     [:what
      [::onboarding-tenant ::id id]
      [::onboarding-tenant ::tenant tenant]]
@@ -17,6 +36,28 @@
 ;; create session and add rule
 (def *session
   (atom (reduce o/add-rule (o/->session) rules)))
+
+(defn process-sign-up [data]
+  (println "Data" data)
+  (let [id (str (java.util.UUID/randomUUID))
+        name (:name data)
+        email (:email data)
+        _ (swap! *session
+                 (fn [session]
+                   (-> session
+                       (o/insert ::sign-up ::id id)
+                       (o/insert ::sign-up ::name name)
+                       (o/insert ::sign-up ::user email)
+                       o/fire-rules)))
+        successfull? (empty? (o/query-all @*session ::duplicate-email))]
+    (if successfull?
+      (swap! *session
+             (fn [session]
+               (-> session
+                   (o/insert id ::user email)
+                   (o/insert id ::name name)
+                   o/fire-rules)))
+      (println "Existing email"))))
 
 (defn process-tenant-onboarding [apartment tenant]
   (swap! *session
@@ -47,6 +88,17 @@
                o/fire-rules)))
 
   (o/query-all @*session ::start-ocupancy)
+
+  ;; Testing user sign-up
+  (swap! *session
+         (fn [session]
+           (-> session
+               (o/insert ::sign-up ::user "user-1@mail.com")
+               o/fire-rules)))
+  
+  (o/query-all @*session ::user-sign-up)
+
+  (o/query-all @*session ::hash-password)
   
   )
 

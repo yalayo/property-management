@@ -1,6 +1,14 @@
 (ns app.core.system
   (:require [app.core.rules :as rules]))
 
+(defn sign-up [state user-id email]
+  (let [result (rules/process-sign-up {:id user-id :email email})
+        data (first result)]
+    (-> state
+        (assoc-in [:users user-id] {:email email})
+        (update :emails conj email)
+        (update :user-ids conj user-id))))
+
 (defn onboarding-tenant [state apartment tenant]
   (let [result (rules/process-tenant-onboarding apartment tenant)]
     (assoc state apartment (first result)))) ;; Work on not returning an array instead return a map
@@ -11,7 +19,8 @@
     (assoc-in state [:ocupancies apartment] (first result))))
 
 (def command->fn
-  {:onboarding-tenant #'onboarding-tenant
+  {:sign-up #'sign-up
+   :onboarding-tenant #'onboarding-tenant
    :start-ocupancy #'start-ocupancy})
 
 (defn run [state commands]
