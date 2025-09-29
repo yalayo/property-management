@@ -13,9 +13,10 @@
 (defn post-sign-up [shell core]
   {:name ::post
    :enter (fn [context]
-            (let [params (-> context :request :edn-params)]
-              (core/create-user params)
-              (assoc context :response {:status 200})))})
+            (let [params (-> context :request :edn-params)
+                  dispatch (:dispatch core)
+                  result (dispatch :sign-up [(str (java.util.UUID/randomUUID)) (:user params)])] 
+              (assoc context :response {:status 200 :body result})))})
 
 (def post-change-password
   {:name ::post
