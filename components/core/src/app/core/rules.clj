@@ -39,7 +39,7 @@
 
 (defn process-sign-up [data]
   (println "Data" data)
-  (let [id (str (java.util.UUID/randomUUID))
+  (let [id (:id data)
         name (:name data)
         email (:email data)
         _ (swap! *session
@@ -51,12 +51,14 @@
                        o/fire-rules)))
         successfull? (empty? (o/query-all @*session ::duplicate-email))]
     (if successfull?
-      (swap! *session
+      (do
+        (swap! *session
              (fn [session]
                (-> session
                    (o/insert id ::user email)
                    (o/insert id ::name name)
                    o/fire-rules)))
+        (o/query-all @*session ::user-sign-up))
       (println "Existing email"))))
 
 (defn process-tenant-onboarding [apartment tenant]
@@ -89,16 +91,35 @@
 
   (o/query-all @*session ::start-ocupancy)
 
-  ;; Testing user sign-up
+  ;; Testing user sign-up 
   (swap! *session
          (fn [session]
            (-> session
-               (o/insert ::sign-up ::user "user-1@mail.com")
+               (o/insert :user-1 ::user "user-1@mail.com")
+               (o/insert :user-1 ::name "User 1")
                o/fire-rules)))
   
+  (swap! *session
+         (fn [session]
+           (-> session
+               (o/insert :user-2 ::user "user-2@mail.com")
+               (o/insert :user-2 ::name "User 2")
+               o/fire-rules)))
+  
+  (do (swap! *session
+             (fn [session]
+               (-> session
+                   (o/insert ::sign-up ::id :user-1)
+                   (o/insert ::sign-up ::name "User 1")
+                   (o/insert ::sign-up ::user "user-1@mail.com")
+                   o/fire-rules))) nil)
+  
+  
+  (o/query-all @*session ::users)
+  
+  (o/query-all @*session ::duplicate-email)
+  
   (o/query-all @*session ::user-sign-up)
-
-  (o/query-all @*session ::hash-password)
   
   )
 
