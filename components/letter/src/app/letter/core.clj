@@ -45,7 +45,7 @@
                       :1 (into [] [:pdf-cell {:valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} element]])
                       :3 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
                       :5 (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (if (and (some? element) (= element (Math/floor element))) (int (Math/floor element)) element)]])
-                      (if (float? (item data))
+                      (if (or (float? (item data)) (int? (item data)))
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} (str (.format formatter element) " €")]])
                         (into [] [:pdf-cell {:align :right :valign :middle :border true :background-color [189 215 238]} [:paragraph {:size 9 :style :bold} element]]))))) (keys data))))
 
