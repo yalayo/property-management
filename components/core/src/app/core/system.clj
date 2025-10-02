@@ -3,11 +3,13 @@
 
 (defn sign-up [state user-id email]
   (let [result (rules/process-sign-up {:id user-id :email email})
-        data (first result)]
-    (-> state
-        (assoc-in [:users user-id] {:email email})
-        (update :emails conj email)
-        (update :user-ids conj user-id))))
+        new-state (-> state
+                      (assoc-in [:users user-id] {:email email})
+                      (update :emails conj email)
+                      (update :user-ids conj user-id))]
+    (if (some? result)
+      {:state  new-state :events [{:type :persist-user :user-id user-id :email email}]}
+      {:state  state :error {:type :existing-user :email email}})))
 
 (defn onboarding-tenant [state apartment tenant]
   (let [result (rules/process-tenant-onboarding apartment tenant)]

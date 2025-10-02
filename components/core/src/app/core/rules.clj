@@ -50,16 +50,14 @@
                        (o/insert ::sign-up ::user email)
                        o/fire-rules)))
         successfull? (empty? (o/query-all @*session ::duplicate-email))]
-    (if successfull?
-      (do
-        (swap! *session
+    (when successfull?
+      (swap! *session
              (fn [session]
                (-> session
                    (o/insert id ::user email)
                    (o/insert id ::name name)
                    o/fire-rules)))
-        (o/query-all @*session ::user-sign-up))
-      (println "Existing email"))))
+      (o/query-all @*session ::user-sign-up))))
 
 (defn process-tenant-onboarding [apartment tenant]
   (swap! *session
