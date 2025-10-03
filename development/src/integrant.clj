@@ -15,7 +15,8 @@
    [app.user.interface :as user]
    [app.survey.interface :as survey]
    [app.storage.interface :as storage]
-   [app.core.interface :as core]))
+   [app.core.interface :as core]
+   [app.controller.interface :as controller]))
 
 (def base-config
   {:routes
@@ -36,8 +37,9 @@
 (def config
   {::core/domain {:initial {}}
    ::storage/storage {:database-name "users" :schema (:schema base-config)}
-   ::user/routes {:shell nil :core (ig/ref ::core/domain)}
-   ::route/external-routes {:routes (ig/ref ::user/routes)}
+   ::controller/controller {:storage (ig/ref ::storage/storage)}
+   ::user/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
+   ::route/external-routes {:routes (ig/ref ::user/routes) #_(into #{} (html/get-routes))}
    ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
