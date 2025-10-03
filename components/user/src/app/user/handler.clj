@@ -10,16 +10,18 @@
                 (core/sign-in context)
                 (assoc context :response {:status 200
                                           :headers {"HX-Location" "/upload-excel"}}))))})
-(defn post-sign-up [shell core]
+(defn post-sign-up [core controller]
   {:name ::post
    :enter (fn [context]
             (let [params (-> context :request :edn-params)
-                  dispatch (:dispatch core)
-                  result (dispatch :sign-up [(str (java.util.UUID/randomUUID)) (:user params)])
-                  error (:error result)]
+                  domain (:dispatch core)
+                  process-events (:dispatch controller)
+                  result (domain :sign-up [(str (java.util.UUID/randomUUID)) (:user params)])
+                  error (:error result)
+                  events (:events result)]
               (if (some? error)
                 (assoc context :response {:status 500 :body error})
-                (assoc context :response {:status 200 :body result}))))})
+                (assoc context :response {:status 200 :body (process-events events)}))))})
 
 (def post-change-password
   {:name ::post

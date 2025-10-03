@@ -21,10 +21,10 @@
      :post [(body-params/body-params) params/keyword-params handler/post-change-password]
      :route-name ::post-change-password]})
 
-(defn get-routes [shell core]
+(defn get-routes [core controller]
   #{["/api/sign-in" :post [(body-params/body-params) params/keyword-params handler/post-sign-in]
      :route-name ::post-sign-in]
-    ["/api/sign-up" :post [(body-params/body-params) params/keyword-params (handler/post-sign-up shell core)]
+    ["/api/sign-up" :post [(body-params/body-params) params/keyword-params (handler/post-sign-up core controller)]
      :route-name ::post-sign-up]
     ["/api/change-password"
      :post [(body-params/body-params) params/keyword-params handler/post-change-password]

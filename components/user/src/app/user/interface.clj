@@ -23,5 +23,5 @@
 (defn wrap-jwt-auth [handler]
   (core/wrap-jwt-auth handler))
 
-(defmethod ig/init-key ::routes [_ {:keys [shell core]}]
-  (routes/get-routes shell core))
+(defmethod ig/init-key ::routes [_ {:keys [core controller]}]
+  (routes/get-routes controller core))
