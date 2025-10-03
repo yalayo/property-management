@@ -3,6 +3,7 @@
                                "bases/server/resources"
                                "bases/frontend/resources"
                                "components/core/src"
+                               "components/controller/src"
                                "components/logs/src"
                                "components/flags/src"
                                "components/property/src"
@@ -51,6 +52,7 @@
                               nrepl/nrepl {:mvn/version "1.3.0"}}}
            :test {:extra-paths ["bases/server/test"
                                 "components/core/test"
+                                "components/controller/test"
                                 "components/logs/test"
                                 "components/flags/test"
                                 "components/property/test"
