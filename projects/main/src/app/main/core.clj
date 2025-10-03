@@ -38,7 +38,7 @@
   {::core/domain {:initial {}}
    ::storage/storage {:database-name "users" :schema (:schema base-config)}
    ::user/routes {:shell nil :core (ig/ref ::core/domain)}
-   ::route/external-routes {:routes (get-in base-config [:routes :external])}
+   ::route/external-routes {:routes (into #{} (html/get-routes))}
    ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
