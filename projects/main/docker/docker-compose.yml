@@ -19,6 +19,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - BOT_TOKEN=${BOT_TOKEN}
       - CHAT_ID=${CHAT_ID}
+      - RESEND_API_KEY=${RESEND_API_KEY}
       - LANG=de_DE.UTF-8
       - LANGUAGE=de_DE:de
       - LC_ALL=de_DE.UTF-8
