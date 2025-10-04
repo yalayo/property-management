@@ -32,6 +32,7 @@
         poly/controller {:local/root "../../components/controller"}
         poly/logs {:local/root "../../components/logs"}
         poly/flags {:local/root "../../components/flags"}
+        poly/mailer {:local/root "../../components/mailer"}
         poly/property {:local/root "../../components/property"}
         poly/tenant {:local/root "../../components/tenant"}
         poly/apartment {:local/root "../../components/apartment"}
