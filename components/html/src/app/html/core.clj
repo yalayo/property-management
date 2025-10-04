@@ -1,6 +1,5 @@
 (ns app.html.core
-	(:require [hiccup2.core :as h]
-            [clojure.java.io :as io]
+  (:require [hiccup2.core :as h]
             [io.pedestal.http.params :as params]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as ring-mw]
@@ -12,7 +11,7 @@
             [app.excel.interface :as excel]
             [io.pedestal.interceptor :refer [interceptor]]
             [app.letter.interface :as letter]
-            #_[app.bank.interface :as bank]
+            [app.mailer.interface :as mailer]
             [cheshire.core :as json]
             [clj-http.client :as client]
             [app.html.dashboard :as dashboard]
@@ -20,7 +19,8 @@
             [app.html.building-apartments :as building-apartments]
             [app.html.apartment-details :as apartment-datails]
             [app.user.interface :refer [wrap-jwt-auth]])
-  (:import [java.util UUID]))
+  (:import [java.util UUID]
+           (java.util Base64)))
 
 ;; Prepare the hicup to return it as html
 (defn template [html-body title]
@@ -32,6 +32,9 @@
     [:script {:src "htmx.min.js"}]
     [:script {:src "hyperscript.min.js"}]]
    [:body (h/raw html-body)]])
+
+(defn base64-encode [bytes]
+  (.encodeToString (Base64/getEncoder) bytes))
 
 (defn ok [body]
   {:status 200
@@ -108,9 +111,15 @@
 (def post-create-letter-handler
   {:name ::get
    :enter (fn [context]
-            (assoc context :response {:status 200
-                                      :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
-                                      :body (java.io.ByteArrayInputStream. (letter/create (-> context :request :edn-params)))}))})
+            (let [info (-> context :request :edn-params)
+                  tenant (:data info)
+                  letter (letter/create info)
+                  pdf-base64 (base64-encode letter)
+                  attachments [{:filename (str (:last-name tenant) ".pdf") :content pdf-base64 :type "application/pdf"}]]
+              (mailer/send-email "immoeventus@gmail.com" (str "Letter for - " (:last-name tenant)) attachments)
+              (assoc context :response {:status 200
+                                        :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
+                                        :body (java.io.ByteArrayInputStream. letter)})))})
 
 (def letter-handler
   {:name ::get
