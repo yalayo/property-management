@@ -24,4 +24,4 @@
   (core/wrap-jwt-auth handler))
 
 (defmethod ig/init-key ::routes [_ {:keys [core controller]}]
-  (routes/get-routes controller core))
+  (routes/get-routes core controller))
