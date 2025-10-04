@@ -15,12 +15,12 @@
    [app.user.interface :as user]
    [app.survey.interface :as survey]
    [app.storage.interface :as storage]
-   [app.core.interface :as core]))
+   [app.core.interface :as core]
+   [app.controller.interface :as controller]))
 
 (def base-config
   {:routes
-   {:external (into #{} (concat (user/get-routes)
-                                (html/get-routes)
+   {:external (into #{} (concat (html/get-routes)
                                 (property/get-routes)
                                 (tenant/get-routes)
                                 (apartment/get-routes)
@@ -37,8 +37,10 @@
 (def config
   {::core/domain {:initial {}}
    ::storage/storage {:database-name "users" :schema (:schema base-config)}
-   ::user/routes {:shell nil :core (ig/ref ::core/domain)}
-   ::route/external-routes {:routes (into #{} (html/get-routes))}
+   ::controller/controller {:storage (ig/ref ::storage/storage)}
+   ::user/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
+   ::html/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
+   ::route/external-routes {:user-routes (ig/ref ::user/routes) :html-routes (ig/ref ::html/routes)}
    ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
