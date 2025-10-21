@@ -77,7 +77,7 @@
           "FORMULA" {name (get-formula-value cell)}
           "BLANK" (when required? (throw (IllegalArgumentException. "Diese Zelle darf nicht leer sein")))
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
+        (catch Exception e {:error true :message (.getMessage e) :cell cell-address :sheet sheet-name})))))
 
 (def attributes [{:name "last-name" :cell "B3"}
                  {:name "date" :cell "D2"}
@@ -234,6 +234,288 @@
     ;; Collect results
     (<!! (async/into [] result-chan))))
 
-(comment 
-  (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_ 2023_kuni.xlsx"))
+(comment
+  (require '[datahike.api :as d])
+
+  (def cfg {:store {:backend :mem :id "excel-data"}})
+
+  ;; Create the DB
+  (d/create-database cfg)
+  (def conn (d/connect cfg))
+
+  (def tenant-schema
+    [{:db/ident       :tenant/id
+      :db/valueType   :db.type/uuid
+      :db/cardinality :db.cardinality/one
+      :db/unique      :db.unique/identity
+      :db/doc         "Unique identifier for a tenant"}
+
+     {:db/ident       :tenant/name
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :tenant/last-name
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one
+      :db/unique      :db.unique/identity}
+
+     {:db/ident       :tenant/street
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :tenant/location
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     ;; One-to-many relation to bills
+     {:db/ident       :tenant/bills
+      :db/valueType   :db.type/ref
+      :db/cardinality :db.cardinality/many}])
+
+  (def bill-schema
+    [{:db/ident       :bill/id
+      :db/valueType   :db.type/uuid
+      :db/cardinality :db.cardinality/one
+      :db/unique      :db.unique/identity}
+
+     {:db/ident       :bill/property-id
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one
+      :db/unique      :db.unique/identity}
+
+     {:db/ident       :bill/property-apartment
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/property-name
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/property-address
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/property-time-period
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/property-calculated-days
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/property-days-per-person
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/bank-name
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/iban
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/total
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/total-costs
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/prepayment
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/refund
+      :db/valueType   :db.type/boolean
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :bill/heating-costs
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     ;; Relational links
+     {:db/ident       :bill/family
+      :db/valueType   :db.type/ref
+      :db/cardinality :db.cardinality/one
+      :db/doc         "Reference to the owning family"}
+
+     {:db/ident       :bill/cost-items
+      :db/valueType   :db.type/ref
+      :db/cardinality :db.cardinality/many}])
+
+  (def cost-item-schema
+    [{:db/ident       :cost-item/name
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :cost-item/total
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :cost-item/distribution
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :cost-item/key
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :cost-item/share
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}
+
+     {:db/ident       :cost-item/result
+      :db/valueType   :db.type/double
+      :db/cardinality :db.cardinality/one}])
+
+  (def schema (concat tenant-schema bill-schema cost-item-schema))
+
+  (d/transact conn {:tx-data schema})
+
+  (defn remove-nils [data]
+    (cond
+      (map? data)
+      (->> data
+           (remove (comp nil? val))
+           (map (fn [[k v]] [k (remove-nils v)]))
+           (into {}))
+  
+      (vector? data)
+      (mapv remove-nils data)
+  
+      :else
+      data))
+
+  (defn make-cost-item [row]
+    (into {}
+          (remove (comp nil? val))
+          {:cost-item/name         (:1 row)
+           :cost-item/total        (:2 row)
+           :cost-item/distribution (:3 row)
+           :cost-item/key          (:4 row)
+           :cost-item/share        (:5 row)
+           :cost-item/result       (:6 row)}))
+
+  (defn make-bill [data]
+    (let [items (map make-cost-item (:content data))]
+      (into {}
+            (remove (comp nil? val))
+            {:bill/id                     (java.util.UUID/randomUUID)
+             :bill/property-id            (:property-id data)
+             :bill/property-apartment     (:property-apartment data)
+             :bill/property-name          (:property-name data)
+             :bill/property-address       (:property-address data)
+             :bill/property-time-period   (:property-time-period data)
+             :bill/property-calculated-days (:property-calculated-days data)
+             :bill/property-days-per-person (:property-days-per-person data)
+             :bill/bank-name              (:bank-name data)
+             :bill/iban                   (:iban data)
+             :bill/total                  (:total data)
+             :bill/total-costs            (:total-costs data)
+             :bill/prepayment             (:prepayment data)
+             :bill/refund                 (:refund data)
+             :bill/heating-costs          (:heating-costs data)
+             :bill/cost-items             (vec items)})))
+
+  (defn make-tenant [data]
+    {:tenant/id        (java.util.UUID/randomUUID)
+     #_#_:tenant/name      (:family data)
+     :tenant/last-name (:last-name data)
+     :tenant/street    (:street data)
+     :tenant/location  (:location data)
+     :tenant/bills     [(make-bill data)]})
+
+
+  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_Brandstor 23.xlsx"))
+        tenants (vec (map make-tenant (remove-nils data)))] 
+    (d/transact conn tenants))
+  
+  ;; Queries
+  ;; Get all bills with total > 0
+  (d/q '[:find ?bill ?total
+         :where [?bill :bill/total ?total]
+         [(> ?total 0)]]
+       @conn)
+  
+  ;; Or fetch all cost items for a given bill
+  (d/pull @conn
+          '[:bill/id
+            {:bill/cost-items [:cost-item/name :cost-item/result]}]
+          [:bill/id (java.util.UUID/fromString "54ecf705-42f7-4f36-b6b6-ed0ce8f54ec6")])
+  
+  ;; All families with total > 0
+  (d/q '[:find ?fam ?bill ?total
+         :where
+         [?fam :tenant/last-name ?name]
+         [?fam :tenant/bills ?bill]
+         [?bill :bill/total ?total]
+         [(> ?total 0)]]
+       @conn)
+
+  
+  ;; Get all bills and cost items for a tenant
+  (d/pull @conn
+          '[:tenant/last-name
+            {:tenant/bills
+             [:bill/property-time-period
+              :bill/total
+              {:bill/cost-items [:cost-item/name :cost-item/result]}]}]
+          [:tenant/last-name "Fam.Brusberg"])
+  
+  ;; Get all bills and cost items for a property by id
+  (d/pull @conn
+          '[:bill/property-id
+            {:tenant/bills
+             [:bill/property-time-period
+              :bill/total
+              {:bill/cost-items [:cost-item/name :cost-item/result]}]}]
+          [:bill/property-id "01-WH1-EG-L"])
+
+
+  
+  ;; Get the bill given an id
+  (first
+   (d/q '[:find (pull ?b [* {:bill/cost-items [*]}])
+          :in $ ?pid
+          :where [?b :bill/property-id ?pid]]
+        @conn
+        "01-WH1-EG-L"))
+  ;;
+  (first
+   (d/q '[:find (pull ?b [* {:bill/cost-items [*]
+                             :_tenant/bills [*]}])
+          :in $ ?pid
+          :where [?b :bill/property-id ?pid]]
+        @conn
+        "01-WH1-EG-L"))
+  
+  ;; Get the tenant by last-name
+  (d/q '[:find (pull ?t [*])
+         :in $ ?last-name
+         :where [?t :tenant/last-name ?last-name]]
+       @conn "Leer-Friese")
+  
+  ;; Nested pull
+  (d/q '[:find (pull ?t
+                     [:tenant/last-name
+                      :tenant/location
+                      {:tenant/bills
+                       [:bill/property-id
+                        :bill/property-name
+                        :bill/property-address
+                        :bill/total
+                        {:bill/cost-items
+                         [:cost-item/name
+                          :cost-item/result]}]}])
+         :in $ ?last-name
+         :where [?t :tenant/last-name ?last-name]]
+       @conn "Leer-Friese")
+
+
+
+
+  (d/delete-database cfg)
+
   )
