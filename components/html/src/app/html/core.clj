@@ -89,7 +89,7 @@
               (if (some? file-input-stream)
                 (let [result (flatten (excel/process file-input-stream))]
                   (if (some #(:error %) result)
-                    (assoc context :response (respond-with-params upload-details/wrong-file-selected result "Hochladen"))
+                    (assoc context :response {:status 500 :body (filter :error result) :headers {"Content-Type" "text/edn"}})
                     (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}})))
                 (assoc context :response (respond upload-details/no-file-selected "Hochladen")))))})
 
