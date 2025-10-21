@@ -5,7 +5,7 @@
            :asset-path "/landing"
            :modules {:app {:init-fn app.frontend.main/init}}
            :devtools {:preloads [day8.re-frame-10x.preload] 
-                      :watch-dir "./resources/public"}
+                      :watch-dir "./resources/public/landing"}
            :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
                                                       day8.re-frame.tracing.trace-enabled? true
                                                       "re_frame.trace.trace_enabled_QMARK_" true
