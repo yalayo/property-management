@@ -1,8 +1,7 @@
 (ns integrant
   (:require
    [integrant.core :as ig]
-   [integrant.repl :refer [go halt reset reset-all]]
-   [integrant.repl.state :as state]
+   [integrant.repl :refer [go halt reset]]
    [com.brunobonacci.mulog :as mu]
    [app.route.interface :as route]
    [app.server.core :as server]

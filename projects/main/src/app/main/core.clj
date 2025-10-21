@@ -1,6 +1,7 @@
 (ns app.main.core
   (:require
    [integrant.core :as ig]
+   [integrant.repl :refer [go halt reset]]
    [com.brunobonacci.mulog :as mu]
    [app.route.interface :as route]
    [app.server.core :as server]
@@ -28,7 +29,8 @@
                                 (bank/get-routes)
                                 (survey/get-routes)
                                 (operations/get-routes)))
-    :internal (into #{} (concat (user/get-internal-routes)
+    :internal (into #{} (concat (html/get-routes)
+                                (user/get-internal-routes)
                                 (flags/get-routes)
                                 (property/get-internal-routes)
                                 (bank/get-internal-routes)))
