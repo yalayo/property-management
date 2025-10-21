@@ -39,10 +39,11 @@
 
 (re-frame/reg-event-fx
  ::upload-failure
- (fn [{:keys [_]} [_ {:keys [status status-text response]}]]
+ [local-storage-interceptor]
+ (fn [{:keys [db]} [_ {:keys [status status-text response]}]]
    (js/console.error (str "Upload failed! HTTP status: " status " " status-text))
    (js/console.log "Backend responded with:" (clj->js response))
-   {}))
+   {:db (assoc-in db [:letter :errors] response)}))
 
 (re-frame/reg-event-fx
  ::get-properties

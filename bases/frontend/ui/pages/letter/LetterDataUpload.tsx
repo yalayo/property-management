@@ -245,6 +245,34 @@ export default function LetterDataUpload(props) {
               </p>
             </div>
           )}
+
+          {/* Error list display */}
+          {props.errors && props.errors.length > 0 && (
+            <div className="mt-10">
+              <h3 className="text-lg font-medium mb-3 flex items-center text-red-700">
+                <AlertTriangle className="h-5 w-5 mr-2 text-red-600" />
+                Detected Errors ({props.errors.length})
+              </h3>
+
+              <Accordion type="multiple" className="w-full">
+                {props.errors.map((err, index) => (
+                  <AccordionItem key={index} value={`error-${index}`}>
+                    <AccordionTrigger className="text-sm text-left">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive">Sheet: {err.sheet}</Badge>
+                        <span className="text-xs text-gray-600">Cell: {err.cell}</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="bg-red-50 border border-red-200 rounded-md p-3 text-sm text-red-800">
+                        {err.message}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

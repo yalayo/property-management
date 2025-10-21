@@ -10,3 +10,8 @@
  ::tenants
  (fn [db]
    (get-in db [:letter :tenants])))
+
+(re-frame/reg-sub
+ ::errors
+ (fn [db]
+   (get-in db [:letter :errors])))
