@@ -9,5 +9,4 @@
   (into #{} (concat user-routes html-routes)))
 
 (defmethod ig/init-key ::internal-routes [_ {:keys [routes]}]
-  (println "External Routes: " routes)
   routes)
