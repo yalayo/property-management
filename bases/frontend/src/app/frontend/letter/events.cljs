@@ -14,10 +14,20 @@
  (fn [db [_ id val]]
    (assoc-in db [:property :form id] val)))
 
+(re-frame/reg-event-db
+ ::reset-letter
+ [local-storage-interceptor]
+ (fn [db _]
+   (-> db
+       (assoc-in [:letter :data :is-loading] true)
+       (assoc-in [:letter :data :errors] nil)
+       (assoc-in [:letter :data :tenants] nil))))
+
 (re-frame/reg-event-fx
  ::upload-data
  (fn [db [_ file]] 
-   {:http-xhrio {:method          :post
+   {:dispatch [::reset-letter]
+    :http-xhrio {:method          :post
                  :uri             (str config/api-url "/api/upload-details")
                  :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
                  :body             (let [form-data (js/FormData.)]
@@ -34,16 +44,16 @@
  (fn [db [_ response]]
    (js/console.log "Letters data:" response)
    (-> db
-       (assoc-in [:letter :tenants] response)
+       (assoc-in [:letter :data :tenants] response)
        (assoc-in [:letter :data :is-loading] false))))
 
 (re-frame/reg-event-fx
  ::upload-failure
  [local-storage-interceptor]
  (fn [{:keys [db]} [_ {:keys [status status-text response]}]]
-   (js/console.error (str "Upload failed! HTTP status: " status " " status-text))
-   (js/console.log "Backend responded with:" (clj->js response))
-   {:db (assoc-in db [:letter :errors] response)}))
+   {:db (-> db
+            (assoc-in [:letter :data :errors] response)
+            (assoc-in [:letter :data :is-loading] false))}))
 
 (re-frame/reg-event-fx
  ::get-properties

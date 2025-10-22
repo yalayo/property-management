@@ -9,9 +9,9 @@
 (re-frame/reg-sub
  ::tenants
  (fn [db]
-   (get-in db [:letter :tenants])))
+   (get-in db [:letter :data :tenants])))
 
 (re-frame/reg-sub
  ::errors
  (fn [db]
-   (get-in db [:letter :errors])))
+   (get-in db [:letter :data :errors])))
