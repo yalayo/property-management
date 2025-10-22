@@ -112,11 +112,12 @@
   {:name ::get
    :enter (fn [context]
             (let [info (-> context :request :edn-params)
-                  tenant (:data info)
+                  #_#_tenant (:data info)
                   letter (letter/create info)
-                  pdf-base64 (base64-encode letter)
-                  attachments [{:filename (str (:last-name tenant) ".pdf") :content pdf-base64 :type "application/pdf"}]]
-              (mailer/send-email "immoeventus@gmail.com" (str "Letter for - " (:last-name tenant)) attachments)
+                  #_#_pdf-base64 (base64-encode letter)
+                  #_#_attachments [{:filename (str (:last-name tenant) ".pdf") :content pdf-base64 :type "application/pdf"}]]
+              ;; Only send if requested
+              #_(mailer/send-email "immoeventus@gmail.com" (str "Letter for - " (:last-name tenant)) attachments)
               (assoc context :response {:status 200
                                         :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
                                         :body (java.io.ByteArrayInputStream. letter)})))})
