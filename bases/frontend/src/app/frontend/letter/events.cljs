@@ -120,3 +120,30 @@
    (js/console.error (str "Letter creation failed: " status " " status-text))
    (js/console.log "Backend responded with:" (clj->js response))
    {}))
+
+(re-frame/reg-event-fx
+ ::send-letters
+ (fn [{:keys [db]} [_]]
+   (let [tenants (get-in db [:letter :data :tenants])]
+     {:http-xhrio {:method          :post
+                   :uri             (str config/api-url "/api/send-letters")
+                   :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
+                   :params          tenants
+                   :format          (ajax-edn/edn-request-format)
+                   :response-format (raw-pdf-response-format)
+                   :timeout         8000
+                   :on-success      [::send-letters-success]
+                   :on-failure      [::send-letters-failure]}})))
+
+(re-frame/reg-event-db
+ ::send-letters-success
+ [local-storage-interceptor]
+ (fn [db [_]]
+   (-> db
+       (assoc-in [:letter :data :is-loading] false))))
+
+(re-frame/reg-event-fx
+ ::send-letters-failure
+ (fn [{:keys [_]} [_ {:keys [response]}]]
+   (println "Send letters response: " response)
+   {}))

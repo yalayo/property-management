@@ -14,4 +14,5 @@
     :tenants @(re-frame/subscribe [::subs/tenants])
     :errors @(re-frame/subscribe [::subs/errors])
     :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])
-    :onCreateLetter #(re-frame/dispatch [::events/create-letter %])}])
+    :onCreateLetter #(re-frame/dispatch [::events/create-letter %])
+    :onSendAllLetters #(re-frame/dispatch [::events/send-letters %])}])

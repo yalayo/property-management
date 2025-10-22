@@ -9,13 +9,10 @@ import { Label } from "../../components/ui/label";
 import { 
   UploadCloud, 
   FileSpreadsheet, 
-  FileText, 
-  Check, 
+  FileText,
   AlertTriangle, 
-  Loader2, 
-  Eye, 
-  Clock,
-  CircleX,
+  Loader2,
+  Mail,
   FileIcon
 } from "lucide-react";
 import {
@@ -209,8 +206,20 @@ export default function LetterDataUpload(props) {
 
         {/* Recent uploads */}
         <div className="mt-8">
-          <h3 className="text-lg font-medium mb-4">Detected tenants</h3>
-          
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium">Detected tenants</h3>
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={props.onSendAllLetters}
+              disabled={!selectedYear || !tenants || tenants.length === 0}
+            >
+              <Mail className="h-4 w-4" />
+              Send all letters per email
+            </Button>
+          </div>
+
           {isLoading ? (
             <div className="flex justify-center p-4">
               <Loader2 className="h-6 w-6 animate-spin text-primary-600" />

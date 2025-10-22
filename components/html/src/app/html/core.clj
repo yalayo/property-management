@@ -122,6 +122,21 @@
                                         :headers {"Content-Type" "application/pdf" "Content-Disposition" "attachment; filename=letter.pdf"}
                                         :body (java.io.ByteArrayInputStream. letter)})))})
 
+(defn create-attachments [letters]
+  (map (fn [letter]
+         (let [pdf-base64 (base64-encode letter)]
+           {:filename "todo.pdf" :content pdf-base64 :type "application/pdf"})) letters))
+
+(def post-send-letters-handler
+  {:name ::get
+   :enter (fn [context]
+            (let [info (-> context :request :edn-params)
+                  letters (letter/create-all info)
+                  attachments (create-attachments letters)]
+              (mailer/send-email "yuninho2005@gmail.com" (str "Letter for  property: " "Property name here") attachments)
+              (assoc context :response {:status 200 :body "Letters send"})))})
+
+
 (def letter-handler
   {:name ::get
    :enter (fn [context]
@@ -290,6 +305,9 @@
     ["/api/create-letter"
      :post [(body-params/body-params) params/keyword-params post-create-letter-handler]
      :route-name ::post-create-letter-handler]
+    ["/api/send-letters"
+     :post [(body-params/body-params) params/keyword-params post-send-letters-handler]
+     :route-name ::post-send-letters-handler]
     ["/upload-clients"
      :get [(body-params/body-params) upload-client-handler]
      :route-name ::upload-clients]

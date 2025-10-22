@@ -119,7 +119,9 @@
       output)
     (.toByteArray output)))
 
-
+(defn create-all [tenants]
+  (println "To create latters: " tenants)
+  (map #(create %) tenants))
 
 
 (comment
