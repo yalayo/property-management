@@ -92,7 +92,7 @@
    (let [info (js->clj data :keywordize-keys true)
          year (:year info)
          id (:id info)
-         tenants (get-in db [:letter :tenants])
+         tenants (get-in db [:letter :data :tenants])
          tenant-data (first (filter #(= (:id %) id) tenants))]
      {:http-xhrio {:method          :post
                    :uri             (str config/api-url "/api/create-letter")
