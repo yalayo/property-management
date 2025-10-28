@@ -39,11 +39,13 @@
 (def config
   {::core/domain {:initial {}}
    ::storage/storage {:database-name "users" :schema (:schema base-config)}
+   ::operations/storage {:database-name "operations"}
    ::controller/controller {:storage (ig/ref ::storage/storage)}
    ::user/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
    ::html/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
+   ::operations/routes {}
    ::route/external-routes {:user-routes (ig/ref ::user/routes) :html-routes (ig/ref ::html/routes)}
-   ::route/internal-routes {:routes (get-in base-config [:routes :internal])}
+   ::route/internal-routes {:routes (ig/ref ::operations/routes)}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
 
