@@ -22,6 +22,20 @@
                               :maxLifetime 1800000
                               :connectionTimeout 30000}}})))
 
+;; Hold connections by database name
+(defonce connections (atom {}))
+
+(defn get-conn [database-name]
+  (if-let [existing (get @connections database-name)]
+    existing
+    (let [cfg (base-config database-name)]
+      (when-not (d/database-exists? cfg)
+        (d/create-database cfg))
+      (let [conn (d/connect cfg)]
+        (swap! connections assoc database-name conn)
+        (mu/log ::datahike-conn-started :db database-name)
+        conn))))
+
 (defn transact-schema
   [conn schema]
   (let [existing (into #{}
@@ -33,38 +47,38 @@
     (when (seq schema-to-transact)
       (d/transact conn schema-to-transact))))
 
-(defn transact [conn data]
-  (d/transact conn data))
+(defn transact [data database-name]
+  (let [conn (get-conn database-name)]
+    (d/transact conn data)))
 
-(defn query [conn q]
-  (d/q {:query q} (d/db conn)))
+(defn query [database-name q]
+  (let [conn (get-conn database-name)]
+    (d/q {:query q} (d/db conn))))
 
-(defn query-with-parameter [conn q value]
-  (d/q {:query q} (d/db conn) value))
+(defn query-with-parameter [database-name q value]
+  (let [conn (get-conn database-name)]
+    (d/q {:query q} (d/db conn) value)))
 
-(defn storage [conn]
-  {:conn conn
-   :transact transact
-   :query query
-   :query-with-parameter query-with-parameter})
+(defn storage [database-name]
+  {:transact #(transact % database-name)
+   :query #(query database-name %)
+   :query-with-parameter #(query-with-parameter database-name % %2)})
 
-(defn init [database-name schema] 
-  (let [cfg (base-config database-name)] 
-    (try 
-      (when-not (d/database-exists? cfg)
-                 (d/create-database cfg)) 
-      (let [conn (d/connect cfg)] 
-        (mu/log ::datahike-conn-started :db database-name)
-        (when schema
-          (transact-schema conn schema))
-        (storage conn)) 
-      (catch ExceptionInfo e 
-        (mu/log ::datahike-conn-error :db database-name :exception e) 
-        (throw e)))))
+;; ----------------------------------------------------------------------------
+;; Lifecycle
+;; ----------------------------------------------------------------------------
 
-(defn stop [conn]
-  (try
-    (d/release conn)
-    (mu/log ::datahike-conn-closed)
-    (catch Exception e
-      (mu/log ::datahike-conn-close-error :exception e))))
+(defn init [database-name schema]
+  (let [conn (get-conn database-name)]
+    (when schema
+      (transact-schema conn schema))
+    (storage database-name)))
+
+(defn stop []
+  (doseq [[db-name conn] @connections]
+    (try
+      (d/release conn)
+      (mu/log ::datahike-conn-closed :db db-name)
+      (catch Exception e
+        (mu/log ::datahike-conn-close-error :db db-name :exception e))))
+  (reset! connections {}))

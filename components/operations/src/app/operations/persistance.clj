@@ -1,7 +1,5 @@
 (ns app.operations.persistance
-  (:require [app.storage.interface :as storage]
-            [app.operations.datahike :as datahike]
-            [app.storage.datahike :as datahike]))
+  (:require [app.operations.datahike :as datahike]))
 
 (def general-schema [{:db/ident :electricity}
              {:db/ident :accountability}
@@ -174,8 +172,8 @@
 (defn init [database-name]
   (datahike/init database-name schema))
 
-(defn stop [conn]
-  (datahike/stop conn))
+(defn stop [_]
+  (datahike/stop))
 
 (defn transact-schema []
   (datahike/transact-schema schema "operations"))

@@ -27,7 +27,9 @@
                 (let [result (flatten (excel/process file-input-stream))]
                   (if (some #(:error %) result)
                     (assoc context :response {:status 500 :body (filter :error result) :headers {"Content-Type" "text/edn"}})
-                    (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}}))))))})
+                    (do
+                      (persistance/store-property-info result)
+                      (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}})))))))})
 
 (def post-create-letter-handler
   {:name ::get
