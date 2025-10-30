@@ -26,13 +26,13 @@
         (case cell-type
           "NUMERIC" (.getNumericCellValue cell)
           "STRING"  (if (or (str/starts-with? cell-address "C") (str/starts-with? cell-address "E"))
-                      {:error true :message "Der Inhalt dieser Zelle kann kein Text sein" :cell-address cell-address :sheet-name sheet-name}
+                      {:error true :message "Der Inhalt dieser Zelle kann kein Text sein" :cell cell-address :sheet sheet-name}
                       (.getStringCellValue cell))
           "BOOLEAN" (.getBooleanCellValue cell)
           "FORMULA" (get-formula-value cell)
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
+        (catch Exception e {:error true :message (.getMessage e) :cell cell-address :sheet sheet-name})))))
 
 (defn get-header-cell-value [cell]
   (when (some? cell)
@@ -47,7 +47,7 @@
           "FORMULA" (get-formula-value cell)
           "BLANK" nil
           (throw (IllegalArgumentException. (str "No matching clause: " cell-type))))
-        (catch Exception e {:error true :message (.getMessage e) :cell-address cell-address :sheet-name sheet-name})))))
+        (catch Exception e {:error true :message (.getMessage e) :cell cell-address :sheet sheet-name})))))
 
 (defn format-headers [headers]
   (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
@@ -57,7 +57,7 @@
   (map get-header-cell-value cells))
 
 (defn get-content [cells]
-  (map get-cell-value cells))
+  (mapv get-cell-value cells))
 
 (defn format-content [data size]
   (let [items (into [] (map #(keyword (str (inc %))) (range size)))
@@ -118,7 +118,16 @@
     (get-cell-data (docj/select-cell cell sheet) name required?)))
 
 (defn contains-error? [element]
-  (and (map? element) (:error element)))
+  (cond
+    (map? element) (:error element)
+    (sequential? element) (some contains-error? element)
+    :else false))
+
+(defn collect-errors [x]
+  (cond
+    (map? x) (if (:error x) [x] [])
+    (sequential? x) (mapcat collect-errors x)
+    :else []))
 
 (defn get-tenant-data [general headers content]
   (let [with-headers (into {} {:headers (format-headers headers)})
@@ -131,9 +140,11 @@
         content (get-content (docj/select-name workbook (str "t" (.getSheetName sheet))))
         data (map #(assoc % :sheet sheet) attributes)
         result (map get-attribute-value data)
-        content-errors (filter contains-error? content)]
-    (if (some #(:error %) result)
-      (into [] (concat content-errors (filter :error result)))
+        content-errors (collect-errors content)
+        result-errors  (collect-errors result)
+        errors         (concat content-errors result-errors)]
+    (if (seq errors)
+      errors
       (get-tenant-data result headers content))))
 
 (defn extract-property-bank-data [sheet workbook]
@@ -164,7 +175,12 @@
         tenants (map (fn [sheet-name] {:id (str (java.util.UUID/randomUUID)) :last-name (subs (.getSheetName sheet-name) 3)}) sheets)]
     (println "Tenants: " tenants)
     {:tenants tenants}))
-  
+
+#_(defn process [input-stream]
+  (with-open [workbook (docj/load-workbook input-stream)]
+    (let [sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))]
+      (doall (map #(process-sheet % workbook) sheets)))))
+
 (defn process [input-stream]
   (let [workbook (docj/load-workbook input-stream)
         sheets (filter #(str/starts-with? (.getSheetName %) "W") (docj/sheet-seq workbook))
@@ -278,6 +294,10 @@
       :db/cardinality :db.cardinality/one
       :db/unique      :db.unique/identity}
 
+     {:db/ident       :bill/year
+      :db/valueType   :db.type/string
+      :db/cardinality :db.cardinality/one}
+
      {:db/ident       :bill/property-id
       :db/valueType   :db.type/string
       :db/cardinality :db.cardinality/one
@@ -381,10 +401,10 @@
            (remove (comp nil? val))
            (map (fn [[k v]] [k (remove-nils v)]))
            (into {}))
-  
+
       (vector? data)
       (mapv remove-nils data)
-  
+
       :else
       data))
 
@@ -428,23 +448,24 @@
      :tenant/bills     [(make-bill data)]})
 
 
-  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_Brandstor 23.xlsx"))
-        tenants (vec (map make-tenant (remove-nils data)))] 
-    (d/transact conn tenants))
-  
+  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_ 2024_holounder.xlsx"))
+        #_#_tenants (vec (map make-tenant (remove-nils data)))]
+    #_(d/transact conn tenants)
+    (println "Data: " data))
+
   ;; Queries
   ;; Get all bills with total > 0
   (d/q '[:find ?bill ?total
          :where [?bill :bill/total ?total]
          [(> ?total 0)]]
        @conn)
-  
+
   ;; Or fetch all cost items for a given bill
   (d/pull @conn
           '[:bill/id
             {:bill/cost-items [:cost-item/name :cost-item/result]}]
           [:bill/id (java.util.UUID/fromString "54ecf705-42f7-4f36-b6b6-ed0ce8f54ec6")])
-  
+
   ;; All families with total > 0
   (d/q '[:find ?fam ?bill ?total
          :where
@@ -454,7 +475,7 @@
          [(> ?total 0)]]
        @conn)
 
-  
+
   ;; Get all bills and cost items for a tenant
   (d/pull @conn
           '[:tenant/last-name
@@ -463,7 +484,7 @@
               :bill/total
               {:bill/cost-items [:cost-item/name :cost-item/result]}]}]
           [:tenant/last-name "Fam.Brusberg"])
-  
+
   ;; Get all bills and cost items for a property by id
   (d/pull @conn
           '[:bill/property-id
@@ -474,7 +495,7 @@
           [:bill/property-id "01-WH1-EG-L"])
 
 
-  
+
   ;; Get the bill given an id
   (first
    (d/q '[:find (pull ?b [* {:bill/cost-items [*]}])
@@ -490,13 +511,13 @@
           :where [?b :bill/property-id ?pid]]
         @conn
         "01-WH1-EG-L"))
-  
+
   ;; Get the tenant by last-name
   (d/q '[:find (pull ?t [*])
          :in $ ?last-name
          :where [?t :tenant/last-name ?last-name]]
        @conn "Leer-Friese")
-  
+
   ;; Nested pull
   (d/q '[:find (pull ?t
                      [:tenant/last-name
@@ -513,7 +534,12 @@
          :where [?t :tenant/last-name ?last-name]]
        @conn "Leer-Friese")
 
-
+  (d/q '[:find (pull ?b [*])
+         :in $ ?year
+         :where
+         [?b :bill/year ?year]]
+       @conn
+       "2024")
 
 
   (d/delete-database cfg)
