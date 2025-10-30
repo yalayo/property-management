@@ -3,7 +3,8 @@
             [app.operations.persistance :as persistance]
             [app.letter.interface :as letter]
             [app.excel.interface :as excel]
-            [app.mailer.interface :as mailer])
+            [app.mailer.interface :as mailer]
+            [clojure.java.io :as io])
   (:import (java.util Base64)))
 
 (def operations-handler
@@ -17,18 +18,32 @@
             (core/store-operation (-> context :request :edn-params))
             (assoc context :response {:status 200}))})
 
+(defn flatten-mixed [coll]
+  (vec
+   (mapcat
+    (fn [x]
+      (cond
+        (map? x) [x]
+        (sequential? x) (flatten-mixed x)  ;; recursively flatten deeper sequences
+        :else []))
+    coll)))
+
 (def post-upload-details-handler
   {:name ::post
    :enter (fn [context]
             (let [multipart-data (:multipart-params (-> context :request))
                   file (get multipart-data "file")
-                  file-input-stream (:tempfile file)]
+                  file-input-stream (io/input-stream (:tempfile file))
+                  year (get multipart-data "year")]
               (when (some? file-input-stream)
-                (let [result (flatten (excel/process file-input-stream))]
-                  (if (some #(:error %) result)
-                    (assoc context :response {:status 500 :body (filter :error result) :headers {"Content-Type" "text/edn"}})
+                (let [result (excel/process file-input-stream)
+                      flattened (flatten-mixed result)
+                      data (map #(assoc % :year year) (into [] result))]
+                  (println "Result: " flattened)
+                  (if (some #(:error %) flattened)
+                    (assoc context :response {:status 500 :body (filter :error flattened) :headers {"Content-Type" "text/edn"}})
                     (do
-                      (persistance/store-property-info result)
+                      #_(persistance/store-property-info data)
                       (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}})))))))})
 
 (def post-create-letter-handler
