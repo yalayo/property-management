@@ -39,7 +39,6 @@
                 (let [result (excel/process file-input-stream)
                       flattened (flatten-mixed result)
                       data (map #(assoc % :year year) (into [] result))]
-                  (println "Result: " flattened)
                   (if (some #(:error %) flattened)
                     (assoc context :response {:status 500 :body (filter :error flattened) :headers {"Content-Type" "text/edn"}})
                     (do
