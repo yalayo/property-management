@@ -15,3 +15,8 @@
  ::errors
  (fn [db]
    (get-in db [:letter :data :errors])))
+
+(re-frame/reg-sub
+ ::year
+ (fn [db]
+   (get-in db [:letter :data :year])))

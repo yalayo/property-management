@@ -110,7 +110,7 @@ export default function LetterDataUpload(props) {
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 3 }, (_, i) => currentYear - i);
-  const [selectedYear, setSelectedYear] = useState(null);
+  const selectedYear = props.year;
 
   const renderExtractedData = (file: FileData) => {
     
@@ -158,7 +158,7 @@ export default function LetterDataUpload(props) {
                 type="button"
                 variant={selectedYear === year ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedYear(year)}
+                onClick={() => props.onYearChange(year)}
               >
                 {year}
               </Button>
@@ -183,24 +183,26 @@ export default function LetterDataUpload(props) {
               disabled={false}
             />
             
-            <Button 
-              type="button" 
-              onClick={handleButtonClick}
-              variant="outline" 
-              size="sm"
-            >
-              {false ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <UploadCloud className="mr-2 h-4 w-4" />
-                  Upload Document
-                </>
-              )}
-            </Button>
+            {selectedYear && (
+              <Button
+                type="button"
+                onClick={handleButtonClick}
+                variant="outline"
+                size="sm"
+              >
+                {false ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    Upload Document
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </form>
 

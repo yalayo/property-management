@@ -30,8 +30,10 @@
     :http-xhrio {:method          :post
                  :uri             (str config/api-url "/api/upload-details")
                  :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
-                 :body             (let [form-data (js/FormData.)]
+                 :body             (let [form-data (js/FormData.)
+                                         year (get-in db [:letter :data :year])]
                                      (.append form-data "file" file)
+                                     (.append form-data "year" year)
                                      form-data)
                  :response-format (ajax-edn/edn-response-format)
                  :timeout         8000
@@ -147,3 +149,9 @@
  (fn [{:keys [_]} [_ {:keys [response]}]]
    (println "Send letters response: " response)
    {}))
+
+(re-frame/reg-event-db
+ ::update-year
+ [local-storage-interceptor]
+ (fn [db [_ value]]
+   (assoc-in db [:letter :data :year] value)))

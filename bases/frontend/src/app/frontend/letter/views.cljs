@@ -12,7 +12,9 @@
    {:id "letters"
     :isLoading @(re-frame/subscribe [::subs/is-loading])
     :tenants @(re-frame/subscribe [::subs/tenants])
+    :year @(re-frame/subscribe [::subs/year])
     :errors @(re-frame/subscribe [::subs/errors])
+    :onYearChange #(re-frame/dispatch [::events/update-year %])
     :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])
     :onCreateLetter #(re-frame/dispatch [::events/create-letter %])
     :onSendAllLetters #(re-frame/dispatch [::events/send-letters %])}])
