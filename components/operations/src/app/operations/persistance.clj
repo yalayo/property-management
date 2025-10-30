@@ -75,6 +75,10 @@
     :db/cardinality :db.cardinality/one
     :db/unique      :db.unique/identity}
 
+   {:db/ident       :bill/year
+    :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
    {:db/ident       :bill/property-id
     :db/valueType   :db.type/string
     :db/cardinality :db.cardinality/one
@@ -234,6 +238,7 @@
           (remove (comp nil? val))
           {:bill/id                     (java.util.UUID/randomUUID)
            :bill/property-id            (:property-id data)
+           :bill/year                   (:year data)
            :bill/property-apartment     (:property-apartment data)
            :bill/property-name          (:property-name data)
            :bill/property-address       (:property-address data)
@@ -260,6 +265,8 @@
 (defn store-property-info [data]
   (let [tenants (vec (map make-tenant (remove-nils data)))]
     (datahike/transact tenants "operations")))
+
+
 
 (comment
   (defn get-connection []
