@@ -447,11 +447,50 @@
      :tenant/location  (:location data)
      :tenant/bills     [(make-bill data)]})
 
+  (defn flatten-mixed [coll]
+    (vec
+     (mapcat
+      (fn [x]
+        (cond
+          (map? x) [x]
+          (sequential? x) (flatten-mixed x)  ;; recursively flatten deeper sequences
+          :else []))
+      coll)))
 
-  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/NK_ 2024_holounder.xlsx"))
-        #_#_tenants (vec (map make-tenant (remove-nils data)))]
-    #_(d/transact conn tenants)
-    (println "Data: " data))
+  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate.xlsx"))
+        #_#_tenants (vec (map make-tenant (remove-nils data)))
+        flattened (flatten-mixed data)
+        result (map #(assoc % :year "year") flattened)
+        tenants (vec (map make-tenant (remove-nils result)))]
+
+
+    (d/transact conn tenants)
+    #_(println "Data: " tenants))
+  
+  (d/q '[:find ?property-id ?property-name
+         :where
+         [?b :bill/property-id ?property-id]
+         [?b :bill/property-name ?property-name]]
+       @conn)
+  
+  (map (fn [[id name]]
+         {:property/id id
+          :property/name name})
+       (d/q '[:find ?id ?name
+              :where
+              [?b :bill/property-id ?id]
+              [?b :bill/property-name ?name]]
+            @conn))
+  
+  ;; without prefix
+  (into [] (map (fn [[id name]]
+         {:id id
+          :name name})
+       (d/q '[:find ?id ?name
+              :where
+              [?b :bill/property-id ?id]
+              [?b :bill/property-name ?name]]
+            @conn)))
 
   ;; Queries
   ;; Get all bills with total > 0
