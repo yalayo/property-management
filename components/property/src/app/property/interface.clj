@@ -1,5 +1,6 @@
 (ns app.property.interface
-  (:require [app.property.core :as core]
+  (:require [integrant.core :as ig]
+            [app.property.core :as core]
             [app.property.routes :as routes]))
 
 (defn property-component [config]
@@ -10,3 +11,6 @@
 
 (defn get-internal-routes []
   core/internal-routes)
+
+(defmethod ig/init-key ::routes [_ {:keys [storage]}]
+  (routes/get-routes storage))

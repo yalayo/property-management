@@ -38,11 +38,12 @@
               (when (some? file-input-stream)
                 (let [result (excel/process file-input-stream)
                       flattened (flatten-mixed result)
-                      data (map #(assoc % :year year) (into [] result))]
+                      data (map #(assoc % :year year) flattened)]
+                  (println "To store: " data)
                   (if (some #(:error %) flattened)
                     (assoc context :response {:status 500 :body (filter :error flattened) :headers {"Content-Type" "text/edn"}})
                     (do
-                      #_(persistance/store-property-info data)
+                      (persistance/store-property-info data)
                       (assoc context :response {:status 200 :body result :headers {"Content-Type" "text/edn"}})))))))})
 
 (def post-create-letter-handler
