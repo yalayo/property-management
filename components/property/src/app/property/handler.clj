@@ -3,10 +3,10 @@
             [buddy.sign.jwt :as jwt]
             [clojure.string :as string]))
 
-(def properties-handler
+(defn properties-handler [storage] 
   {:name ::get
    :enter (fn [context]
-            (assoc context :response {:status 200 :body (persistance/list-properties) :headers {"Content-Type" "text/edn"}}))})
+            (assoc context :response {:status 200 :body (persistance/list-properties storage) :headers {"Content-Type" "text/edn"}}))})
 
 (def new-property-handler
   {:name ::post

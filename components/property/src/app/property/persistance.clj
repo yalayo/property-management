@@ -44,8 +44,16 @@
   (let [property-data (conj [] (assoc data :id (str (java.util.UUID/randomUUID))))]
     (storage/transact property-data db)))
 
-(defn list-properties []
-  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "properties"))
+(defn list-properties [storage]
+  (let [conn (:conn storage)
+        query (:query storage)
+        result (query conn '[:find ?id ?name
+                                :where
+                                [?b :bill/property-id ?id]
+                                [?b :bill/property-name ?name]])]
+    (into [] (map (fn [[id name]]
+                    {:id id
+                     :name name}) result))))
 
 (defn get-property-by-name [name]
   (let [query (str "[:find ?id ?name :where [?e :id ?id] [?e :name ?name] [(= ?name \"" name "\")]]")
