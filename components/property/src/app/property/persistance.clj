@@ -47,13 +47,18 @@
 (defn list-properties [storage]
   (let [conn (:conn storage)
         query (:query storage)
-        result (query conn '[:find ?id ?name
-                                :where
-                                [?b :bill/property-id ?id]
-                                [?b :bill/property-name ?name]])]
-    (into [] (map (fn [[id name]]
+        result (query conn '[:find ?id ?name ?street ?location
+                             :where
+                             [?t :tenant/bills ?b]
+                             [?t :tenant/street ?street]
+                             [?t :tenant/location ?location]
+                             [?b :bill/property-id ?id]
+                             [?b :bill/property-name ?name]])]
+    (into [] (map (fn [[id name street location]]
                     {:id id
-                     :name name}) result))))
+                     :name name
+                     :street street
+                     :location location}) result))))
 
 (defn get-property-by-name [name]
   (let [query (str "[:find ?id ?name :where [?e :id ?id] [?e :name ?name] [(= ?name \"" name "\")]]")

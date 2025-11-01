@@ -126,8 +126,8 @@ export default function PropertyList(props) {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold text-lg cursor-pointer" onClick={() => props.onManageProperty(property.id)}>{property.name}</h3>
-                      <p className="text-sm text-gray-500 mt-1">{property.address}</p>
-                      <p className="text-sm text-gray-500">{property.city}, {property.postalcode}</p>
+                      <p className="text-sm text-gray-500 mt-1">{property.street}</p>
+                      <p className="text-sm text-gray-500">{property.location}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={props.addNewTenant}>
