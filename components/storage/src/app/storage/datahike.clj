@@ -2,7 +2,8 @@
   (:require [datahike.api :as d]
             [datahike-jdbc.core]
             [com.brunobonacci.mulog :as mu])
-  (:import (clojure.lang ExceptionInfo)))
+  (:import (clojure.lang ExceptionInfo)
+           [com.zaxxer.hikari HikariConfig HikariDataSource]))
 
 (defn base-config [database-name]
   (let [environment (System/getenv "ENVIRONMENT")]
@@ -48,8 +49,29 @@
    :query query
    :query-with-parameter query-with-parameter})
 
-(defn init [database-name schema] 
-  (let [cfg (base-config database-name)] 
+(defn create-pool []
+  {:datasource
+   (let [config (doto (HikariConfig.)
+                  (.setJdbcUrl "jdbc:postgresql://localhost:5432/property-management")
+                  (.setUsername "user")
+                  (.setPassword (System/getenv "DB_PASSWORD"))
+                  (.setMaximumPoolSize 10))]
+     (HikariDataSource. config))})
+
+(defn close-pool [pool]
+  (when-let [ds (:datasource pool)]
+    (try
+      (.close ds)
+      (catch Exception _))))
+
+(defn init [database-name pool schema]
+  (let [cfg {:store {:backend :jdbc
+                     :dbtype "postgresql"
+                     :dbname "property-management" 
+                     :user "user"
+                     :password (System/getenv "DB_PASSWORD")
+                     :table database-name
+                     :datasource (:datasource pool)}}] 
     (try 
       (when-not (d/database-exists? cfg)
                  (d/create-database cfg)) 
@@ -64,7 +86,8 @@
 
 (defn stop [conn]
   (try
-    (d/release conn)
+    (when conn
+      (d/release conn))
     (mu/log ::datahike-conn-closed)
     (catch Exception e
       (mu/log ::datahike-conn-close-error :exception e))))
