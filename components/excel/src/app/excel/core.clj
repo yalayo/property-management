@@ -465,7 +465,8 @@
 
 
     (d/transact conn tenants)
-    #_(println "Data: " tenants))
+    #_(println "Data: " tenants)
+    #_tenants)
   
   (d/q '[:find ?property-id ?property-name
          :where
@@ -486,11 +487,39 @@
   (into [] (map (fn [[id name]]
          {:id id
           :name name})
-       (d/q '[:find ?id ?name
+       (d/q '[:find ?id ?name ?street
               :where
               [?b :bill/property-id ?id]
-              [?b :bill/property-name ?name]]
+              [?b :bill/property-name ?name]
+              [?b :tenant/street ?street]]
             @conn)))
+  
+  (map (fn [[id name street location]]
+         {:id id
+          :name name
+          :street street
+          :location location})
+       (d/q '[:find ?id ?name ?street ?location
+              :where
+              [?t :tenant/bills ?b]
+              [?t :tenant/street ?street]
+              [?t :tenant/location ?location]
+              [?b :bill/property-id ?id]
+              [?b :bill/property-name ?name]]
+            @conn))
+  
+  (map (fn [[id last-name street location]]
+         {:id id
+          :lastname last-name
+          :street street
+          :location location})
+       (d/q '[:find ?id ?last-name ?street ?location
+              :where
+              [?t :tenant/id ?id]
+              [?t :tenant/last-name ?last-name]
+              [?t :tenant/street ?street]
+              [?t :tenant/location ?location]]
+            @conn))
 
   ;; Queries
   ;; Get all bills with total > 0
