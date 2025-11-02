@@ -66,7 +66,12 @@
       (catch Exception _))))
 
 (defn init [database-name pool schema]
-  (let [cfg {:store {:backend :jdbc
+  (let [plain-config {:store {:backend :jdbc 
+                              :dbtype "postgresql" 
+                              :jdbc-url (str "jdbc:postgresql://" (System/getenv "DB_HOST") ":5432/property-management") 
+                              :user "user" 
+                              :password (System/getenv "DB_PASSWORD")}}
+        cfg {:store {:backend :jdbc
                      :dbtype "postgresql"
                      :host (System/getenv "DB_HOST")
                      :port 5432
@@ -76,8 +81,8 @@
                      :table database-name
                      :datasource (:datasource pool)}}] 
     (try 
-      (when-not (d/database-exists? cfg)
-                 (d/create-database cfg)) 
+      (when-not (d/database-exists? plain-config)
+                 (d/create-database plain-config)) 
       (let [conn (d/connect cfg)] 
         (mu/log ::datahike-conn-started :db database-name)
         (when schema
