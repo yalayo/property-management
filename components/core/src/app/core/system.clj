@@ -8,7 +8,7 @@
                       (update :emails conj email)
                       (update :user-ids conj user-id))]
     (if (some? result)
-      {:state  new-state :events [{:type :persist-user :data {:user-id user-id :email email}}]}
+      {:state  new-state :events [{:type :persist-user :data {:id user-id :email email}}]}
       {:state  state :error {:type :existing-user :email email}})))
 
 (defn onboarding-tenant [state apartment tenant]
