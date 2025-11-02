@@ -36,16 +36,34 @@
                                 (bank/get-internal-routes)))
     :schema (user/get-schema)}})
 
+(def db-pool-config {:dbtype "postgresql"
+                     :host (System/getenv "DB_HOST")
+                     :port 5432
+                     :dbname "property-management"
+                     :user "user"
+                     :password (System/getenv "DB_PASSWORD")
+                     :pool-options {:maximumPoolSize 10
+                                    :minimumIdle 2
+                                    :idleTimeout 60000
+                                    :maxLifetime 1800000
+                                    :connectionTimeout 30000}})
+
 (def config
   {::core/domain {:initial {}}
-   ::storage/storage {:database-name "users" :schema (:schema base-config)}
-   ::operations/storage {:database-name "operations"}
-   ::controller/controller {:storage (ig/ref ::storage/storage)}
+   ::storage/pool {}
+   ::storage/operations {:database-name "operations" :pool (ig/ref ::storage/pool) :schema (:schema base-config)}
+   #_#_::storage/storage {:database-name "users" :pool (ig/ref ::storage/pool) :schema (:schema base-config)}
+   #_#_::operations/storage {:database-name "operations"}
+   ::controller/controller {:storage nil #_(ig/ref ::storage/storage)}
    ::user/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
    ::html/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
    ::operations/routes {}
+   ::property/routes {:storage (ig/ref ::storage/operations)}
+   ::tenant/routes {:storage (ig/ref ::storage/operations)}
    ::route/external-routes {:user-routes (ig/ref ::user/routes) :html-routes (ig/ref ::operations/routes)}
-   ::route/internal-routes {:routes (ig/ref ::operations/routes)}
+   ::route/internal-routes {:operations-routes (ig/ref ::operations/routes) 
+                            :properties-routes (ig/ref ::property/routes)
+                            :tenants-routes (ig/ref ::tenant/routes)}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
 
