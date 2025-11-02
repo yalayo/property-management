@@ -1,7 +1,6 @@
 (ns app.frontend.platform.views
   (:require [re-frame.core :as re-frame]
             [reagent.core :as r]
-            [clojure.string :as str]
             [app.frontend.config :as config]
             [app.frontend.platform.subs :as subs]
             [app.frontend.user.views :as user-view]
@@ -16,13 +15,10 @@
        [:h1 "Login with Google"]
        [:div#g-signin]])}))
 
-(defn internal? []
-  (str/includes? (.-host js/window.location) "localhost:9090"))
-
 (defn app []
   (let [user-loged-in? @(re-frame/subscribe [::subs/logged-in])]
     [:<>
-     (if (internal?)
+     (if (config/internal?)
        (dashboard/dashboard-component)
        (if user-loged-in?
          (dashboard/dashboard-component)
