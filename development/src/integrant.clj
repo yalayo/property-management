@@ -60,10 +60,12 @@
    ::operations/routes {}
    ::property/routes {:storage (ig/ref ::storage/operations)}
    ::tenant/routes {:storage (ig/ref ::storage/operations)}
+   ::apartment/routes {:storage (ig/ref ::storage/operations)}
    ::route/external-routes {:user-routes (ig/ref ::user/routes) :html-routes (ig/ref ::operations/routes)}
    ::route/internal-routes {:operations-routes (ig/ref ::operations/routes) 
                             :properties-routes (ig/ref ::property/routes)
-                            :tenants-routes (ig/ref ::tenant/routes)}
+                            :tenants-routes (ig/ref ::tenant/routes)
+                            :apartments-routes (ig/ref ::apartment/routes)}
    ::server/server {:port 8080 :active-route :external :routes (ig/ref ::route/external-routes)}
    ::server/internal-server {:port 9090 :active-route :internal :routes (ig/ref ::route/internal-routes)}})
 

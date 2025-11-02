@@ -494,6 +494,7 @@
               [?b :tenant/street ?street]]
             @conn)))
   
+  ;; Properties
   (map (fn [[id name street location]]
          {:id id
           :name name
@@ -508,6 +509,7 @@
               [?b :bill/property-name ?name]]
             @conn))
   
+  ;; Tenants
   (map (fn [[id last-name street location]]
          {:id id
           :lastname last-name
@@ -519,6 +521,20 @@
               [?t :tenant/last-name ?last-name]
               [?t :tenant/street ?street]
               [?t :tenant/location ?location]]
+            @conn))
+  
+  ;; Apartments
+  (map (fn [[apartment-id apartment-code tenant-id tenant-name]]
+         {:id apartment-id
+          :code apartment-code
+          :tenant {:id tenant-id :name tenant-name}})
+       (d/q '[:find ?apartment-id ?apartment-code ?tenant-id ?tenant-name
+              :where
+              [?t :tenant/id ?tenant-id]
+              [?t :tenant/last-name ?tenant-name]
+              [?t :tenant/bills ?b]
+              [?b :bill/property-id ?apartment-id]
+              [?b :bill/property-apartment ?apartment-code]]
             @conn))
 
   ;; Queries

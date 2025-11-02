@@ -30,5 +30,17 @@
         persist-data [[:db/add [:id apartment-id] :tenant tenant-id]]]
     (storage/transact persist-data "apartments")))
 
-(defn list-apartments []
-  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :code _]] "apartments"))
+(defn list-apartments [storage]
+  (let [conn (:conn storage)
+        query (:query storage)
+        result (query conn '[:find ?apartment-id ?apartment-code ?tenant-id ?tenant-name
+                             :where
+                             [?t :tenant/id ?tenant-id]
+                             [?t :tenant/last-name ?tenant-name]
+                             [?t :tenant/bills ?b]
+                             [?b :bill/property-id ?apartment-id]
+                             [?b :bill/property-apartment ?apartment-code]])]
+    (into [] (map (fn [[apartment-id apartment-code tenant-id tenant-name]]
+                    {:id apartment-id
+                     :code apartment-code
+                     :tenant {:id tenant-id :name tenant-name}}) result))))
