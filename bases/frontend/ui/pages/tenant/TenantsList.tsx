@@ -104,9 +104,8 @@ export default function TenantsList(props) {
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-lg">{tenant.name}</h3>
-                      <p className="text-sm text-gray-500 mt-1">{tenant.lastname}</p>
-                      <p className="text-sm text-gray-500">{tenant.email} {tenant.phone}</p>
+                      <h3 className="font-semibold text-lg">{tenant.lastname}</h3>
+                      <p className="text-sm text-gray-500">{tenant.street}, {tenant.location}</p>
                     </div>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={props.addNewTenant}>

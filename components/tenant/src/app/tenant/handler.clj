@@ -1,10 +1,10 @@
 (ns app.tenant.handler
   (:require [app.tenant.persistance :as persistance]))
 
-(def tenants-handler
+(defn tenants-handler [storage]
   {:name ::get
    :enter (fn [context]
-            (assoc context :response {:status 200 :body (persistance/list-tenants) :headers {"Content-Type" "text/edn"}}))})
+            (assoc context :response {:status 200 :body (persistance/list-tenants storage) :headers {"Content-Type" "text/edn"}}))})
 
 (def new-tenant-handler
   {:name ::post

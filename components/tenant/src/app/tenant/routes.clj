@@ -10,3 +10,11 @@
     ["/api/new-tenant"
      :post [(body-params/body-params) params/keyword-params handler/new-tenant-handler]
      :route-name ::new-tenants]})
+
+(defn get-routes [storage]
+  #{["/api/tenants"
+     :get (handler/tenants-handler storage)
+     :route-name ::tenants]
+    ["/api/new-tenant"
+     :post [(body-params/body-params) params/keyword-params handler/new-tenant-handler]
+     :route-name ::new-tenants]})

@@ -8,5 +8,5 @@
 (defmethod ig/init-key ::external-routes [_ {:keys [user-routes html-routes]}]
   (into #{} (concat user-routes html-routes)))
 
-(defmethod ig/init-key ::internal-routes [_ {:keys [operations-routes properties-routes]}]
-  (into #{} (concat operations-routes properties-routes)))
+(defmethod ig/init-key ::internal-routes [_ {:keys [operations-routes properties-routes tenants-routes]}]
+  (into #{} (concat operations-routes properties-routes tenants-routes)))

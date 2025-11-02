@@ -27,5 +27,17 @@
   (let [tenant-data (conj [] (assoc data :id (str (java.util.UUID/randomUUID))))]
     (storage/transact tenant-data "tenants")))
 
-(defn list-tenants []
-  (storage/query '[:find [(pull ?e [*]) ...] :where [?e :name _]] "tenants"))
+(defn list-tenants [storage]
+  (let [conn (:conn storage)
+        query (:query storage)
+        result (query conn '[:find ?id ?last-name ?street ?location
+                             :where
+                             [?t :tenant/id ?id]
+                             [?t :tenant/last-name ?last-name]
+                             [?t :tenant/street ?street]
+                             [?t :tenant/location ?location]])]
+    (into [] (map (fn [[id lastname street location]]
+                    {:id id
+                     :lastname lastname
+                     :street street
+                     :location location}) result))))
