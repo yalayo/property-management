@@ -67,11 +67,14 @@
 
 (defn init [database-name pool schema]
   (println "HOST: " (System/getenv "DB_HOST"))
-  (let [plain-config {:store {:backend :jdbc 
-                              :dbtype "postgresql" 
-                              :jdbc-url (str "jdbc:postgresql://" (System/getenv "DB_HOST") ":5432/property-management") 
-                              :user "user" 
-                              :password (System/getenv "DB_PASSWORD")}}
+  (let [plain-config {:store {:backend :jdbc
+                              :dbtype "postgresql"
+                              :host (System/getenv "DB_HOST")
+                              :port 5432
+                              :dbname "property-management"
+                              :user "user"
+                              :password (System/getenv "DB_PASSWORD")
+                              :table database-name}}
         cfg {:store {:backend :jdbc
                      :dbtype "postgresql"
                      :host (System/getenv "DB_HOST")
