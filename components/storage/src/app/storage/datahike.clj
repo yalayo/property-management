@@ -66,6 +66,7 @@
       (catch Exception _))))
 
 (defn init [database-name pool schema]
+  (println "HOST: " (System/getenv "DB_HOST"))
   (let [plain-config {:store {:backend :jdbc 
                               :dbtype "postgresql" 
                               :jdbc-url (str "jdbc:postgresql://" (System/getenv "DB_HOST") ":5432/property-management") 
@@ -78,8 +79,9 @@
                      :dbname "property-management" 
                      :user "user"
                      :password (System/getenv "DB_PASSWORD")
-                     :table database-name
-                     :datasource (:datasource pool)}}] 
+                     #_#_:jdbc-url (str "jdbc:postgresql://" (System/getenv "DB_HOST") ":5432/")
+                     :datasource (:datasource pool)
+                     :table database-name}}] 
     (try 
       (when-not (d/database-exists? plain-config)
                  (d/create-database plain-config)) 
