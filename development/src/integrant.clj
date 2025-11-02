@@ -36,18 +36,6 @@
                                 (bank/get-internal-routes)))
     :schema (user/get-schema)}})
 
-(def db-pool-config {:dbtype "postgresql"
-                     :host (System/getenv "DB_HOST")
-                     :port 5432
-                     :dbname "property-management"
-                     :user "user"
-                     :password (System/getenv "DB_PASSWORD")
-                     :pool-options {:maximumPoolSize 10
-                                    :minimumIdle 2
-                                    :idleTimeout 60000
-                                    :maxLifetime 1800000
-                                    :connectionTimeout 30000}})
-
 (def config
   {::core/domain {:initial {}}
    ::storage/pool {}
