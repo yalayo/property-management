@@ -52,8 +52,6 @@
   {::core/domain {:initial {}}
    ::storage/pool {}
    ::storage/operations {:database-name "operations" :pool (ig/ref ::storage/pool) :schema (:schema base-config)}
-   #_#_::storage/storage {:database-name "users" :pool (ig/ref ::storage/pool) :schema (:schema base-config)}
-   #_#_::operations/storage {:database-name "operations"}
    ::controller/controller {:storage nil #_(ig/ref ::storage/storage)}
    ::user/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
    ::html/routes {:core (ig/ref ::core/domain) :controller (ig/ref ::controller/controller)}
