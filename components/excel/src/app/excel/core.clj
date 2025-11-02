@@ -536,6 +536,27 @@
               [?b :bill/property-id ?apartment-id]
               [?b :bill/property-apartment ?apartment-code]]
             @conn))
+  
+  ;; Bank accounts
+  (map (fn [[iban bank]]
+         {:iban iban
+          :bank bank})
+       (d/q '[:find ?iban ?bank
+              :with ?b
+              :where
+              [?b :bill/iban ?iban]
+              [?b :bill/bank-name ?bank]]
+            @conn))
+  
+  (distinct
+   (map (fn [[iban bank]]
+          {:iban iban
+           :bank bank})
+        (d/q '[:find ?iban ?bank
+               :where
+               [?b :bill/iban ?iban]
+               [?b :bill/bank-name ?bank]]
+             @conn)))
 
   ;; Queries
   ;; Get all bills with total > 0

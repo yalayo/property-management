@@ -10,5 +10,5 @@
   (into #{} (concat user-routes html-routes)))
 
 (defmethod ig/init-key ::internal-routes 
-  [_ {:keys [operations-routes properties-routes tenants-routes apartments-routes]}]
-  (into #{} (concat operations-routes properties-routes tenants-routes apartments-routes)))
+  [_ {:keys [operations-routes properties-routes tenants-routes apartments-routes accounts-routes]}]
+  (into #{} (concat operations-routes properties-routes tenants-routes apartments-routes accounts-routes)))

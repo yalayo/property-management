@@ -78,11 +78,11 @@ export default function AccountsList(props) {
         {accounts && accounts.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {accounts.map((account: any) => (
-              <Card key={account.id} onClick={() => props.onSelectAccount(account.id)} className="overflow-hidden cursor-pointer">
+              <Card key={account.iban} onClick={() => props.onSelectAccount(account.iban)} className="overflow-hidden cursor-pointer">
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-lg">{account.name}</h3>
+                      <h3 className="font-semibold text-lg">{account.bank}</h3>
                       <p className="text-sm text-gray-500 mt-1">{account.iban}</p>
                     </div>
                     <div className="flex space-x-2">

@@ -10,3 +10,11 @@
     ["/api/new-account"
      :post [(body-params/body-params) params/keyword-params handler/new-account-handler]
      :route-name ::new-accounts]})
+
+(defn get-routes [storage]
+  #{["/api/accounts"
+     :get (handler/accounts-handler storage)
+     :route-name ::accounts]
+    ["/api/new-account"
+     :post [(body-params/body-params) params/keyword-params handler/new-account-handler]
+     :route-name ::new-accounts]})
