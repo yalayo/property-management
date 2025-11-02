@@ -51,8 +51,9 @@
 
 (defn create-pool []
   {:datasource
-   (let [config (doto (HikariConfig.)
-                  (.setJdbcUrl "jdbc:postgresql://localhost:5432/property-management")
+   (let [jdbc-url (format "jdbc:postgresql://%s:%s/%s" (System/getenv "DB_HOST") "5432" "property-management")
+         config (doto (HikariConfig.)
+                  (.setJdbcUrl jdbc-url)
                   (.setUsername "user")
                   (.setPassword (System/getenv "DB_PASSWORD"))
                   (.setMaximumPoolSize 10))]
