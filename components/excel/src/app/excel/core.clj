@@ -464,16 +464,131 @@
         tenants (vec (map make-tenant (remove-nils result)))]
 
 
-    (d/transact conn tenants)
+    #_(d/transact conn tenants)
     #_(println "Data: " tenants)
-    #_tenants)
+    tenants)
   
+  (defn fetch-all-tenants [conn]
+    (map first
+         (d/q '[:find (pull ?t
+                            [*
+                             {:tenant/bills
+                              [*
+                               {:bill/cost-items [*]}]}])
+                :where [?t :tenant/id _]]
+              @conn)))
+  
+  (into [] (fetch-all-tenants conn))
+
+  (defn index-by [k coll]
+    (into {}
+          (map (fn [m] [(get m k) m]))
+          coll))
+  
+  (defn entity->map [tenant]
+    (-> tenant
+        (update :tenant/bills
+                (fn [bills]
+                  (->> bills
+                       (map #(update % :bill/cost-items
+                                     (fn [items]
+                                       (index-by :cost-item/name items))))
+                       (index-by :bill/property-id))))
+        (dissoc :tenant/id :db/id)))
+
+  (defn normalize-for-diff [x]
+    (cond
+      ;; Handle maps
+      (map? x)
+      (->> x
+           (remove (fn [[k v]]
+                     (or (nil? v)
+                         (= k :db/id)
+                         (= k :tenant/id)
+                         (= k :bill/id)
+                         (= k :cost-item/id)
+                         (uuid? v))))  ; remove any random UUID values
+           (map (fn [[k v]] [k (normalize-for-diff v)]))
+           (into {}))
+  
+      ;; Handle vectors (e.g. nested collections)
+      (vector? x)
+      (mapv normalize-for-diff x)
+  
+      ;; Everything else (scalars)
+      :else x))
+  
+  (mapv normalize-for-diff (fetch-all-tenants conn))
+
+  (defn compute-diff [old new]
+    (let [[only-db only-input _]
+          (data/diff
+           (into {} (map (juxt :tenant/last-name entity->map)) old)
+           (into {} (map (juxt :tenant/last-name entity->map)) new))]
+      {:only-db only-db
+       :only-input only-input}))
+  
+  (defn get-new []
+    (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate.xlsx"))
+          flattened (flatten-mixed data)
+          result (map #(assoc % :year "year") flattened)
+          tenants (vec (map make-tenant (remove-nils result)))]
+      tenants))
+  
+  (let [old (mapv normalize-for-diff (fetch-all-tenants conn))
+        new (get-new)
+        diff (compute-diff old new)]
+    (println "Only old: " (:only-db diff))
+    (println "Only new: " (:only-input diff)))
+  
+  ;; Working on the transaction part
+  (defn strip-volatile [m]
+    (cond-> m
+      true (dissoc :db/id :tenant/id :bill/id :cost-item/id)
+      true (remove-nils)))
+  
+  (defn index-cost-items [items]
+    (into {}
+          (map (fn [ci]
+                 [(:cost-item/name ci)
+                  (strip-volatile ci)]))
+          items))
+  
+  (defn index-bills [bills]
+    (into {}
+          (map (fn [bill]
+                 [(:bill/property-id bill)
+                  (-> bill
+                      strip-volatile
+                      (update :bill/cost-items index-cost-items))]))
+          bills))
+  
+  (defn tenant->map [tenant]
+    [(:tenant/last-name tenant)
+     (-> tenant
+         strip-volatile
+         (update :tenant/bills index-bills))])
+  
+  (defn normalize-tenants [tenants]
+    (into {} (map tenant->map tenants)))
+  
+  (defn compute-tenant-diff [old new]
+    (let [[removed added _] (data/diff
+                             (normalize-tenants old)
+                             (normalize-tenants new))]
+      {:removed removed
+       :added added}))
+
+  (let [old (mapv normalize-for-diff (fetch-all-tenants conn))
+        new (get-new)]
+    (:added (compute-tenant-diff old new)))
+
   (d/q '[:find ?property-id ?property-name
          :where
          [?b :bill/property-id ?property-id]
          [?b :bill/property-name ?property-name]]
        @conn)
-  
+
   (map (fn [[id name]]
          {:property/id id
           :property/name name})
@@ -482,18 +597,18 @@
               [?b :bill/property-id ?id]
               [?b :bill/property-name ?name]]
             @conn))
-  
+
   ;; without prefix
   (into [] (map (fn [[id name]]
-         {:id id
-          :name name})
-       (d/q '[:find ?id ?name ?street
-              :where
-              [?b :bill/property-id ?id]
-              [?b :bill/property-name ?name]
-              [?b :tenant/street ?street]]
-            @conn)))
-  
+                  {:id id
+                   :name name})
+                (d/q '[:find ?id ?name ?street
+                       :where
+                       [?b :bill/property-id ?id]
+                       [?b :bill/property-name ?name]
+                       [?b :tenant/street ?street]]
+                     @conn)))
+
   ;; Properties
   (map (fn [[id name street location]]
          {:id id
@@ -508,7 +623,7 @@
               [?b :bill/property-id ?id]
               [?b :bill/property-name ?name]]
             @conn))
-  
+
   ;; Tenants
   (map (fn [[id last-name street location]]
          {:id id
@@ -522,7 +637,7 @@
               [?t :tenant/street ?street]
               [?t :tenant/location ?location]]
             @conn))
-  
+
   ;; Apartments
   (map (fn [[apartment-id apartment-code tenant-id tenant-name]]
          {:id apartment-id
@@ -536,7 +651,7 @@
               [?b :bill/property-id ?apartment-id]
               [?b :bill/property-apartment ?apartment-code]]
             @conn))
-  
+
   ;; Bank accounts
   (map (fn [[iban bank]]
          {:iban iban
@@ -547,7 +662,7 @@
               [?b :bill/iban ?iban]
               [?b :bill/bank-name ?bank]]
             @conn))
-  
+
   (distinct
    (map (fn [[iban bank]]
           {:iban iban
@@ -557,6 +672,94 @@
                [?b :bill/iban ?iban]
                [?b :bill/bank-name ?bank]]
              @conn)))
+
+  ;; experiment with diff
+  (require '[clojure.data :as data])
+
+  (defn clean [x]
+    (cond
+      (map? x) (->> x
+                    (remove (comp nil? val))
+                    (map (fn [[k v]] [k (clean v)]))
+                    (into {}))
+      (vector? x) (mapv clean x)
+      :else x))
+
+  (defn deep-diff [old new]
+    (let [[only-db only-input _] (data/diff (clean old) (clean new))]
+      {:only-db only-db :only-input only-input}))
+
+
+
+  (d/q '[:find (pull ?t [*])
+         :in $ ?last-name
+         :where [?t :tenant/last-name ?last-name]]
+       @conn "Fam.Sowa")
+
+
+  (defn fetch-tenant [conn last-name]
+    (ffirst
+     (d/q '[:find (pull ?t [* {:tenant/bills [* {:bill/cost-items [*]}]}])
+            :in $ ?last-name
+            :where [?t :tenant/last-name ?last-name]]
+          @conn last-name)))
+
+  (fetch-tenant conn "Fam.Sowa")
+
+  (defn find-bill [existing-tenant property-id]
+    (some #(when (= (:bill/property-id %) property-id) %) (:tenant/bills existing-tenant)))
+
+  (defn find-cost-item [existing-bill name]
+    (some #(when (= (:cost-item/name %) name) %) (:bill/cost-items existing-bill)))
+  
+  (defn update-cost-item! [conn bill-id new-item existing-bill]
+    (if-let [old-item (find-cost-item existing-bill (:cost-item/name new-item))]
+      (let [{:keys [only-input]} (deep-diff old-item new-item)]
+        (when (seq only-input)
+          (d/transact conn {:tx-data [(assoc only-input :db/id (:db/id old-item))]})))
+      ;; new item
+      (d/transact conn {:tx-data [(assoc new-item :bill/_cost-items bill-id)]})))
+
+  (defn update-bill! [conn tenant-id new-bill existing-tenant]
+    (if-let [old-bill (find-bill existing-tenant (:bill/property-id new-bill))]
+      (let [{:keys [only-input]} (deep-diff old-bill new-bill)]
+        ;; update only bill fields (not cost-items)
+        (when (seq (dissoc only-input :bill/cost-items))
+          (d/transact conn {:tx-data [(assoc (dissoc only-input :bill/cost-items)
+                                             :db/id (:db/id old-bill))]}))
+
+        ;; handle cost-items
+        (doseq [ci (:bill/cost-items new-bill)]
+          (update-cost-item! conn (:db/id old-bill) ci old-bill)))
+      ;; New bill not found — add it
+      (d/transact conn {:tx-data [(assoc new-bill :tenant/_bills tenant-id)]})))
+
+  (defn update-tenant! [conn new-tenant]
+    (if-let [existing (fetch-tenant conn (:tenant/last-name new-tenant))]
+      (let [{:keys [only-input]} (deep-diff existing new-tenant)]
+        ;; 1️⃣ update tenant attributes
+        (when (seq (dissoc only-input :tenant/bills))
+          (d/transact conn {:tx-data [(assoc (dissoc only-input :tenant/bills)
+                                             :db/id (:db/id existing))]}))
+
+        ;; 2️⃣ handle bills recursively
+        (doseq [bill (:tenant/bills new-tenant)]
+          (update-bill! conn (:db/id existing) bill existing)))
+      ;; Tenant not in DB, create new
+      (d/transact conn {:tx-data [new-tenant]})))
+  
+
+  (let [data (process (io/input-stream "D:/personal/projects/inmo-verwaltung/work-data/for-the-letters/to_validate.xlsx"))
+        flattened (flatten-mixed data)
+        result (map #(assoc % :year "year") flattened)
+        tenants (vec (map make-tenant (remove-nils result)))]
+    
+    
+    #_(d/transact conn tenants)
+    #_(println "Data: " tenants)
+    #_tenants)
+  
+
 
   ;; Queries
   ;; Get all bills with total > 0
