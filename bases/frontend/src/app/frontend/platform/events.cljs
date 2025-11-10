@@ -31,7 +31,7 @@
  [(re-frame/inject-cofx :local-store-db)]
  (fn-traced [{:keys [local-store-db]} _]
             {:db local-store-db
-             :dispatch-n [[::property-events/get-properties] 
+             :dispatch-n [] #_[[::property-events/get-properties] 
                           [::tenant-events/get-tenants] 
                           [::apartment-events/get-apartments]
                           [::account-events/get-accounts]]}))
