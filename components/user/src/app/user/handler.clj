@@ -16,7 +16,7 @@
             (let [params (-> context :request :edn-params)
                   domain (:dispatch core)
                   process-events (:dispatch controller)
-                  result (domain :sign-up [(str (java.util.UUID/randomUUID)) (:user params)])
+                  result (domain :sign-up [(assoc params :user-id (str (java.util.UUID/randomUUID)))])
                   error (:error result)
                   events (:events result)]
               (if (some? error)

@@ -1,14 +1,16 @@
 (ns app.core.system
   (:require [app.core.rules :as rules]))
 
-(defn sign-up [state user-id email]
-  (let [result (rules/process-sign-up {:id user-id :email email})
+(defn sign-up [state data]
+  (let [user-id (:user-id data)
+        email (:user data)
+        result (rules/process-sign-up {:id user-id :email email})
         new-state (-> state
                       (assoc-in [:users user-id] {:email email})
                       (update :emails conj email)
                       (update :user-ids conj user-id))]
     (if (some? result)
-      {:state  new-state :events [{:type :persist-user :data {:id user-id :email email}}]}
+      {:state  new-state :events [{:type :persist-user :data {:id user-id :email email :password (:password data)}}]}
       {:state  state :error {:type :existing-user :email email}})))
 
 (defn onboarding-tenant [state apartment tenant]

@@ -22,7 +22,7 @@
   [_ _]
   (datahike/create-pool))
 
-(defmethod ig/halt-key! :db/pool
+(defmethod ig/halt-key! ::pool
   [_ pool]
   (datahike/close-pool pool))
 
@@ -39,5 +39,13 @@
   (datahike/init database-name pool schema))
 
 (defmethod ig/halt-key! ::operations
+  [_ conn]
+  (datahike/stop conn))
+
+(defmethod ig/init-key ::users
+  [_ {:keys [database-name pool schema]}]
+  (datahike/init database-name pool schema))
+
+(defmethod ig/halt-key! ::users
   [_ conn]
   (datahike/stop conn))
