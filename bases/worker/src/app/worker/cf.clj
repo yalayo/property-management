@@ -1,4 +1,4 @@
-(ns server.cf
+(ns app.worker.cf
 	(:require [shadow.cljs.modern]))
 
 (defn- constructor? [form]

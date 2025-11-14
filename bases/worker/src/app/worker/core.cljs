@@ -1,11 +1,10 @@
-(ns server.core
+(ns app.worker.core
   (:require ["cloudflare:workers" :refer [DurableObject]]
             [reitit.core :as r]
          	  [clojure.string :as s]
-            [lib.async :refer [js-await]]
-            [server.cf.durable-objects :as do]
-            [server.cf :as cf :refer [defclass]]
-            [app.user.interface :as user]))
+            [app.worker.async :refer [js-await]]
+            [app.worker.durable-objects :as do]
+            [app.worker.cf :as cf :refer [defclass]]))
 
 ;; usage example of Durable Objects as a short-lived state
 ;; for user presence tracking in multiplayer web app
@@ -30,7 +29,7 @@
   ["/api"])
 
 (def routes
-    (into base-routes (user/get-routes) #_(concat (excel/routes) (user/routes))))
+    (into base-routes [] #_(user/get-routes) #_(concat (excel/routes) (user/routes))))
 
 (def router
   (r/router routes))

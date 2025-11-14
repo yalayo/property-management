@@ -1,7 +1,0 @@
-{:deps true
- :builds {:server {:target :esm
-					 :output-dir "out"
-					 :modules {:main {:exports {default server.core/handler
-												PresenceDurableObject server.core/PresenceDurableObject}}}
-					 :js-options {:js-provider :import}
-					 :devtools {:enabled false}}}}

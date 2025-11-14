@@ -1,10 +1,11 @@
-(ns server.cf
-	(:refer-clojure :exclude [js->clj])
-	(:require-macros [server.cf])
-	(:require [clojure.edn :as edn]
-						[reitit.core :as r]
-						[lib.async :refer [js-await]]
-						[goog.object]))
+(ns app.worker.cf
+  (:refer-clojure :exclude [js->clj])
+  (:require-macros [app.worker.cf])
+  (:require
+   [clojure.edn :as edn]
+   [reitit.core :as r]
+   [app.worker.async :refer [js-await]]
+   [goog.object]))
 
 ;; each incoming request to a worker binds the following vars
 ;; for ease of access throughout the codebase

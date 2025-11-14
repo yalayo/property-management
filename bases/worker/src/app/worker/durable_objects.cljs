@@ -1,5 +1,5 @@
-(ns server.cf.durable-objects
-	(:require [server.cf :as cf]))
+(ns app.worker.durable-objects
+	(:require [app.worker.cf :as cf]))
 
 ;; Docs
 ;; https://developers.cloudflare.com/durable-objects/api/base/

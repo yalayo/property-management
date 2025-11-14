@@ -1,10 +1,9 @@
-(ns server.handler
+(ns app.worker.handler
   (:require
    [integrant.core :as ig]
    [reitit.ring :as ring]
    [reitit.core :as r]
-   [server.cf :as cf]
-   [app.user.handler]))
+   [app.worker.cf :as cf]))
 
 (def DB (atom nil))
 (def ENV (atom nil))

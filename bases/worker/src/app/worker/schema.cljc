@@ -1,4 +1,4 @@
-(ns server.schema
+(ns app.worker.schema
 	(:require [malli.util :as mu]
 						[malli.core :as m]
 						[malli.error :as me]))
