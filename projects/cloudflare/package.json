@@ -1,0 +1,17 @@
+{
+  "name": "@poly/cloudflare",
+  "description": "",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "shadow-cljs watch server -A:dev",
+    "release": "shadow-cljs release server -A:dev"
+  },
+  "workspaces": [
+    "../../bases/worker"
+  ],
+  "devDependencies": {
+    "shadow-cljs": "^3.2.0",
+    "wrangler": "^4.42.2"
+  }
+}
