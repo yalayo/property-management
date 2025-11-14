@@ -28,6 +28,7 @@ jobs:
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 1.12.2
+          invalidate-cache: true
 
       - name: Build the application
         run: |
