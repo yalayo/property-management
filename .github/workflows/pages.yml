@@ -27,7 +27,7 @@ jobs:
       - name: Install Clojure tools 1.12.0
         uses: DeLaGuardo/setup-clojure@11.0
         with:
-          tools-deps: 1.12.0
+          cli: 1.12.0
           cache: false
 
       - name: Build the application
