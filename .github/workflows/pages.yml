@@ -28,7 +28,23 @@ jobs:
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 1.12.2
-          invalidate-cache: true
+
+      # Cache Clojure deps
+      - name: Cache Clojure deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.cpcache
+            ~/.gitlibs
+          key: clj-${{ hashFiles('deps.edn') }}
+
+      # Cache npm dependencies
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('projects/frontend/package-lock.json') }}
 
       - name: Build the application
         run: |
