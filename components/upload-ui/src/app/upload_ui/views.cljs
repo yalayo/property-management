@@ -5,9 +5,10 @@
 (def file-upload (r/adapt-react-class upload-js))
 
 (defn file-upload-component []
-  [file-upload
-   {:id "file-upload"
-    :isLoading true}])
-
+  [:<>
+   [:div.max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8.py-12
+    [file-upload
+     {:id "file-upload"
+      :isLoading true}]]])
 
 
