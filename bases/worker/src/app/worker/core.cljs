@@ -1,5 +1,6 @@
 (ns app.worker.core
-  (:require ["cloudflare:workers" :refer [DurableObject]]
+  (:require [integrant.core :as ig]
+            ["cloudflare:workers" :refer [DurableObject]]
             [reitit.core :as r]
          	  [clojure.string :as s]
             [app.worker.async :refer [js-await]]
@@ -22,17 +23,8 @@
                                   (do/storage-delete+ ctx id))
                                 (do/storage-list+ ctx))))
 
-(defn todos-get [route request env ctx]
-  (cf/response-edn {:result :hello} {:status 200}))
-
 (def base-routes
   ["/api"])
-
-(def routes
-    (into base-routes [] #_(user/get-routes) #_(concat (excel/routes) (user/routes))))
-
-(def router
-  (r/router routes))
 
 (defn handle-route [route request env ctx]
   (let [method (keyword (s/lower-case (.-method ^js request)))
@@ -41,6 +33,12 @@
       (handler route request env ctx)
       (cf/response-error {:error "Not implemented"}))))
 
-;; entry point
-(def handler
-  #js {:fetch (cf/with-handler router handle-route)})
+(defn init [{:keys [upload-routes]}]
+  (let [routes (into base-routes upload-routes)
+        router (r/router routes)
+        handler #js {:fetch (cf/with-handler router handle-route)}]
+    handler))
+
+(defmethod integrant.core/init-key ::handler
+  [_ routes]
+  (init routes))
