@@ -12,10 +12,6 @@ jobs:
   build:
     name: Build with shadow-cljs
     runs-on: ubuntu-latest
-    #permissions:
-      #contents: read
-      #actions: write
-      #id-token: write   # REQUIRED for cache API writes in 2024+
     defaults:
       run:
         shell: bash
@@ -32,7 +28,6 @@ jobs:
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 1.12.0.1530
-          #github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Cache Clojure deps
       - name: Cache Clojure deps
