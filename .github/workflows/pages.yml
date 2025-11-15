@@ -28,6 +28,7 @@ jobs:
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 1.12.2
+          github_token: ''
 
       # Cache Clojure deps
       - name: Cache Clojure deps
