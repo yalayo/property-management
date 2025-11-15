@@ -55,9 +55,11 @@ jobs:
         run: |
             cd ./projects/frontend/
             npm install
-            npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
+            npx babel ../../bases/frontend/ui --out-dir ./js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
+            npx tailwindcss -i ../../bases/frontend/ui/index.css -o ./resources/public/css/index.css
             npm run release
-            cp -R resources/public/ out/
+            ls -l ./resources/public/css/
+            cp -R ./resources/public/ out/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
