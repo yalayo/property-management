@@ -58,7 +58,6 @@ jobs:
             npx babel ../../bases/frontend/ui --out-dir ../../bases/frontend/js --extensions ".ts,.tsx,.jsx" --ignore "node_modules"
             npx tailwindcss -i ../../bases/frontend/ui/index.css -o ./resources/public/css/index.css
             npm run release
-            ls -l ./resources/public/css/
             cp -R ./resources/public/ out/
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -7,7 +7,7 @@ out
 # Frontend code
 resources/public/js/
 resources/public/landing/
-resources/public/platform/
+resources/public/platform/js/
 resources/public/survey/
 js/
 index.css
