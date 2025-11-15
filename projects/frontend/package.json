@@ -6,13 +6,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "shadow-cljs watch platform -A:dev",
-    "release": "shadow-cljs release platform -A:dev",
-    "old": "tsx server/index.ts",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "start": "NODE_ENV=production node dist/index.js",
-    "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "dev": "shadow-cljs watch landing platform -A:dev",
+    "release": "shadow-cljs release landing platform -A:dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.0",

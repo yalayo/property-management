@@ -1,13 +1,28 @@
 {:deps true
- :builds {:platform
+ :builds {:landing
+          {:target :browser
+           :output-dir "./resources/public/js"
+           :asset-path "/"
+           :modules {:app {:init-fn app.web.core/init}}
+           :devtools {:preloads [day8.re-frame-10x.preload]
+                      :watch-dir "./resources/public"
+                      :http-root "resources/public"  ;; serve static files here
+                      :http-port 8081}
+           :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
+                                                      day8.re-frame.tracing.trace-enabled? true
+                                                      "re_frame.trace.trace_enabled_QMARK_" true
+                                                      "day8.re_frame.tracing.trace_enabled_QMARK_"  true}}}
+           :release {:compiler-options {:optimizations :simple}
+                     :output-dir "out/public/js"}
+           :optimizations :none}
+          :platform
           {:target :browser
            :output-dir "./resources/public/platform/js"
            :asset-path "/platform"
            :modules {:app {:init-fn app.web.core/init}}
            :devtools {:preloads [day8.re-frame-10x.preload]
                       :watch-dir "./resources/public"
-                      :http-root "resources/public"  ;; serve static files here
-                      :http-port 8081}
+                      :http-root "resources/public"}
            :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
                                                       day8.re-frame.tracing.trace-enabled? true
                                                       "re_frame.trace.trace_enabled_QMARK_" true
