@@ -149,22 +149,17 @@ export default function FilesUpload(props) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ROW: Email + Upload Button */}
-          <div className="flex items-center justify-between w-full max-w-lg">
+          <div className="flex items-center w-full gap-3">
+            {/* INPUT (flex-grow takes remaining space) */}
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              className="flex-grow"
+              onChange={(e) => props.onEmailChange?.(e.target.value)}
+            />
 
-            {/* EMAIL FIELD */}
-            <div className="flex flex-col w-1/2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                className="mt-1"
-                onChange={(e) => props.onEmailChange?.(e.target.value)}
-              />
-            </div>
-
-            {/* UPLOAD BUTTON */}
+            {/* FILE UPLOAD + BUTTON */}
             <div>
               <Input
                 id="file-upload"
@@ -186,7 +181,6 @@ export default function FilesUpload(props) {
                 Upload Document
               </Button>
             </div>
-
           </div>
         </form>  
       </CardContent>
