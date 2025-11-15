@@ -10,6 +10,9 @@
   "workspaces": [
     "../../bases/worker"
   ],
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
   "devDependencies": {
     "shadow-cljs": "^3.2.0",
     "wrangler": "^4.42.2"
