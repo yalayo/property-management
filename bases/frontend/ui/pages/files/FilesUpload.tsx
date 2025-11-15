@@ -138,7 +138,7 @@ export default function FilesUpload(props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Dateil hochladen</CardTitle>
+        <CardTitle>Datei hochladen</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
@@ -178,7 +178,7 @@ export default function FilesUpload(props) {
                 size="sm"
               >
                 <UploadCloud className="mr-2 h-4 w-4" />
-                Upload Document
+                Hochladen
               </Button>
             </div>
           </div>
