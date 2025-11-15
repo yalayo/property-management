@@ -1,5 +1,6 @@
 (ns app.excel.interface
-  (:require [app.excel.core :as core]
+  (:require [integrant.core :as ig]
+            [app.excel.core :as core]
             [app.excel.routes :as routes]))
 
 (defn routes []
@@ -16,3 +17,6 @@
 
 #_(defn property-bank-data [input-stream]
   (core/extract input-stream))
+
+(defmethod ig/init-key ::routes [_ _]
+  routes/routes)

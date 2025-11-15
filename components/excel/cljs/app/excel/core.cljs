@@ -1,5 +1,5 @@
 (ns app.excel.core
-  (:require ["exceljs" :as excel]
+  (:require ["xlsx" :as excel]
             [clojure.string :as str]))
 
 (defn get-cell-value [cell]

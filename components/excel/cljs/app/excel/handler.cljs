@@ -10,4 +10,5 @@
              file (.get form-data "file")
              buf (.arrayBuffer file)
              result (core/process buf)]
+            (println "Uploading ...")
             (cf/response-edn {:result result} {:status 200})))
