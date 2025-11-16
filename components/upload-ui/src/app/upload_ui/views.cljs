@@ -1,5 +1,8 @@
 (ns app.upload-ui.views
   (:require [reagent.core  :as r]
+            [re-frame.core :as re-frame]
+            [app.upload-ui.subs :as subs]
+            [app.upload-ui.events :as events]
             ["/pages/files/FilesUpload$default" :as upload-js]))
 
 (def file-upload (r/adapt-react-class upload-js))
@@ -9,6 +12,9 @@
    [:div.max-w-7xl.mx-auto.px-4.sm:px-6.lg:px-8.py-12
     [file-upload
      {:id "file-upload"
-      :isLoading true}]]])
+      :isLoading true
+      :email @(re-frame/subscribe [::subs/email])
+      :onEmailChange #(re-frame/dispatch [::events/update-email %])
+      :onUploadData #(re-frame/dispatch [::events/upload-data (-> % .-target .-files (aget 0))])}]]])
 
 

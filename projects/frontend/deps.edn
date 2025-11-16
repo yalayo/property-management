@@ -1,4 +1,4 @@
-{:paths ["../../bases/frontend/js"]
+{:paths ["src" "../../bases/frontend/js"]
  :deps {poly/web {:local/root "../../bases/web"}
         poly/upload-ui {:local/root "../../components/upload-ui"}
 

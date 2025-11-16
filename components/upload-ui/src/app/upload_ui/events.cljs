@@ -2,10 +2,51 @@
   (:require [re-frame.core :as re-frame :refer [after]]
             [cljs.reader]
             [app.upload-ui.db :as db]
+            [app.frontend.config :as config]
             [day8.re-frame.http-fx]
             [ajax.edn :as ajax-edn]))
 
 (def local-storage-interceptor (after (after db/db->local-store)))
+
+(re-frame/reg-event-db
+ ::update-email
+ [local-storage-interceptor]
+ (fn [db [_ value]]
+   (assoc-in db [:upload :data :email] value)))
+
+(re-frame/reg-event-fx
+ ::upload-data
+ (fn [db [_ file]]
+   {:dispatch [::reset-letter]
+    :http-xhrio {:method          :post
+                 :uri             (str config/api-url "/api/upload-details")
+                 :headers         {"Authorization" (str "Bearer " (get-in db [:user :token]))}
+                 :body             (let [form-data (js/FormData.)
+                                         email (get-in db [:upload :data :email])]
+                                     (.append form-data "file" file)
+                                     (.append form-data "email" email)
+                                     form-data)
+                 :response-format (ajax-edn/edn-response-format)
+                 :timeout         8000
+                 :on-success      [::upload-success]
+                 :on-failure      [::upload-failure]}}))
+
+(re-frame/reg-event-db
+ ::upload-success
+ [local-storage-interceptor]
+ (fn [db [_ response]]
+   (js/console.log "Upload response:" response)
+   (-> db
+       (assoc-in [:upload :data :response] response)
+       (assoc-in [:upload :data :is-loading] false))))
+
+(re-frame/reg-event-fx
+ ::upload-failure
+ [local-storage-interceptor]
+ (fn [{:keys [db]} [_ {:keys [_ _ response]}]]
+   {:db (-> db
+            (assoc-in [:upload :data :errors] response)
+            (assoc-in [:upload :data :is-loading] false))}))
 
 (re-frame/reg-event-db
  ::update-sign-in
