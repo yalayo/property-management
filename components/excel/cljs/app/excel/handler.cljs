@@ -1,11 +1,10 @@
 (ns app.excel.handler
   (:require [app.excel.core :as core]
-            [server.cf :as cf]
-            [lib.async :refer [js-await]]
-            [server.core :refer [handle-route]]))
+            [app.worker.cf :as cf]
+            [app.worker.async :refer [js-await]]))
 
-(defmethod handle-route [:post-upload-details :POST]
-  [route request env ctx]
+(defn post-upload-details [route request env ctx]
+  (println "Request: " request)
   (js-await [form-data (.formData request)
              file (.get form-data "file")
              buf (.arrayBuffer file)

@@ -1,3 +1,4 @@
-(ns app.excel.routes)
+(ns app.excel.routes
+  (:require [app.excel.handler :as handler]))
 
-(def routes [["/upload-details" :post-upload-details]])
+(def routes [["/upload-details" {:post handler/post-upload-details}]])
