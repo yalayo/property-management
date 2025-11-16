@@ -22,6 +22,7 @@
   (start))
 
 (defn init []
-  (start))
+  (start)
+  (::worker/handler @system))
 
-(def handler (::worker/handler @system))
+(def handler (init))
