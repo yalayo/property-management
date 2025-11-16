@@ -13,9 +13,12 @@
 (def ENV (atom nil))
 (def CTX (atom nil))
 
+;; https://developers.cloudflare.com/workers/runtime-apis/response/
 (defn response [body init]
-	;; https://developers.cloudflare.com/workers/runtime-apis/response/
-	(js/Response. body (clj->js init)))
+  (let [status (:status init)]
+    (if (#{101 204 205 304} status) ;; no body allowed
+      (js/Response. nil (clj->js init))
+      (js/Response. body (clj->js init)))))
 
 (defn response-edn
 	"Like `response`, but takes Clojure data and serializes it to EDN string"
