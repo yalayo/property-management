@@ -50,12 +50,15 @@
   [router handler]
   (fn [request ^js env ctx]
     (let [url (js/URL. (.-url request))
-          route (r/match-by-path router (.-pathname url))]
+          pathname (.-pathname url)
+          route (r/match-by-path router pathname)]
       (reset! ENV env)
       (reset! CTX ctx)
       (reset! DB (.-DB env))
       (js/Promise. (fn [resolve reject]
-                     (resolve (handler (with-params url route) request env ctx)))))))
+                  	  (if-not route ;; no route — respond 404
+                		(resolve (response-edn {:error "Not found"} {:status 404}))
+                 		(resolve (handler (with-params url route) request env ctx))))))))
 
 (defn js->clj
 	"Recursively transforms JavaScript arrays into ClojureScript

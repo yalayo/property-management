@@ -43,19 +43,18 @@
   (if (instance? js/Response resp)
     resp
     (let [{:keys [status headers body]} resp
-          init #js {:status (or status 200)
-                    :headers (clj->js headers)}]
-      ;; Important: pass body *only if NOT nil*
-      (if (nil? body)
-        (js/Response. nil init)
-        (js/Response. body init)))))
+          js-headers (if (map? headers)
+                       (clj->js headers)
+                       #js {})]
+      (js/Response. (or body "") #js {:status (or status 200)
+                                      :headers js-headers}))))
 
-(defn add-cors-response [resp origin]
-  (let [resp (ensure-js-response resp)
-        hdrs (.-headers resp)]
+(defn add-cors-response [resp origin] 
+  (let [response (ensure-js-response resp)
+        hdrs (.-headers response)]
     (doseq [[k v] (cors-headers-for origin)]
       (.set hdrs k v))
-    resp))
+    response))
 
 (def base-routes
   ["/api"])
@@ -68,7 +67,7 @@
       (add-cors-response (cf/response nil {:status 204}) origin)
       (let [method-k (keyword (.toLowerCase method))
             handler   (get-in route [:data method-k])]
-        (if handler
+        (if (some? handler)
           (add-cors-response (handler route request env ctx) origin)
           (add-cors-response (cf/response-error {:error "Not implemented"}) origin))))))
 
