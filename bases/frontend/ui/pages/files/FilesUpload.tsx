@@ -1,27 +1,9 @@
-import React from "react";
-import { useRef } from 'react';
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useToast } from "../../hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { 
-  UploadCloud, 
-  FileSpreadsheet, 
-  FileText,
-  AlertTriangle, 
-  Loader2,
-  Mail,
-  FileIcon
-} from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../../components/ui/accordion";
-import { Badge } from "../../components/ui/badge";
+import { UploadCloud, FileSpreadsheet, FileIcon, FileText } from "lucide-react";
 
 type FileData = {
   id: number;
@@ -55,135 +37,121 @@ export default function FilesUpload(props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedFile) {
-      toast({
-        title: "No file selected",
-        description: "Please select a file to upload",
-        variant: "destructive",
-      });
+      toast({ title: "Keine Datei ausgewählt", description: "Bitte wählen Sie eine Excel-Datei aus.", variant: "destructive" });
       return;
     }
 
-    // Check file type
     const fileExt = selectedFile.name.split('.').pop()?.toLowerCase();
     const allowedTypes = ['xlsx', 'xls'];
-    
+
     if (!fileExt || !allowedTypes.includes(fileExt)) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload an Excel",
-        variant: "destructive",
-      });
+      toast({ title: "Ungültiger Dateityp", description: "Bitte laden Sie eine Excel-Datei hoch.", variant: "destructive" });
       return;
     }
-    
+
     // Hint to user about the file being processed
     if (['xlsx', 'xls'].includes(fileExt)) {
-      toast({
-        title: "Tenants data processing",
-        description: "We'll attempt to import the tenants data automatically.",
-      });
+      toast({ title: "Datei wird verarbeitet", description: "Wir analysieren Ihre Excel-Datei und erstellen Ihr Mietprofil." });
     }
 
     const formData = new FormData();
     formData.append('file', selectedFile);
   };
 
-  // Function to get file icon based on file type
-  const getFileIcon = (fileType: string) => {
-    switch(fileType.toLowerCase()) {
-      case 'xlsx':
-      case 'xls':
-      case 'csv':
-        return <FileSpreadsheet className="h-5 w-5 mr-2 text-green-600" />;
-      case 'pdf':
-        return <FileIcon className="h-5 w-5 mr-2 text-red-600" />;
-      case 'doc':
-      case 'docx':
-        return <FileText className="h-5 w-5 mr-2 text-blue-600" />;
-      default:
-        return <FileText className="h-5 w-5 mr-2 text-gray-600" />;
-    }
-  };
-
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 3 }, (_, i) => currentYear - i);
-  const selectedYear = props.year;
-
-  const renderExtractedData = (file: FileData) => {
-    
-    // Render other structured data
-    return (
-      <div className="mt-4">
-        <h4 className="font-medium mb-2">Extracted Data:</h4>
-        <Accordion type="single" collapsible className="w-full">
-          {Object.entries(file.extractedData).map(([key, value], index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-sm font-medium">
-                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
-              </AccordionTrigger>
-              <AccordionContent>
-                <pre className="bg-gray-50 p-2 rounded-md text-xs overflow-x-auto">
-                  {JSON.stringify(value, null, 2)}
-                </pre>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-    );
-  };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Datei hochladen</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-          <h4 className="font-medium text-blue-800">Statusanalyse</h4>
-          <p className="text-sm text-blue-700 mt-1">
-            Anhand einer Ihrer Excel-Dateien werden wir untersuchen, wie wir Ihnen all die damit verbundenen Probleme abnehmen können.
-          </p>
-        </div>
+    <div className="space-y-8">
+      {/* HERO SECTION */}
+      <section className="max-w-5xl mx-auto text-center pb-8 px-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+          Vermieten ohne Excel – wir übernehmen Ihre komplette Mietverwaltung
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex items-center w-full gap-3">
-            {/* INPUT (flex-grow takes remaining space) */}
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className="flex-grow"
-              onChange={(e) => props.onEmailChange?.(e.target.value)}
-            />
+        <p className="text-xl text-gray-700 mt-6 leading-relaxed max-w-3xl mx-auto">
+          Viele private Vermieter in Deutschland verwalten ihre Immobilien noch manuell mit Excel. 
+          Wir analysieren Ihre Datei, stellen Ihnen gezielte Fragen per E-Mail und übernehmen die gesamte Verwaltung für Sie. 
+          Kein Chaos, keine Doppelarbeit – einfach starten.
+        </p>
 
-            {/* FILE UPLOAD + BUTTON */}
-            <div>
-              <Input
-                id="file-upload"
-                type="file"
-                className="hidden"
-                accept=".xlsx,.xls"
-                onChange={props.onUploadData}
-                ref={fileInputRef}
-                disabled={false}
-              />
+        <ul className="mt-10 space-y-3 text-gray-800 text-lg max-w-xl mx-auto text-left">
+          <li className="flex gap-3"><span>✔️</span> Nie wieder Excel-Chaos oder manuelle Pflege</li>
+          <li className="flex gap-3"><span>✔️</span> Vollständige Ordnung in Miete, Nebenkosten & Belegen</li>
+          <li className="flex gap-3"><span>✔️</span> Persönliche Rückfragen per E-Mail – bequem beantwortbar</li>
+          <li className="flex gap-3"><span>✔️</span> Wir erstellen automatisch Ihr digitales Mietprofil</li>
+          <li className="flex gap-3"><span>✔️</span> Null Verwaltungsaufwand für Sie</li>
+        </ul>
 
-              <Button
-                type="button"
-                onClick={handleButtonClick}
-                variant="outline"
-                size="sm"
-              >
-                <UploadCloud className="mr-2 h-4 w-4" />
-                Hochladen
-              </Button>
+        <p className="text-xl text-gray-900 font-semibold mt-10">
+          Starten Sie jetzt mit Ihrer kostenlosen Analyse.
+        </p>
+
+        <button
+          onClick={() => {
+            const uploadCard = document.getElementById("upload-section");
+            if (uploadCard) uploadCard.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="mt-6 px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-xl hover:bg-blue-700 transition"
+        >
+          Jetzt starten – Excel hochladen
+        </button>
+      </section>
+
+      {/* UPLOAD SECTION */}
+      <section id="upload-section" className="max-w-3xl mx-auto px-4 py-48">
+        <Card>
+          <CardHeader>
+            <CardTitle>Datei hochladen & Analyse starten</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+              <h4 className="font-medium text-blue-800">Wie funktioniert es?</h4>
+              <p className="text-sm text-blue-700 mt-1">
+                Laden Sie einfach Ihre bestehende Excel-Datei hoch. Wir analysieren alle Daten und stellen Ihnen gezielte Fragen per E-Mail, um Ihr Mietprofil zu erstellen – komplett automatisch. Sie müssen sich um nichts kümmern.
+              </p>
             </div>
-          </div>
-        </form>  
-      </CardContent>
-    </Card>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex items-center w-full gap-3">
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Ihre E-Mail-Adresse"
+                  className="flex-grow"
+                  required
+                  onChange={(e) => props.onEmailChange?.(e.target.value)}
+                />
+
+                <div>
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    accept=".xlsx,.xls"
+                    onChange={props.onUploadData}
+                    ref={fileInputRef}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleButtonClick}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center"
+                  >
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    Datei auswählen
+                  </Button>
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700 transition">
+                Analyse starten
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </section>
+    </div>
   );
-}
+
+};
