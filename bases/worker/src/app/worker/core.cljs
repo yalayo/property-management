@@ -62,13 +62,14 @@
 (defn handle-route [route request env ctx]
   (let [origin (.get (.-headers request) "Origin")
         method (.-method request)]
-    (println "Method: " method)
     (if (= method "OPTIONS") ;; Preflight
       (add-cors-response (cf/response nil {:status 204}) origin)
       (let [method-k (keyword (.toLowerCase method))
             handler   (get-in route [:data method-k])]
         (if (some? handler)
-          (add-cors-response (handler route request env ctx) origin)
+          ;; IMPORTANT: wait for the handler to finish!
+          (js-await [resp (handler route request env ctx)]
+                    (add-cors-response resp origin))
           (add-cors-response (cf/response-error {:error "Not implemented"}) origin))))))
 
 (defn init [{:keys [upload-routes]}]
