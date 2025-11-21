@@ -1,0 +1,8 @@
+(ns app.user-ui.db)
+
+(def default-db {:user-loged-in? false :initialised? false})
+
+(def ls-key "pm-state")
+
+(defn db->local-store [db]
+  (.setItem js/localStorage ls-key (str db)))
