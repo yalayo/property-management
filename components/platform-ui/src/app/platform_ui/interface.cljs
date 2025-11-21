@@ -1,6 +1,6 @@
-(ns app.user-ui.interface
+(ns app.platform-ui.interface
   (:require [integrant.core :as ig]
-            [app.user-ui.views :as views]))
+            [app.platform-ui.views :as views]))
 
 (defmethod ig/init-key ::component [_ {:keys []}]
   views/file-upload-component)
