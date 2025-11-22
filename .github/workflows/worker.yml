@@ -1,11 +1,12 @@
 name: Deploy to Cloudflare Workers
 
 on:
-  push:
-    branches: [main, master]
-    paths:
-    - '.github/workflows/worker.yml'
-    - 'bases/worker/**'
+  workflow_dispatch:
+  #push:
+    #branches: [main, master]
+    #paths:
+    #- '.github/workflows/worker.yml'
+    #- 'bases/worker/**'
     #- 'projects/cloudflare/**'
 
 jobs:
