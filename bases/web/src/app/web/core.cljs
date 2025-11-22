@@ -4,34 +4,16 @@
             [re-frame.core :as re-frame]
             [reagent.core :as r]
             ["react-dom/client" :as rdom]
-            [app.upload-ui.interface :as upload]
             [app.web.events :as events] ))
 
-(def config 
-  {::upload/component {}})
-
-(defonce system (atom nil))
 (defonce root (rdom/createRoot (.getElementById js/document "app")))
-
-(defn start []
-  (reset! system (ig/init config)))
-
-(defn stop []
-  (when @system
-    (ig/halt! @system)
-    (reset! system nil)))
-
-(defn restart []
-  (stop)
-  (start))
   
-(defn ^:dev/after-load mount-root []
+(defn ^:dev/after-load mount-root [main-component]
   (re-frame/clear-subscription-cache!)
-  (let [file-upload-component (::upload/component @system)]
+  (let [file-upload-component main-component]
     (.render root (r/as-element [file-upload-component]))))
   
-(defn init []
-  (start)
+(defn init [main-component]
   (re-frame/dispatch-sync [::events/initialize-db])
-  (mount-root))
+  (mount-root main-component))
 
