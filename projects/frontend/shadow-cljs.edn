@@ -3,7 +3,7 @@
           {:target :browser
            :output-dir "./resources/public/js"
            :asset-path "/"
-           :modules {:app {:init-fn app.web.core/init}}
+           :modules {:app {:init-fn app.frontend.core/init-upload}}
            :devtools {:preloads [day8.re-frame-10x.preload]
                       :watch-dir "./resources/public"
                       :http-root "resources/public"  ;; serve static files here
@@ -19,7 +19,7 @@
           {:target :browser
            :output-dir "./resources/public/platform/js"
            :asset-path "/platform"
-           :modules {:app {:init-fn app.web.core/init}}
+           :modules {:app {:init-fn app.frontend.core/init-platform}}
            :devtools {:preloads [day8.re-frame-10x.preload]
                       :watch-dir "./resources/public"
                       :http-root "resources/public"}
