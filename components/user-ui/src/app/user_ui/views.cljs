@@ -1,8 +1,8 @@
 (ns app.user-ui.views
   (:require [reagent.core  :as r]
             [re-frame.core :as re-frame]
-            [app.frontend.user.subs :as subs]
-            [app.frontend.user.events :as events]
+            [app.user-ui.subs :as subs]
+            [app.user-ui.events :as events]
             ["/pages/login$default" :as login-js]
             ["/pages/register$default" :as register-js]))
 
