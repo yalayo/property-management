@@ -1,18 +1,6 @@
 (ns app.excel.core
-  (:require ["xlsx" :as excel]
+  (:require ["xlsx" :as xlsx]
             [clojure.string :as str]))
-
-(defn get-cell-value [cell]
-  (when cell
-    (let [value (.-value cell)]
-      (cond
-        (map? value) ;; formulas in exceljs come as {:formula "A1*2" :result 42}
-        (or (:result value) (:formula value))
-
-        (string? value) value
-        (number? value) value
-        (boolean? value) value
-        :else nil))))
 
 (defn get-headers [^js worksheet name-range]
   (->> (.getRow worksheet name-range)
@@ -57,44 +45,65 @@
 (def property-bank-data [{:name "IBAN" :cell "L2"}
                          {:name "BANK" :cell "L3"}])
 
-;; get the value of an attribute
-(defn get-attribute-value [^js worksheet {:keys [name cell required]}]
-  (let [cell-obj (.getCell worksheet cell)
-        value (get-cell-value cell-obj)]
-    (if (and required (nil? value))
-      {:error true :message "Required cell missing" :cell cell :sheet (.-name worksheet)}
-      {name value})))
+(defn get-cell-value [^js cell]
+  (when (some? cell)
+    (case (.-t cell)
+      "n" (.-v cell)
+      "s" (.-v cell)
+      "b" (.-v cell)
+      "f" (.-v cell) ;; formula already evaluated by xlsx
+      nil)))
 
-(defn process-sheet [^js worksheet]
-  (let [attrs (map #(get-attribute-value worksheet %) attributes)
-        errors (filter :error attrs)]
-    (if (seq errors)
-      errors
-      {:id (random-uuid)
-       :attributes (apply merge attrs)
-       :headers (get-headers-from-row worksheet 1)
-       :content (map (fn [row] (map get-cell-value (.-cells row)))
-                     (rest (array-seq (.getRows worksheet 2 (.-rowCount worksheet)))))})))
+(defn get-attribute-value [^js sheet {:keys [name cell required]}]
+  (let [cell-value (get-cell-value (aget sheet cell))]
+    (if (and required (nil? cell-value))
+      {:error true :message (str "Required cell missing: " cell) :name name}
+      {name cell-value})))
 
-(defn process [data]
-  (let [workbook (excel/Workbook.)]
-    (-> (.. workbook -xlsx (load data))
-        (.then
-         (fn [^js wb]
-           (->> (array-seq (.-worksheets wb))
-                (filter #(str/starts-with? (.-name %) "W"))
-                (map process-sheet)))))))
-                  
-#_(defn process [data]
-  (let [workbook (excel/Workbook.)]
-    (-> (.. workbook -xlsx (load data))   ;; safer than (.load (.-xlsx workbook) data)
-        (.then
-         (fn [^js wb]
-           ;; iterate through worksheets
-           (.eachSheet wb
-                       (fn [^js worksheet sheet-id]
-                         (js/console.log "Sheet:" sheet-id (.-name worksheet))
-                         ;; iterate through rows
-                         (.eachRow worksheet
-                                   (fn [row row-number]
-                                     (js/console.log "Row" row-number ":" (.-values row)))))))))))
+(defn collect-errors [data]
+  (cond
+    (map? data) (if (:error data) [data] [])
+    (sequential? data) (mapcat collect-errors data)
+    :else []))
+
+(defn format-headers [headers]
+  (zipmap (map #(keyword (str %)) (range 1 (inc (count headers))))
+          headers))
+
+(defn format-content [data size]
+  (let [keys (map #(keyword (str (inc %))) (range size))
+        rows (partition size data)]
+    (mapv #(zipmap keys %) rows)))
+
+(defn get-sheet [^js wb sheet-name]
+  (let [sheets (or (.-Sheets wb)
+                   (.-sheets wb)
+                   (aget wb "Sheets")
+                   (aget wb "sheets"))]
+    (aget sheets sheet-name)))
+
+(defn process-sheet [wb sheet-name]
+  (let [sheet (get-sheet wb sheet-name)]
+    (if (nil? sheet)
+      {:error true
+       :message (str "Sheet not found: " sheet-name)}
+      (let [header-keys (map :name attributes)
+            attr-values (map #(get-attribute-value sheet %) attributes)
+            errors (collect-errors attr-values)]
+        (if (seq errors)
+          errors
+          (zipmap header-keys (map #(get %1 %2) attr-values header-keys)))))))
+
+(defn load-workbook [input-stream]
+  (xlsx/read input-stream #js {:type "binary"}))
+
+(defn sheet->map [sheet]
+  (js->clj sheet :keywordize-keys true))
+
+(defn process [input-stream]
+   (let [wb          (load-workbook input-stream)
+         sheet-names (js->clj (.-SheetNames wb))]
+     (->> sheet-names
+          (filter #(str/starts-with? % "W"))       ;; only sheets starting with "W"
+          (map #(process-sheet wb %))   ;; call your process function
+          doall)))
