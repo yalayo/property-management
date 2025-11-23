@@ -72,8 +72,8 @@
                     (add-cors-response resp origin))
           (add-cors-response (cf/response-error {:error "Not implemented"}) origin))))))
 
-(defn init [{:keys [upload-routes]}]
-  (let [routes (into base-routes upload-routes)
+(defn init [{:keys [user-routes upload-routes]}]
+  (let [routes (into base-routes (concat user-routes upload-routes))
         router (r/router routes)
         handler #js {:fetch (cf/with-handler router handle-route)}]
     handler))

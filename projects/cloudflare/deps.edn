@@ -8,7 +8,7 @@
         integrant/integrant {:mvn/version "1.0.0"}
       		
      	poly/worker {:local/root "../../bases/worker"}
-        #_#_app/user {:local/root "../../components/user"}
+        app/user {:local/root "../../components/user"}
         app/excel {:local/root "../../components/excel"}
         app/letter {:local/root "../../components/letter"}}
  :paths ["src" "resources"]

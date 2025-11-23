@@ -1,8 +1,8 @@
 (ns app.user.handler
   (:require
    [app.user.persistance :as persistance]
-   [lib.async :refer [js-await]]
-   [server.cf :as cf]))
+   [app.worker.async :refer [js-await]]
+   [app.worker.cf :as cf]))
 
 (defn post-sign-in [route request env ctx]
   (js-await [data (cf/request->edn request)]

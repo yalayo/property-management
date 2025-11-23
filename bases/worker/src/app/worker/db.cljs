@@ -1,7 +1,7 @@
 (ns app.worker.db
-	(:require [lib.async :refer [js-await]]
-						[server.cf :as cf]
-						[honey.sql :as sql]))
+	(:require [app.worker.async :refer [js-await]]
+			  [app.worker.cf :as cf]
+			  [honey.sql :as sql]))
 
 ;; D1 docs https://developers.cloudflare.com/d1/
 

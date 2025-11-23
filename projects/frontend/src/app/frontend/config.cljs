@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (defn cloudflare-dev? []
-  (str/includes? (.-host js/window.location) "localhost:8081"))
+  (str/includes? (.-host js/window.location) "localhost:8082"))
 
 (defn cloudflare-prod? []
   (str/includes? (.-host js/window.location) "anudis.com"))

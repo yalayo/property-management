@@ -1,14 +1,12 @@
 (ns app.user.persistance
-  (:require [server.db :as db]            ;; your db wrapper
+  (:require [app.worker.db :as db]            ;; your db wrapper
             [honey.sql :as sql]
             [honey.sql.helpers :as h]
-            [server.cf :as cf]
-            [lib.async :refer [js-await]]
-            ["bcryptjs" :as bcrypt]
-            ["uuid" :as uuid]))         ;; npm install uuid
+            [app.worker.cf :as cf]
+            [app.worker.async :refer [js-await]]))         ;; npm install uuid
 
 #_(defn hash-password [pw]
-  (.hashSync bcrypt pw 10)) ;; 10 salt rounds
+  #_(.hashSync ^js bcrypt pw 10)) ;; 10 salt rounds
 
 #_(defn create-account [email password]
   (let [user-id (.v4 uuid)               ;; generate a uuid
@@ -20,19 +18,23 @@
     (db/run+ query)))
 
 ;; Wrap bcrypt.hash in a Promise so we can await it
-(defn hash-password [pw]
-  (js/Promise.
-    (fn [resolve reject]
-      ;; 10 salt rounds
-      (.hash bcrypt pw 10
-             (fn [err hashed]
-               (if err
-                 (reject err)
-                 (resolve hashed)))))))
+(defn hash-password
+  [password salt]
+  (let [input (str salt ":" password)
+        encoder (js/TextEncoder.)
+        data (.encode encoder input)]
+    (-> (js/Promise.resolve
+         (.digest js/crypto.subtle "SHA-256" data))
+        (.then (fn [hash-buffer]
+                 (let [hash-array (js/Uint8Array. hash-buffer)]
+                   (->> hash-array
+                        (map (fn [b]
+                               (.padStart (.toString b 16) 2 "0")))
+                        (apply str))))))))
 
 (defn create-account [email password]
-  (let [user-id (.v4 uuid)]
-    (js-await [hashed (hash-password password)]
+  (let [user-id (.v4 ^js uuid)]
+    (js-await [hashed (hash-password password "temporary salt")]
       (let [query (-> (h/insert-into :accounts)
                       (h/columns :user_id :email :password)
                       (h/values [[user-id email hashed]])

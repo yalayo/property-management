@@ -1,11 +1,14 @@
 (ns app.cloudflare.core
   (:require [integrant.core :as ig]
             [app.worker.core :as worker]
+            [app.user.interface :as user]
             [app.excel.interface :as excel]))
 
 (def config
-  {::excel/routes {} 
-   ::worker/handler {:upload-routes (ig/ref ::excel/routes)}})
+  {::user/routes {}
+   ::excel/routes {} 
+   ::worker/handler {:user-routes (ig/ref ::excel/routes)
+                     :upload-routes (ig/ref ::excel/routes)}})
 
 (defonce system (atom nil))
 
