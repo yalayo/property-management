@@ -7,7 +7,7 @@
 (def config
   {::user/routes {}
    ::excel/routes {} 
-   ::worker/handler {:user-routes (ig/ref ::excel/routes)
+   ::worker/handler {:user-routes (ig/ref ::user/routes)
                      :upload-routes (ig/ref ::excel/routes)}})
 
 (defonce system (atom nil))
