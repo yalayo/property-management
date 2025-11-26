@@ -9,16 +9,6 @@
             (println "Register: " data)))
 
 (defn post-sign-up [_ request _ _]
-  (let [data (cf/request->edn request)
-        email (:email data)
-        password (:password data)]
-    (println "Data: " data)
-    (persistance/create-account email password)))
-
-#_(defmethod handle-route [:post-upload-details :POST]
-  [route request env ctx]
-  (js-await [form-data (.formData request)
-             file (.get form-data "file")
-             buf (.arrayBuffer file)
-             result {} #_(excel/process buf)]
-            (cf/response-edn {:result result} {:status 200})))
+  (js-await [data (cf/request->edn request)]
+            (let [{:keys [user name password]} data]
+              (persistance/create-account user password))))

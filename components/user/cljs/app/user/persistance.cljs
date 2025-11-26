@@ -35,10 +35,9 @@
 (defn create-account [email password]
   (let [user-id (js/crypto.randomUUID)]
     (js-await [hashed (hash-password password "temporary salt")]
-      (let [query (-> (h/insert-into :accounts)
-                      (h/columns :user_id :email :password)
-                      (h/values [[user-id email hashed]])
-                      (sql/format))]
+      (let [query {:insert-into [:accounts]
+                   :columns    [:user_id :email :password]
+                   :values     [[user-id email hashed]]}]
         (js-await [{:keys [success results]} (db/run+ query)]
           (if success
             (cf/response-edn {:result results} {:status 200})
