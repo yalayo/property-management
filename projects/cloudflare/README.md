@@ -20,3 +20,8 @@ npm run build-storybook
 
 Use this command to run Storybook
 npm run storybook
+
+## Database
+There should be some config in wrangler.toml to work with a local database in an environment that is not production
+
+Execute this to run migrations: wrangler d1 migrations apply --local DB
