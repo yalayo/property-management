@@ -33,7 +33,7 @@
                         (apply str))))))))
 
 (defn create-account [email password]
-  (let [user-id (.v4 ^js uuid)]
+  (let [user-id (js/crypto.randomUUID)]
     (js-await [hashed (hash-password password "temporary salt")]
       (let [query (-> (h/insert-into :accounts)
                       (h/columns :user_id :email :password)
