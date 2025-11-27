@@ -35,3 +35,8 @@
   (start)
   (let [platform-component (::platform/component @system)]
     (web/init platform-component)))
+
+(comment
+  (restart)
+
+  )

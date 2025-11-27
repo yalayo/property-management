@@ -76,6 +76,12 @@
      {}))
   
   (re-frame/reg-event-db
+    ::show-sign-in
+    [local-storage-interceptor]
+    (fn [db [_ _]]
+      (assoc-in db [:user :active-form] :sign-in)))
+  
+  (re-frame/reg-event-db
    ::show-sign-up
    [local-storage-interceptor]
    (fn [db [_ _]]

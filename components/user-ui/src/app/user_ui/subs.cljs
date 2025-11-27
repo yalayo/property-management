@@ -4,7 +4,7 @@
 (re-frame/reg-sub
  ::active-form
  (fn [db [_ _]]
-   (get-in db [:user :active-form] :sign-up)))
+   (get-in db [:user :active-form] :sign-in)))
 
 (re-frame/reg-sub
  ::sign-in-form

@@ -12,18 +12,17 @@
 (defn access-component []
   (let [active-form @(re-frame/subscribe [::subs/active-form])]
     (case active-form
-      :sign-in [login
-                {:user @(re-frame/subscribe [::subs/sign-in-form :user])
-                 :onChangeUser #(re-frame/dispatch [::events/update-sign-in :user (-> % .-target .-value)])
-                 :password @(re-frame/subscribe [::subs/sign-in-form :password])
-                 :onChangePassword #(re-frame/dispatch [::events/update-sign-in :password (-> % .-target .-value)])
-                 :submitLogin #(re-frame/dispatch [::events/sign-in])
-                 :showSignUp #(re-frame/dispatch [::events/show-sign-up])}]
-      :sign-up [register
-                {:name @(re-frame/subscribe [::subs/sign-up-form :name])
-                 :onChangeName #(re-frame/dispatch [::events/update-sign-up :name (-> % .-target .-value)])
-                 :user @(re-frame/subscribe [::subs/sign-up-form :user])
-                 :onChangeUser #(re-frame/dispatch [::events/update-sign-up :user (-> % .-target .-value)])
-                 :password @(re-frame/subscribe [::subs/sign-up-form :password])
-                 :onChangePassword #(re-frame/dispatch [::events/update-sign-up :password (-> % .-target .-value)])
-                 :submitRegister #(re-frame/dispatch [::events/sign-up])}])))
+      :sign-in [login {:user @(re-frame/subscribe [::subs/sign-in-form :user]) 
+                       :onChangeUser #(re-frame/dispatch [::events/update-sign-in :user (-> % .-target .-value)]) 
+                       :password @(re-frame/subscribe [::subs/sign-in-form :password]) 
+                       :onChangePassword #(re-frame/dispatch [::events/update-sign-in :password (-> % .-target .-value)]) 
+                       :submitLogin #(re-frame/dispatch [::events/sign-in]) 
+                       :showSignUp #(re-frame/dispatch [::events/show-sign-up])}]
+      :sign-up [register {:name @(re-frame/subscribe [::subs/sign-up-form :name]) 
+                          :onChangeName #(re-frame/dispatch [::events/update-sign-up :name (-> % .-target .-value)]) 
+                          :user @(re-frame/subscribe [::subs/sign-up-form :user]) 
+                          :onChangeUser #(re-frame/dispatch [::events/update-sign-up :user (-> % .-target .-value)]) 
+                          :password @(re-frame/subscribe [::subs/sign-up-form :password]) 
+                          :onChangePassword #(re-frame/dispatch [::events/update-sign-up :password (-> % .-target .-value)]) 
+                          :submitRegister #(re-frame/dispatch [::events/sign-up])
+                          :showSignIn #(re-frame/dispatch [::events/show-sign-in])}])))

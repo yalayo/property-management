@@ -149,9 +149,9 @@ export default function Register(props) {
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-muted-foreground text-center">
               Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline" onClick={props.showSignIn}>
+              <Button className="text-primary hover:underline" onClick={props.showSignIn}>
                 Login
-              </Link>
+              </Button>
             </div>
           </CardFooter>
         </Card>
