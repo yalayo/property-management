@@ -3,19 +3,7 @@
             [honey.sql :as sql]
             [honey.sql.helpers :as h]
             [app.worker.cf :as cf]
-            [app.worker.async :refer [js-await]]))         ;; npm install uuid
-
-#_(defn hash-password [pw]
-  #_(.hashSync ^js bcrypt pw 10)) ;; 10 salt rounds
-
-#_(defn create-account [email password]
-  (let [user-id (.v4 uuid)               ;; generate a uuid
-        hashed  (hash-password password)
-        query   (-> (h/insert-into :accounts)
-                    (h/columns :user_id :email :password)
-                    (h/values [[user-id email hashed]])
-                    (sql/format))]
-    (db/run+ query)))
+            [app.worker.async :refer [js-await]]))
 
 ;; Wrap bcrypt.hash in a Promise so we can await it
 (defn hash-password
@@ -42,3 +30,27 @@
           (if success
             (cf/response-edn {:result results} {:status 200})
             (cf/response-error)))))))
+
+(defn get-accounts []
+  (let [query {:select [:email :verified]
+               :from   [:accounts]}]
+    (js-await [{:keys [success results]} (db/run+ query)] 
+              (if success
+                results
+                (throw (ex-info "DB error: get-accounts failed" {}))))))
+
+(defn jsobj->cljmap [o]
+  (into {}
+        (map (fn [k] [(keyword k) (aget o k)]))
+        (js/Object.keys o)))
+
+(defn get-account [email]
+  (let [query {:select [:*]
+               :from   [:accounts]
+               :where  [:= :email email]}]
+    (js-await [{:keys [success account]} (db/query+ query)]
+              (println "Query result: " results success)
+              (if success
+                ;; results is a JS array of maps → return the **first** row as CLJS map
+                account
+                (throw (ex-info "DB error: get-account failed" {}))))))

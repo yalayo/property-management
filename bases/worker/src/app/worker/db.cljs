@@ -5,13 +5,20 @@
 
 ;; D1 docs https://developers.cloudflare.com/d1/
 
-(defn ^js/Promise query+ [query]
-	(let [[query & args] (sql/format query)]
-		(js-await [result (.run (.prepare ^js @cf/DB query))]
-			(js->clj result :keywordize-keys true))))
+(defn ^js/Promise query+ [query-map]
+  (let [[sql params] (sql/format query-map)]
+    (js-await [stmt (.prepare ^js @cf/DB sql)]
+              (js-await [result (.all (.bind stmt (clj->js params)))]
+                        {:success true :account (js->clj (first (.-results result)) :keywordize-keys true)}))))
 
 (defn ^js/Promise run+ [query]
 	(let [[query & args] (sql/format query)
 				stmt (.prepare ^js @cf/DB query)]
 		(js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
 			(js->clj result :keywordize-keys true))))
+;; Check later
+#_(defn ^js/Promise run+ [query-map]
+  (let [[sql params] (sql/format query-map)]
+    (js-await [stmt (.prepare ^js @cf/DB sql)]
+              (js-await [result (.run ^js (.bind stmt (clj->js params)))]
+                        (js->clj result :keywordize-keys true)))))
