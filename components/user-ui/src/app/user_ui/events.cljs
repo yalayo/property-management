@@ -35,7 +35,7 @@
    [local-storage-interceptor]
    (fn [db [_ response]]
      (-> db
-         (assoc-in [:user :token] response)
+         (assoc-in [:user :token] (:token response))
          (assoc-in [:user :user-loged-in?] true)
          (assoc-in [:user :sign-in :form] nil))))
   
