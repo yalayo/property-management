@@ -55,7 +55,7 @@ jobs:
       - name: Run database migrations
         run: |
           cd ./projects/cloudflare  
-          npx wrangler d1 migrations apply landlord-db --env=production
+          npx wrangler d1 migrations apply landlord-db --remote --env=production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
