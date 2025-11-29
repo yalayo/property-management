@@ -24,7 +24,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login(props) {
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    //resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -85,11 +85,8 @@ export default function Login(props) {
                       <FormControl>
                         <Input
                           placeholder="Enter your username"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);        // react-hook-form
-                            props.onChangeUser?.(e);  // tu función extra si la necesitas
-                          }}
+                          defaultValue={props.user}
+                          onBlur={props.onChangeUser}
                         />
                       </FormControl>
                       <FormMessage />
@@ -107,11 +104,8 @@ export default function Login(props) {
                         <Input
                           type="password"
                           placeholder="••••••••"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);      
-                            props.onChangePassword?.(e); 
-                          }}
+                          defaultValue={props.password}
+                          onBlur={props.onChangePassword}
                         />
                       </FormControl>
                       <FormMessage />
