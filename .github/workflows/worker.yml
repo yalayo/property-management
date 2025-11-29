@@ -44,12 +44,12 @@ jobs:
 
       - name: Inject DATABASE_ID into wrangler.toml
         run: |
-          projects/cloudflare
+          cd ./projects/cloudflare
           sed -i "s|database_id = \".*\"|database_id = \"${{ secrets.DATABASE_ID }}\"|" wrangler.toml
 
       - name: Run database migrations
         run: |
-          projects/cloudflare  
+          cd ./projects/cloudflare  
           npx wrangler d1 migrations apply landlord-db --remote
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         run: |
-          cd projects/cloudflare  
+          cd ./projects/cloudflare  
           npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
