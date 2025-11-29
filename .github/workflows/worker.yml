@@ -47,6 +47,11 @@ jobs:
           cd ./projects/cloudflare
           sed -i "s|database_id = \".*\"|database_id = \"${{ secrets.DATABASE_ID }}\"|" wrangler.toml
 
+      - name: Inject ZONE_ID into wrangler.toml
+        run: |
+          cd ./projects/cloudflare
+          sed -i "s|zone_id = \".*\"|zone_id = \"${{ secrets.ZONE_ID }}\"|" wrangler.toml
+
       - name: Run database migrations
         run: |
           cd ./projects/cloudflare  
