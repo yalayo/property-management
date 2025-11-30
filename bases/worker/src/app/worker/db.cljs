@@ -11,7 +11,7 @@
     (js-await [result (.all (.apply (.-bind stmt) stmt (to-array params)))]
               {:success true :account (js->clj (first (.-results result)) :keywordize-keys true)})))
 
-(defn ^js/Promise run+ [query-map]
+#_(defn ^js/Promise run+ [query-map]
   (console.log "Query: " query-map)
   (let [[query & params] (sql/format query-map)
         stmt (.prepare ^js @cf/DB query)]
@@ -19,6 +19,17 @@
     (console.log "Parameters: " (to-array params))
     (js-await [result (.run (.apply (.-bind stmt) stmt (to-array params)))]
               (js->clj result :keywordize-keys true))))
+
+(defn ^js/Promise run+ [query-map]
+  (let [[query & params] (sql/format query-map)
+        stmt (.prepare ^js @cf/DB query)
+        ;; flatten first row and convert to JS array
+        js-params (-> params clj->js js/Array.from)]
+    (js/console.log "Processed: " query)
+    (js/console.log "Parameters: " js-params)
+    (js-await [result (.run (.apply (.-bind stmt) stmt js-params))]
+              (js->clj result :keywordize-keys true))))
+
 
 #_(defn ^js/Promise run+ [query]
   (let [[query & args] (sql/format query)

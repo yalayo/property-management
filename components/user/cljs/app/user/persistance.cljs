@@ -49,7 +49,7 @@
                :from   [:accounts]
                :where  [:= :email email]}]
     (js-await [{:keys [success account]} (db/query+ query)]
-              (console.log "Query result: " account success)
+              (js/console.log "Query result: " account success)
               (if success
                 ;; results is a JS array of maps → return the **first** row as CLJS map
                 account
