@@ -31,5 +31,5 @@
 (defn post-sign-up [_ request _ _]
   (js-await [data (cf/request->edn request)]
             (let [{:keys [user name password]} data]
-              (persistance/create-account user password)
+              (persistance/create-account name user password)
               (cf/response-edn {:created true} {:status 201}))))

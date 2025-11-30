@@ -20,7 +20,7 @@
                                (.padStart (.toString b 16) 2 "0")))
                         (apply str))))))))
 
-(defn create-account [email password]
+(defn create-account [name email password]
   (let [user-id (js/crypto.randomUUID)]
     (js-await [hashed (hash-password password "temporary salt")]
       (let [query {:insert-into [:accounts]
@@ -49,7 +49,7 @@
                :from   [:accounts]
                :where  [:= :email email]}]
     (js-await [{:keys [success account]} (db/query+ query)]
-              (println "Query result: " results success)
+              (console.log "Query result: " account success)
               (if success
                 ;; results is a JS array of maps → return the **first** row as CLJS map
                 account
