@@ -10,7 +10,7 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "landlord-db"
-##database_id = "local"
+database_id = "local"
 migrations_dir = "./migrations"
 migrations_table = "local_migrations"
 
