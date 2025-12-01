@@ -33,9 +33,8 @@
 (defn ^js/Promise run+ [query]
   (let [[query & args] (sql/format query)
         stmt (.prepare ^js @cf/DB query)]
-    (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
-              (js/console.log "Parameters: " args)
-              (js/console.log "Result: " result)
+    (js/console.log "Parameters: " (into-array args))
+    (js-await [result (.run ^js (.bind stmt (clj->js params)))]
               (js->clj result :keywordize-keys true))))
 ;; Check later
 #_(defn ^js/Promise run+ [query-map]
