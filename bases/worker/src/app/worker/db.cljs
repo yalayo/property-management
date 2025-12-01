@@ -50,7 +50,7 @@
     (js/console.log "SQL:" sql)
     (js/console.log "ARGS:" (into-array args))
 
-    (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
+    (js-await [result (.run (.bind stmt (into-array args)))]
               (js->clj result :keywordize-keys true))
 
     #_(if (cf-production?)
