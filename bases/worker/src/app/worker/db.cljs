@@ -20,7 +20,7 @@
     (js-await [result (.run (.apply (.-bind stmt) stmt (to-array params)))]
               (js->clj result :keywordize-keys true))))
 
-(defn ^js/Promise run+ [query-map]
+#_(defn ^js/Promise run+ [query-map]
   (let [[query & params] (sql/format query-map)
         stmt (.prepare ^js @cf/DB query)
         ;; flatten first row and convert to JS array
@@ -30,8 +30,7 @@
     (js-await [result (.run (.apply (.-bind stmt) stmt js-params))]
               (js->clj result :keywordize-keys true))))
 
-
-#_(defn ^js/Promise run+ [query]
+(defn ^js/Promise run+ [query]
   (let [[query & args] (sql/format query)
         stmt (.prepare ^js @cf/DB query)]
     (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
