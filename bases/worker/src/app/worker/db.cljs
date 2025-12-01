@@ -69,8 +69,10 @@
 (defn ^js/Promise run+ [query]
   (let [[query & args] (sql/format query)
         stmt (.prepare ^js @cf/DB query)]
+    (js/console.log "Before:" (.apply (.-bind stmt) stmt (clj->js args)))
     (js-await [result (.run (.apply (.-bind stmt) stmt (clj->js args)))]
-              (js->clj result :keywordize-keys true))))
+              (js/console.log "Result:" result)
+              result)))
 
 
 #_(defn ^js/Promise run+ [query]
