@@ -43,7 +43,7 @@
               (js-await [result (.run ^js (.bind stmt (clj->js params)))]
                         (js->clj result :keywordize-keys true)))))
 
-(defn ^js/Promise run+ [query]
+#_(defn ^js/Promise run+ [query]
   ;; Wrap in a JS async function
   (js/Promise.
    (fn [resolve reject]
@@ -65,6 +65,12 @@
                                       (reject err))))))]
        ;; Call the async function immediately
        (async-fn)))))
+
+(defn ^js/Promise run+ [query]
+  (let [[query & args] (sql/format query)
+        stmt (.prepare ^js @cf/DB query)]
+    (js-await [result (.run (.apply (.-bind stmt) stmt (clj->js args)))]
+              (js->clj result :keywordize-keys true))))
 
 
 #_(defn ^js/Promise run+ [query]
