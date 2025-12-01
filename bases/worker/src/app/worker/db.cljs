@@ -46,11 +46,12 @@
 
 (defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
-        stmt (.prepare ^js @cf/DB sql)]
+        stmt (.prepare ^js @cf/DB sql)
+        bound-stmt (.apply (.-bind stmt) stmt (clj->js args))]
     (js/console.log "SQL:" sql)
-    (js/console.log "ARGS:" (into-array args))
+    (js/console.log "Bound statement:" bound-stmt)
 
-    (js-await [result (.run (.bind stmt (into-array args)))]
+    (js-await [result (.run bound-stmt)]
               (js->clj result :keywordize-keys true))
 
     #_(if (cf-production?)
