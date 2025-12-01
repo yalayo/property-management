@@ -67,11 +67,12 @@
        (async-fn)))))
 
 (defn ^js/Promise run+ [query]
-  (let [[query & args] (sql/format query)
-        stmt (.prepare ^js @cf/DB query)]
-    (js/console.log "Before:" (.apply (.-bind stmt) stmt (clj->js args)))
-    (js-await [result (.run (.apply (.-bind stmt) stmt (clj->js args)))]
-              (js/console.log "Result:" result)
+  (let [[sql & args] (sql/format query)
+        stmt (.prepare ^js @cf/DB sql)
+        bounded (.-bind stmt)]
+    (js/console.log "Parameters:" (clj->js args))
+    (js/console.log "Apply:"  (.apply bounded stmt (clj->js args)))
+    (js-await [result (.run ^js (.apply bounded stmt (clj->js args)))]
               result)))
 
 

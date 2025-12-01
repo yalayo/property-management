@@ -52,7 +52,6 @@
     (let [url (js/URL. (.-url request))
           pathname (.-pathname url)
           route (r/match-by-path router pathname)]
-  		  (js/console.log "Binding:" (.-DB env))
       (reset! ENV env)
       (reset! CTX ctx)
       (reset! DB (.-DB env))
