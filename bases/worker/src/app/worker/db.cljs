@@ -51,14 +51,15 @@
                       (js/console.log "Preparing query...")
                       (let [[sql & args] (sql/format query)
                             stmt (.prepare ^js @cf/DB sql)
-                            bound-stmt (.apply (.-bind stmt) stmt (into-array ["user-id" "email@mail.com" "password"]))]
+                            bound-stmt (.apply (.-bind stmt) stmt (clj->js args))]
                         (js/console.log "SQL:" sql)
                         (js/console.log "Bound statement params:" (.-params bound-stmt))
                         ;; Await the run
                         (-> (.run bound-stmt)
                             (.then (fn [result]
+                                     (js/console.log "Insert result meta:" result)
                                      (js/console.log "Insert result meta:" (.-meta ^js result))
-                                     (resolve (js->clj result :keywordize-keys true))))
+                                     #_(resolve (js->clj result :keywordize-keys true))))
                             (.catch (fn [err]
                                       (js/console.error "DB Error:" err)
                                       (reject err))))))]
