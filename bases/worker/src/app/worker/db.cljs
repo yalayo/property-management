@@ -51,7 +51,7 @@
                       (js/console.log "Preparing query...")
                       (let [[sql & args] (sql/format query)
                             stmt (.prepare ^js @cf/DB sql)
-                            bound-stmt (.apply (.-bind stmt) stmt (into-array args))]
+                            bound-stmt (.apply (.-bind stmt) stmt (into-array ["user-id" "email@mail.com" "password"]))]
                         (js/console.log "SQL:" sql)
                         (js/console.log "Bound statement params:" (.-params bound-stmt))
                         ;; Await the run
