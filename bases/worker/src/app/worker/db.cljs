@@ -30,7 +30,7 @@
     (js-await [result (.run (.apply (.-bind stmt) stmt js-params))]
               (js->clj result :keywordize-keys true))))
 
-(defn ^js/Promise run+ [query]
+#_(defn ^js/Promise run+ [query]
   (let [[query & args] (sql/format query)
         stmt (.prepare ^js @cf/DB query)]
     (js/console.log "Parameters: " (into-array args))
@@ -42,3 +42,26 @@
     (js-await [stmt (.prepare ^js @cf/DB sql)]
               (js-await [result (.run ^js (.bind stmt (clj->js params)))]
                         (js->clj result :keywordize-keys true)))))
+
+
+(defn ^js/Promise run+ [query]
+  (let [[sql & args] (sql/format query)
+        stmt (.prepare ^js @cf/DB sql)]
+    (js/console.log "SQL:" sql)
+    (js/console.log "ARGS:" (clj->js args))
+
+    (js-await [result (.run (.apply (.-bind stmt) stmt (to-array args)))]
+              (js->clj result :keywordize-keys true))
+
+    #_(if (cf-production?)
+      ;; -----------------------------------------
+      ;; PRODUCTION: Cloudflare D1 (async API)
+      ;; -----------------------------------------
+      (js-await [result (.run (.apply (.-bind stmt) stmt (to-array args)))]
+                (js->clj result :keywordize-keys true))
+
+      ;; -----------------------------------------
+      ;; LOCAL DEVELOPMENT: better-sqlite3 (sync API)
+      ;; -----------------------------------------
+      (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
+                (js->clj result :keywordize-keys true)))))
