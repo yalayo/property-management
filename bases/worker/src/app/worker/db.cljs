@@ -43,16 +43,41 @@
               (js-await [result (.run ^js (.bind stmt (clj->js params)))]
                         (js->clj result :keywordize-keys true)))))
 
-
 (defn ^js/Promise run+ [query]
+  ;; Wrap in a JS async function
+  (js/Promise.
+   (fn [resolve reject]
+     (let [async-fn (fn []
+                      (js/console.log "Preparing query...")
+                      (let [[sql & args] (sql/format query)
+                            stmt (.prepare ^js @cf/DB sql)
+                            bound-stmt (.apply (.-bind stmt) stmt (clj->js args))]
+                        (js/console.log "SQL:" sql)
+                        (js/console.log "Bound statement:" bound-stmt)
+                        ;; Await the run
+                        (-> (.run bound-stmt)
+                            (.then (fn [result]
+                                     (js/console.log "Result:" result)
+                                     (resolve (js->clj result :keywordize-keys true))))
+                            (.catch (fn [err]
+                                      (js/console.error "DB Error:" err)
+                                      (reject err))))))]
+       ;; Call the async function immediately
+       (async-fn)))))
+
+
+#_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
         stmt (.prepare ^js @cf/DB sql)
         bound-stmt (.apply (.-bind stmt) stmt (clj->js args))]
     (js/console.log "SQL:" sql)
     (js/console.log "Bound statement:" bound-stmt)
 
-    (js-await [result (.run bound-stmt)]
-              (js->clj result :keywordize-keys true))
+    (.then (.run bound-stmt)
+           (fn [result]
+             (js/console.log "Insert result:" result)
+             ;; convert to CLJ if you want
+             (js->clj result :keywordize-keys true)))
 
     #_(if (cf-production?)
       ;; -----------------------------------------
