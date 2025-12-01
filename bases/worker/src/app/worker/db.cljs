@@ -30,22 +30,13 @@
     (js-await [result (.run (.apply (.-bind stmt) stmt js-params))]
               (js->clj result :keywordize-keys true))))
 
-(defn run+ [query]
-  (let [[sql & args] (sql/format query)
-        stmt (.prepare ^js @cf/DB sql)
-        js-result (.run stmt (into-array args))
-        result (js->clj js-result :keywordize-keys true)]
-    (js/console.log "SQL:" sql)
-    (js/console.log "JS result:" js-result)
-    (js/console.log "Parameters:" args)
-    (js/console.log "Run result:" result)
-
-    (when (zero? (:changes result))
-      (js/console.warn "⚠️ WARNING: Query ran but made NO changes!"))
-
-    result))
-
-
+(defn ^js/Promise run+ [query]
+  (let [[query & args] (sql/format query)
+        stmt (.prepare ^js @cf/DB query)]
+    (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
+              (js/console.log "Parameters: " args)
+              (js/console.log "Result: " result)
+              (js->clj result :keywordize-keys true))))
 ;; Check later
 #_(defn ^js/Promise run+ [query-map]
   (let [[sql params] (sql/format query-map)]
