@@ -48,9 +48,9 @@
   (let [[sql & args] (sql/format query)
         stmt (.prepare ^js @cf/DB sql)]
     (js/console.log "SQL:" sql)
-    (js/console.log "ARGS:" (clj->js args))
+    (js/console.log "ARGS:" (into-array args))
 
-    (js-await [result (.run (.apply (.-bind stmt) stmt (to-array args)))]
+    (js-await [result (.run (.apply (.-bind stmt) stmt (into-array args)))]
               (js->clj result :keywordize-keys true))
 
     #_(if (cf-production?)
