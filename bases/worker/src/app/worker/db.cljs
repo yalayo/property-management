@@ -33,10 +33,18 @@
 (defn run+ [query]
   (let [[sql & args] (sql/format query)
         stmt (.prepare ^js @cf/DB sql)
-        result (.run stmt (into-array args))]
-    (js/console.log "Parameters: " args)
-    (js/console.log "Result: " (js->clj result :keywordize-keys true))
-    (js->clj result :keywordize-keys true)))
+        js-result (.run stmt (into-array args))
+        result (js->clj js-result :keywordize-keys true)]
+    (js/console.log "SQL:" sql)
+    (js/console.log "JS result:" js-result)
+    (js/console.log "Parameters:" args)
+    (js/console.log "Run result:" result)
+
+    (when (zero? (:changes result))
+      (js/console.warn "⚠️ WARNING: Query ran but made NO changes!"))
+
+    result))
+
 
 ;; Check later
 #_(defn ^js/Promise run+ [query-map]
