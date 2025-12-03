@@ -78,12 +78,10 @@
 (defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
         stmt (.prepare ^js @cf/DB sql)
-        bound (.apply (.-bind stmt) stmt (clj->js args))]
-    (js/console.log (clj->js {:sql sql :args args}))
-    (js/console.log "Bounded:" bound)
-    (js-await [result (.run bound)]
-              result)))
-
+        bound (.bind stmt (clj->js args))]
+    (js-await [res (.run bound)]
+              (js/console.log "Response:" res)
+              res)))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
