@@ -66,13 +66,22 @@
        ;; Call the async function immediately
        (async-fn)))))
 
-(defn ^js/Promise run+ [query]
+#_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
         stmt (.prepare ^js @cf/DB sql)
         bounded (.-bind stmt)]
     (js/console.log "Parameters:" (clj->js args))
     (js/console.log "Apply:"  (.apply bounded stmt (clj->js args)))
     (js-await [result (.run ^js (.apply bounded stmt (clj->js args)))]
+              result)))
+
+(defn ^js/Promise run+ [query]
+  (let [[sql & args] (sql/format query)
+        stmt (.prepare ^js @cf/DB sql)
+        bound (.apply (.-bind stmt) stmt (clj->js args))]
+    (js/console.log (clj->js {:sql sql :args args}))
+    (js/console.log "Bounded:" bound)
+    (js-await [result (.run bound)]
               result)))
 
 
