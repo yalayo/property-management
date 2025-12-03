@@ -76,12 +76,47 @@
               result)))
 
 (defn ^js/Promise run+ [query]
-  (let [[sql & args] (sql/format query)
-        stmt (.prepare ^js @cf/DB sql)
-        bound (.bind stmt (clj->js args))]
-    (js-await [res (.run bound)]
-              (js/console.log "Response:" res)
-              res)))
+  (js/Promise.
+   (fn [resolve reject]
+     (try
+       (let [[sql & raw-params] (sql/format query)
+             params (into [] raw-params)       ;; <--- FIX HERE
+             stmt (.prepare ^js @cf/DB sql)
+             bound (.apply (.-bind stmt) stmt (to-array params))]
+         (-> (.run bound)
+             (.then (fn [res]
+                      (js/console.log "Response:" res)
+                      (resolve res)))
+             (.catch (fn [err]
+                       (js/console.error "D1 RUN ERROR:" err)
+                       (reject err)))))
+
+       (catch :default e
+         (js/console.error "D1 PREPARE/BIND ERROR:" e)
+         (reject e))))))
+
+#_(defn ^js/Promise run+ [query]
+  (js/Promise.
+   (fn [resolve reject]
+     (try
+       (let [[sql & raw-params] (sql/format query)
+             params (vec (flatten raw-params))      ;; <--- FIX HERE
+             stmt (.prepare ^js @cf/DB sql)
+             bound (.bind stmt (clj->js params))]
+
+         (js/console.log "SQL:" sql)
+         (js/console.log "PARAMS JS:" (clj->js params))
+         (-> (.run bound)
+             (.then (fn [res]
+                      (js/console.log "Response:" res)
+                      (resolve res)))
+             (.catch (fn [err]
+                       (js/console.error "D1 RUN ERROR:" err)
+                       (reject err)))))
+
+       (catch :default e
+         (js/console.error "D1 PREPARE/BIND ERROR:" e)
+         (reject e))))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
