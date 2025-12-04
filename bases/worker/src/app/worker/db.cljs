@@ -81,18 +81,27 @@
      (try
        (let [[sql & params] (sql/format query)
              jsparams (into-array params)
-             stmt (.prepare ^js @cf/DB sql)
-             bound (.apply (.-bind stmt) stmt (to-array params))]
+             stmt (.prepare ^js @cf/DB sql)]
+         
+         (js/console.log "Before:" jsparams)
+
+         
+         ;; D1 requires: stmt.bind(param1, param2, param3)
+         ;; apply() requires a dummy first arg which is ignored: nil / null
+         (.unshift jsparams nil)
 
          (js/console.log "SQL:" sql)
-         (js/console.log "APPLY:" (.apply js/Array nil jsparams))
-         (-> (.run bound)
-             (.then (fn [res]
-                      (js/console.log "Response:" res)
-                      (resolve res)))
-             (.catch (fn [err]
-                       (js/console.error "D1 RUN ERROR:" err)
-                       (reject err)))))
+         (js/console.log "After:" jsparams)
+
+         (let [bound (.apply (.-bind stmt) stmt jsparams)]
+           (-> (.run bound)
+               (.then (fn [res]
+                        (js/console.log "Response:" res)
+                        (resolve res)))
+               (.catch (fn [err]
+                         (js/console.error "D1 RUN ERROR:" err)
+                         (reject err)))))
+         )
 
        (catch :default e
          (js/console.error "D1 PREPARE/BIND ERROR:" e)
