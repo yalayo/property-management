@@ -93,7 +93,10 @@
          (js/console.log "SQL:" (sql/format query))
          (js/console.log "After:" jsparams)
 
-         (let [bound (.apply (.-bind stmt) stmt jsparams)]
+         (let [bound (.call (.-apply js/Function.prototype)
+                                  (.-bind stmt)   ;; function to apply
+                                  stmt            ;; `this` value
+                                  jsparams)]
            (js/console.log "Bounded:" bound)
            (-> (.run bound)
                (.then (fn [res]
@@ -107,7 +110,8 @@
 
        (catch :default e
          (js/console.error "D1 PREPARE/BIND ERROR:" e)
-         (reject e))))))
+         (reject e)
+         (throw err))))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
