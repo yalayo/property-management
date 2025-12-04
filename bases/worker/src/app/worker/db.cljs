@@ -90,10 +90,11 @@
          ;; apply() requires a dummy first arg which is ignored: nil / null
          (.unshift jsparams nil)
 
-         (js/console.log "SQL:" sql)
+         (js/console.log "SQL:" (sql/format query))
          (js/console.log "After:" jsparams)
 
          (let [bound (.apply (.-bind stmt) stmt jsparams)]
+           (js/console.log "Bounded:" bound)
            (-> (.run bound)
                (.then (fn [res]
                         (js/console.log "Response:" res)
