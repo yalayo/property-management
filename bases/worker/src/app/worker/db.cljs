@@ -80,7 +80,7 @@
    (fn [resolve reject]
      (try
        (let [[sql & params] (sql/format query)
-             jsparams (into-array params)
+             jsparams (into-array (cons nil params))
              stmt (.prepare ^js @cf/DB sql)]
          
          (js/console.log "Before:" jsparams)
@@ -88,7 +88,7 @@
          
          ;; D1 requires: stmt.bind(param1, param2, param3)
          ;; apply() requires a dummy first arg which is ignored: nil / null
-         (.unshift jsparams nil)
+         #_(.unshift jsparams nil)
 
          (js/console.log "SQL:" (sql/format query))
          (js/console.log "After:" jsparams)
