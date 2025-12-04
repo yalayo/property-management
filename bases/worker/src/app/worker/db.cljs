@@ -100,7 +100,8 @@
                         (resolve res)))
                (.catch (fn [err]
                          (js/console.error "D1 RUN ERROR:" err)
-                         (reject err)))))
+                         (reject err)
+                         (throw err)))))
          )
 
        (catch :default e
