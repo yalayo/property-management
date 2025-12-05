@@ -75,7 +75,7 @@
     (js-await [result (.run ^js (.apply bounded stmt (clj->js args)))]
               result)))
 
-(defn ^js/Promise run+ [env query]
+(defn run+ [env query]
   (let [[sql & params] (sql/format query)
         arr #js ["user-2" "user-1@mail.com" "password2"]
         stmt (.prepare ^js (.-DB env) sql)]
