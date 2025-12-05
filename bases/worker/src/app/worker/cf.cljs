@@ -33,10 +33,21 @@
 	 (response-edn {:error error} {:status 200})))
 
 (defn request->edn
-	"Reads the request body as EDN"
-	[^js request]
-	(js-await [text (.text request)]
-		(edn/read-string text)))
+  "Reads EDN safely whether sent as text or binary."
+  [^js request]
+  (js-await
+   [ctype (.get (.-headers request) "content-type")]
+   (if (and ctype (.includes ctype "charset"))
+     ;; Safe to treat body as text
+     (js-await [text (.text request)]
+               (edn/read-string text))
+
+     ;; No charset → treat as binary and decode manually
+     (js-await [buf (.arrayBuffer request)]
+               (let [decoder (js/TextDecoder. "utf-8")
+                     text (.decode decoder buf)]
+                 (edn/read-string text))))))
+
 
 (defn- with-params [^js/URL url route]
 	(assoc route :query-params
