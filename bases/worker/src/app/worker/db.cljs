@@ -76,23 +76,12 @@
               result)))
 
 (defn ^js/Promise run+ [env query]
-  (js/Promise.
-   (fn [resolve reject]
-     (try
-       (let [[sql & params] (sql/format query)
-             arr #js ["user-2" "user-1@mail.com" "password2"]
-             stmt (.prepare ^js (.-DB env) sql)
-             bound (.bind stmt (aget arr 0) (aget arr 1) (aget arr 2))] 
-         (-> (.run bound)
-             (.then resolve)
-             (.catch (fn [err]
-                       (js/console.error "D1 RUN ERROR:" err)
-                       (reject err)
-                       (throw err)))))
-       (catch :default e
-         (js/console.error "D1 PREPARE/BIND ERROR:" e)
-         (reject e)
-         (throw e))))))
+  (let [[sql & params] (sql/format query)
+        arr #js ["user-2" "user-1@mail.com" "password2"]
+        stmt (.prepare ^js (.-DB env) sql)]
+    (-> stmt
+        (.bind (aget arr 0) (aget arr 1) (aget arr 2))
+        (.run))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
