@@ -75,13 +75,14 @@
     (js-await [result (.run ^js (.apply bounded stmt (clj->js args)))]
               result)))
 
-(defn run+ [env query]
+(defn ^js/Promise run+ [env query]
   (let [[sql & params] (sql/format query)
         arr #js ["user-2" "user-1@mail.com" "password2"]
         stmt (.prepare ^js (.-DB env) sql)]
-    (-> stmt
-        (.bind (aget arr 0) (aget arr 1) (aget arr 2))
-        (.run))))
+    (js-await [result (-> stmt
+                          (.bind (aget arr 0) (aget arr 1) (aget arr 2))
+                          (.run))]
+              (js->clj result :keywordize-keys true))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
