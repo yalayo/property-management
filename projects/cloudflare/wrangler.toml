@@ -1,4 +1,4 @@
-name = "pmanagement"
+name = "pmanagement-production"
 
 main = "out/main.js"
 compatibility_date = "2025-02-04"
