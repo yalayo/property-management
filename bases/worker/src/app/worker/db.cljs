@@ -6,9 +6,9 @@
 ;; D1 docs https://developers.cloudflare.com/d1/
 
 (defn ^js/Promise query+ [query-map]
-  (let [[sql params] (sql/format query-map)
+  (let [[sql & params] (sql/format query-map)
         stmt (.prepare ^js @cf/DB sql)]
-    (js-await [result (.all (.apply (.-bind stmt) stmt (to-array params)))]
+    (js-await [result (.all (.apply (.-bind stmt) stmt (into-array params)))]
               {:success true :account (js->clj (first (.-results result)) :keywordize-keys true)})))
 
 (defn ^:export run+ [^js env query]
