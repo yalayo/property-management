@@ -80,38 +80,25 @@
    (fn [resolve reject]
      (try
        (let [[sql & params] (sql/format query)
-             jsparams (into-array (cons nil params))
-             stmt (.prepare ^js @cf/DB sql)]
+             jsparams (into-array params)
+             stmt (.prepare ^js @cf/DB sql)
+             
+             ;; Correct way to spread array into stmt.bind(...)
+             bound (.apply (.-bind stmt) stmt jsparams)]
          
-         (js/console.log "Before:" jsparams)
+         (js/console.log "Before:" bound)
 
          
-         ;; D1 requires: stmt.bind(param1, param2, param3)
-         ;; apply() requires a dummy first arg which is ignored: nil / null
-         #_(.unshift jsparams nil)
-
-         (js/console.log "SQL:" (sql/format query))
-         (js/console.log "After:" jsparams)
-
-         (let [bound (.call (.-apply js/Function.prototype)
-                                  (.-bind stmt)   ;; function to apply
-                                  stmt            ;; `this` value
-                                  jsparams)]
-           (js/console.log "Bounded:" bound)
-           (-> (.run bound)
-               (.then (fn [res]
-                        (js/console.log "Response:" res)
-                        (resolve res)))
-               (.catch (fn [err]
-                         (js/console.error "D1 RUN ERROR:" err)
-                         (reject err)
-                         (throw err)))))
-         )
-
-       (catch :default e
-         (js/console.error "D1 PREPARE/BIND ERROR:" e)
-         (reject e)
-         (throw err))))))
+         (-> (.run bound)
+                  (.then resolve)
+                  (.catch (fn [err]
+                            (js/console.error "D1 RUN ERROR:" err)
+                            (reject err)
+                            (throw err)))))
+             (catch :default e
+               (js/console.error "D1 PREPARE/BIND ERROR:" e)
+               (reject e)
+               (throw e))))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
