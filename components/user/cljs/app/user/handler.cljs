@@ -28,8 +28,8 @@
                                             token (jwt/sign claims secret)]
                                         (cf/response-edn {:token token} {:status 200})))))))))
 
-(defn post-sign-up [_ request _ _]
+(defn post-sign-up [_ request env _]
   (js-await [data (cf/request->edn request)]
             (let [{:keys [user name password]} data]
-              (persistance/create-account name user password)
+              (persistance/create-account env name user password)
               (cf/response-edn {:created true} {:status 201}))))
