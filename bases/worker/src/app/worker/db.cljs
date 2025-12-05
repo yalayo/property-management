@@ -80,25 +80,19 @@
    (fn [resolve reject]
      (try
        (let [[sql & params] (sql/format query)
-             jsparams (into-array params)
+             arr #js ["user-2" "user-1@mail.com" "password2"]
              stmt (.prepare ^js @cf/DB sql)
-             
-             ;; Correct way to spread array into stmt.bind(...)
-             bound (.apply (.-bind stmt) stmt jsparams)]
-         
-         (js/console.log "Before:" bound)
-
-         
+             bound (.bind stmt (aget arr 0) (aget arr 1) (aget arr 2))] 
          (-> (.run bound)
-                  (.then resolve)
-                  (.catch (fn [err]
-                            (js/console.error "D1 RUN ERROR:" err)
-                            (reject err)
-                            (throw err)))))
-             (catch :default e
-               (js/console.error "D1 PREPARE/BIND ERROR:" e)
-               (reject e)
-               (throw e))))))
+             (.then resolve)
+             (.catch (fn [err]
+                       (js/console.error "D1 RUN ERROR:" err)
+                       (reject err)
+                       (throw err)))))
+       (catch :default e
+         (js/console.error "D1 PREPARE/BIND ERROR:" e)
+         (reject e)
+         (throw e))))))
 
 #_(defn ^js/Promise run+ [query]
   (let [[sql & args] (sql/format query)
