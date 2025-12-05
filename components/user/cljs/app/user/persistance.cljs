@@ -20,16 +20,16 @@
                                (.padStart (.toString b 16) 2 "0")))
                         (apply str))))))))
 
-(defn create-account [env name email password]
-  (let [user-id (js/crypto.randomUUID)]
-    (js-await [hashed (hash-password password "temporary salt")]
-      (let [query {:insert-into [:accounts]
-                   :columns    [:user_id :email :password]
-                   :values     [[user-id email hashed]]}]
-        (js-await [{:keys [success results]} (db/run+ env query)]
-          (if success
-            (cf/response-edn {:result results} {:status 200})
-            (cf/response-error)))))))
+(defn ^:export create-account [env name email password]
+  (js-await [hashed (hash-password password "temporary salt")]
+            (let [user-id (js/crypto.randomUUID)
+                  query {:insert-into [:accounts]
+                         :columns    [:user_id :email :password]
+                         :values     [[user-id email hashed]]}]
+              (js-await [{:keys [success results]} (db/run+ env query)]
+                        (if success
+                          {:result results}
+                          (throw (js/Error. "Insert failed")))))))
 
 (defn get-accounts []
   (let [query {:select [:email :verified]
