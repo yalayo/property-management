@@ -41,9 +41,12 @@
   
   (re-frame/reg-event-fx
    ::sign-in-error
-   (fn [{:keys [_]} [_ error]]
+   [local-storage-interceptor]
+   (fn [{:keys [db]} [_ {:keys [error]}]]
      (js/console.error "Signin failed:" error)
-     {}))
+     {:db (-> db
+              (assoc-in [:user :sign-in :form :password] "")
+              (assoc-in [:user :sign-in :form :error] true))}))
   
   (re-frame/reg-event-db
    ::update-sign-up
