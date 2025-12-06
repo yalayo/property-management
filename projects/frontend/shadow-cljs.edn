@@ -21,6 +21,7 @@
            :asset-path "/platform"
            :modules {:app {:init-fn app.frontend.core/init-platform}}
            :devtools {:preloads [day8.re-frame-10x.preload]
+                      :after-load app.frontend.core/restart
                       :watch-dir "./resources/public"
                       :http-root "resources/public"}
            :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
