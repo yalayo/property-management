@@ -32,7 +32,7 @@
     (web/init file-upload-component)))
 
 (defn init-platform []
-  (start)
+  (restart)
   (let [platform-component (::platform/component @system)]
     (web/init platform-component)))
 
