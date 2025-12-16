@@ -2,11 +2,9 @@
   (:require [integrant.core :as ig]
             ["cloudflare:workers" :refer [DurableObject]]
             [reitit.core :as r]
-         	  [clojure.string :as s]
             [app.worker.async :refer [js-await]]
             [app.worker.durable-objects :as do]
-            [app.worker.cf :as cf :refer [defclass]]
-            [app.user.handler :as handler]))
+            [app.worker.cf :as cf :refer [defclass]]))
 
 ;; usage example of Durable Objects as a short-lived state
 ;; for user presence tracking in multiplayer web app
