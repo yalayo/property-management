@@ -3,9 +3,8 @@
               :type :registry}
  :target-image {:image-name "000000000000.dkr.ecr.us-east-1.floci:4566/backend"
                 :type :registry
-                :authorizer {:fn jibbit.aws-ecr/ecr-auth
-                             :args {:type :environment
-                                    :region "us-east-1"}}}
+                :username "AWS"
+                :password "test"}
  :exposed-ports [8080 9090 9669]
  :jvm-flags ["-Duser.language=de" "-Duser.country=DE" "-Xms3g" "-Xmx4g" "-Xlog:gc" "-XX:+UseG1GC"]
  :environment {:LANG "de_DE.UTF-8"

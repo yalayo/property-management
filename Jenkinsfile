@@ -16,12 +16,9 @@ pipeline {
       steps {
         script { env.TAG = env.GIT_COMMIT.take(7) }
         dir('projects/main') {
-          withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-                            credentialsId: 'aws-ecr']]) {
-            sh """
-              clojure -T:jib jibbit.core/build :tag '"${env.TAG}"'
-            """
-          }
+          sh """
+              clojure -T:jib jibbit.core/build :tag '"${env.TAG}"' :allow-insecure-registries true
+          """
         }
       }
     }
