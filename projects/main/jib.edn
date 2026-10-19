@@ -1,7 +1,7 @@
 {:main app.main.core
  :base-image {:image-name "gcr.io/distroless/java17-debian12:nonroot-amd64"
               :type :registry}
- :target-image {:image-name "000000000000.dkr.ecr.us-east-1.localhost:4566/backend"
+ :target-image {:image-name "floci:4566/000000000000/us-east-1/backend"
                 :type :registry
                 :username "AWS"
                 :password "test"}
