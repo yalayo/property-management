@@ -2,9 +2,12 @@ pipeline {
   agent any
 
   environment {
-    AWS_REGION   = 'us-east-1'
-    ECR_REGISTRY = '000000000000.dkr.ecr.us-east-1.amazonaws.com'
-    IMAGE        = "${ECR_REGISTRY}/property-management-app"
+    AWS_REGION            = 'us-east-1'
+    AWS_DEFAULT_REGION    = 'us-east-1'
+    AWS_ENDPOINT_URL      = 'http://floci:4566'
+    AWS_ACCESS_KEY_ID     = 'test'
+    AWS_SECRET_ACCESS_KEY = 'test'
+    REPO_NAME             = 'property-management-app'
   }
 
   options {
@@ -12,6 +15,12 @@ pipeline {
   }
 
   stages {
+    stage('Ensure ECR repo') {
+      steps {
+        sh 'aws ecr describe-repositories --repository-names "$REPO_NAME" || aws ecr create-repository --repository-name "$REPO_NAME"'
+      }
+    }
+
     stage('Build & push image') {
       steps {
         script { env.TAG = env.GIT_COMMIT.take(7) }
@@ -20,6 +29,12 @@ pipeline {
               clojure -T:jib jibbit.core/build :tag '"${env.TAG}"' :allow-insecure-registries true
           """
         }
+      }
+    }
+
+    stage('Verify') {
+      steps {
+        sh 'aws ecr list-images --repository-name "$REPO_NAME"'
       }
     }
   }
