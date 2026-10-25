@@ -7,7 +7,7 @@ pipeline {
     AWS_ENDPOINT_URL      = 'http://floci:4566'
     AWS_ACCESS_KEY_ID     = 'test'
     AWS_SECRET_ACCESS_KEY = 'test'
-    REPO_NAME             = 'property-management-app'
+    REPO_NAME             = 'property-management'
   }
 
   options {
