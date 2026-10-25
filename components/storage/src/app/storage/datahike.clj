@@ -57,10 +57,10 @@
 (defn create-pool []
   (if @pool*
     @pool*
-    (let [jdbc-url (format "jdbc:postgresql://%s:%s/%s" (System/getenv "DB_HOST") "5432" "property-management")
+    (let [jdbc-url (format "jdbc:postgresql://%s:%s/%s" (System/getenv "DB_HOST") (System/getenv "DB_PORT") (System/getenv "DB_NAME"))
           config (doto (HikariConfig.)
                    (.setJdbcUrl jdbc-url)
-                   (.setUsername "user")
+                   (.setUsername (System/getenv "DB_USER"))
                    (.setPassword (System/getenv "DB_PASSWORD"))
                    (.setMaximumPoolSize 10))
           ds (HikariDataSource. config)]
