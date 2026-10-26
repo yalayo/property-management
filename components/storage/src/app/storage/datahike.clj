@@ -15,7 +15,7 @@
                :dbtype "postgresql"
                :host (System/getenv "DB_HOST")
                :port 5432
-               :user "user"
+               :user (System/getenv "DB_USER")
                :password (System/getenv "DB_PASSWORD")
                :table database-name
                :dbname (System/getenv "DB_NAME")
@@ -94,7 +94,7 @@
                     :host (System/getenv "DB_HOST")
                     :port 5432
                     :dbname (System/getenv "DB_NAME")
-                    :user "user"
+                    :user (System/getenv "DB_USER")
                     :password (System/getenv "DB_PASSWORD")
                     :table database-name
                     :pool-options {:maximumPoolSize 10
@@ -130,7 +130,7 @@
                     :host (System/getenv "DB_HOST")
                     :port 5432
                     :dbname (System/getenv "DB_NAME")
-                    :user "user"
+                    :user (System/getenv "DB_USER")
                     :password (System/getenv "DB_PASSWORD")
                     :table "example"
                     :pool-options {:maximumPoolSize 10
