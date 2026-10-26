@@ -18,7 +18,7 @@
                :user "user"
                :password (System/getenv "DB_PASSWORD")
                :table database-name
-               :dbname "property-management"
+               :dbname (System/getenv "DB_NAME")
                :pool-options {:maximumPoolSize 10
                               :minimumIdle 2
                               :idleTimeout 60000
@@ -93,7 +93,7 @@
                     :dbtype "postgresql"
                     :host (System/getenv "DB_HOST")
                     :port 5432
-                    :dbname "property-management"
+                    :dbname (System/getenv "DB_NAME")
                     :user "user"
                     :password (System/getenv "DB_PASSWORD")
                     :table database-name
@@ -129,7 +129,7 @@
                     :dbtype "postgresql"
                     :host (System/getenv "DB_HOST")
                     :port 5432
-                    :dbname "property-management"
+                    :dbname (System/getenv "DB_NAME")
                     :user "user"
                     :password (System/getenv "DB_PASSWORD")
                     :table "example"
