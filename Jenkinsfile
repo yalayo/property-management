@@ -24,10 +24,10 @@ pipeline {
       steps {
         script {
           env.TAG   = env.GIT_COMMIT.take(7)
-          env.IMAGE = "${env.ECR_REGISTRY}/${env.IMAGE_PATH}:${env.TAG}"
+          env.IMAGE = "floci-aws-ecr-registry:5000/000000000000/us-east-1/property-management:${env.TAG}"
+          echo "Building ${env.IMAGE}"
         }
         dir('projects/main') {
-          // Override jib.edn's :target-image so the tag is part of the image name
           sh """
               clojure -T:jib jibbit.core/build \\
                 :target-image '{:image-name "${env.IMAGE}" :type :registry :username "AWS" :password "test"}' \\
