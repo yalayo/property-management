@@ -22,10 +22,16 @@ pipeline {
   stages {
     stage('Build & push image') {
       steps {
-        script { env.TAG = env.GIT_COMMIT.take(7) }
+        script {
+          env.TAG   = env.GIT_COMMIT.take(7)
+          env.IMAGE = "${env.ECR_REGISTRY}/${env.IMAGE_PATH}:${env.TAG}"
+        }
         dir('projects/main') {
+          // Override jib.edn's :target-image so the tag is part of the image name
           sh """
-              clojure -T:jib jibbit.core/build :tag '"${env.TAG}"' :allow-insecure-registries true
+              clojure -T:jib jibbit.core/build \\
+                :target-image '{:image-name "${env.IMAGE}" :type :registry :username "AWS" :password "test"}' \\
+                :allow-insecure-registries true
           """
         }
       }
@@ -34,7 +40,18 @@ pipeline {
     stage('Verify image in ECR') {
       steps {
         // Never point GitOps at a tag the cluster can't pull
-        sh 'aws ecr describe-images --repository-name "$REPO_NAME" --image-ids imageTag="$TAG"'
+        sh '''
+          for i in 1 2 3 4 5; do
+            if aws ecr describe-images --repository-name "$REPO_NAME" --image-ids imageTag="$TAG" >/dev/null; then
+              echo "Found $REPO_NAME:$TAG in ECR"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Tag $TAG not found. Tags currently in ECR:"
+          aws ecr list-images --repository-name "$REPO_NAME" --query "imageIds[].imageTag" --output text
+          exit 1
+        '''
       }
     }
 
