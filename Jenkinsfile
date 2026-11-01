@@ -18,7 +18,7 @@ pipeline {
     // GitOps repo (no https:// prefix - the token is inserted in front of it)
     GITOPS_REPO           = 'github.com/yalayo/gitops.git'
     GITOPS_BRANCH         = 'main'
-    GITOPS_VALUES         = 'envs/floci/values.yaml'   // must contain:  tag: "..." # jenkins-image-tag
+    GITOPS_VALUES         = 'apps/property-management/envs/floci/values.yaml'   // must contain:  tag: "..." # jenkins-image-tag
   }
 
   options {
