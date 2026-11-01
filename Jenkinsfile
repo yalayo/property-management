@@ -1,3 +1,5 @@
+// CI for property-management: build + push the image with a unique tag, then hand the tag to GitOps.
+// Deployment is done by Argo CD, which syncs the cluster from the GitOps repo.
 pipeline {
   agent any
 
@@ -7,12 +9,16 @@ pipeline {
     AWS_ENDPOINT_URL      = 'http://floci:4566'
     AWS_ACCESS_KEY_ID     = 'test'
     AWS_SECRET_ACCESS_KEY = 'test'
+
+    // ECR repository (Floci) - jib pushes straight to Floci's registry container
     REPO_NAME             = 'property-management'
+    ECR_REGISTRY          = 'floci-aws-ecr-registry:5000'
+    IMAGE_PATH            = '000000000000/us-east-1/property-management'
 
     // GitOps repo (no https:// prefix - the token is inserted in front of it)
     GITOPS_REPO           = 'github.com/yalayo/gitops.git'
     GITOPS_BRANCH         = 'main'
-    GITOPS_VALUES         = 'envs/floci/values.yaml'
+    GITOPS_VALUES         = 'envs/floci/values.yaml'   // must contain:  tag: "..." # jenkins-image-tag
   }
 
   options {
@@ -24,10 +30,11 @@ pipeline {
       steps {
         script {
           env.TAG   = env.GIT_COMMIT.take(7)
-          env.IMAGE = "floci-aws-ecr-registry:5000/000000000000/us-east-1/property-management:${env.TAG}"
+          env.IMAGE = "${env.ECR_REGISTRY}/${env.IMAGE_PATH}:${env.TAG}"
           echo "Building ${env.IMAGE}"
         }
         dir('projects/main') {
+          // Override jib.edn's :target-image so the tag is part of the pushed image name
           sh """
               clojure -T:jib jibbit.core/build \\
                 :target-image '{:image-name "${env.IMAGE}" :type :registry :username "AWS" :password "test"}' \\
@@ -57,8 +64,8 @@ pipeline {
 
     stage('Promote to GitOps (floci)') {
       steps {
-        // Jenkins credential "github-gitops" (Username with password):
-        //   username = your GitHub user, password = fine-grained PAT with Contents=read/write on the GitOps repo
+        // Jenkins credential "github-token" (Username with password):
+        //   username = your GitHub user, password = PAT with Contents read/write on the GitOps repo
         withCredentials([usernamePassword(credentialsId: 'github-token',
                                           usernameVariable: 'GIT_USER',
                                           passwordVariable: 'GIT_TOKEN')]) {
@@ -67,6 +74,10 @@ pipeline {
             rm -rf gitops
             git clone --branch "$GITOPS_BRANCH" "https://${GIT_USER}:${GIT_TOKEN}@${GITOPS_REPO}" gitops
             cd gitops
+
+            # Fail loudly if the env file has no marked tag line
+            grep -q '# jenkins-image-tag' "$GITOPS_VALUES" || {
+              echo "No '# jenkins-image-tag' line in $GITOPS_VALUES"; exit 1; }
 
             # Replace the tag on the line marked "# jenkins-image-tag"
             sed -i -E 's|^([[:space:]]*tag:[[:space:]]*).*(# jenkins-image-tag.*)$|\\1"'"$TAG"'" \\2|' "$GITOPS_VALUES"
